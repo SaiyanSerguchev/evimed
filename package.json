@@ -1,0 +1,25 @@
+{
+    "name":  "evimed",
+    "version":  "1.0.0",
+    "description":  "",
+    "main":  "index.js",
+    "scripts":  {
+
+                },
+    "repository":  {
+                       "type":  "git",
+                       "url":  "git+https://github.com/SaiyanSerguchev/evimed.git"
+                   },
+    "keywords":  [
+
+                 ],
+    "author":  "",
+    "license":  "ISC",
+    "bugs":  {
+                 "url":  "https://github.com/SaiyanSerguchev/evimed/issues"
+             },
+    "homepage":  "https://github.com/SaiyanSerguchev/evimed#readme",
+    "devDependencies":  {
+                            "concurrently":  "^8.2.2"
+                        }
+}
