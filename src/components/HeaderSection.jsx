@@ -1,5 +1,7 @@
 import React from 'react';
 import './HeaderSection.css';
+import SymbolLogo from '../assets/images/icons/Symbol_Logo.svg';
+import EvimedLogo from '../assets/images/icons/Evimed.svg';
 
 const HeaderSection = () => {
   const handleLogoClick = () => {
@@ -28,12 +30,9 @@ const HeaderSection = () => {
             {/* Logo */}
             <div className="logo" onClick={handleLogoClick} role="button" tabIndex={0} aria-label="Перейти на главную">
               <div className="logo-symbol" aria-hidden="true">
-                <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                  <circle cx="18" cy="18" r="16.36" fill="var(--color-primary-800)"/>
-                  <text x="18" y="22" textAnchor="middle" fill="white" fontSize="16" fontWeight="bold">Э</text>
-                </svg>
+                <img src={SymbolLogo} alt="Evimed Symbol" width="36" height="36" />
               </div>
-              <span className="logo-text">Evimed</span>
+              <img src={EvimedLogo} alt="Evimed" className="logo-text" width="96" height="16" />
             </div>
             
             {/* Navigation Menu */}

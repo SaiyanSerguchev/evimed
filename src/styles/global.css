@@ -12,9 +12,10 @@ body {
   margin: 0;
   padding: 0;
   font-family: var(--font-family);
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-body);
   font-weight: var(--font-weight-normal);
-  line-height: var(--line-height-normal);
+  line-height: var(--line-height-body);
+  letter-spacing: var(--letter-spacing-body);
   color: var(--color-grey-900);
   background-color: var(--color-white);
   -webkit-font-smoothing: antialiased;
