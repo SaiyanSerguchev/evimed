@@ -2,15 +2,32 @@ import React from 'react';
 import './HeaderSection.css';
 
 const HeaderSection = () => {
+  const handleLogoClick = () => {
+    // Scroll to top when logo is clicked
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleNavClick = (section) => {
+    // Handle navigation clicks
+    console.log(`Navigating to: ${section}`);
+    // Add smooth scrolling to sections here
+  };
+
+  const handleConsultationClick = () => {
+    // Handle consultation button click
+    console.log('Consultation button clicked');
+    // Add consultation form or modal here
+  };
+
   return (
-    <header className="header-section">
+    <header className="header-section" role="banner">
       <div className="container">
         <div className="header-content">
           {/* Left Section - Logo and Navigation */}
           <div className="header-left">
             {/* Logo */}
-            <div className="logo">
-              <div className="logo-symbol">
+            <div className="logo" onClick={handleLogoClick} role="button" tabIndex={0} aria-label="Перейти на главную">
+              <div className="logo-symbol" aria-hidden="true">
                 <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
                   <circle cx="18" cy="18" r="16.36" fill="var(--color-primary-800)"/>
                   <text x="18" y="22" textAnchor="middle" fill="white" fontSize="16" fontWeight="bold">Э</text>
@@ -20,10 +37,28 @@ const HeaderSection = () => {
             </div>
             
             {/* Navigation Menu */}
-            <nav className="navigation">
-              <button className="nav-button">Почему мы?</button>
-              <button className="nav-button">Услуги</button>
-              <button className="nav-button">Наши адреса</button>
+            <nav className="navigation" role="navigation" aria-label="Главное меню">
+              <button 
+                className="nav-button" 
+                onClick={() => handleNavClick('advantages')}
+                aria-label="Перейти к разделу Почему мы"
+              >
+                Почему мы?
+              </button>
+              <button 
+                className="nav-button" 
+                onClick={() => handleNavClick('services')}
+                aria-label="Перейти к разделу Услуги"
+              >
+                Услуги
+              </button>
+              <button 
+                className="nav-button" 
+                onClick={() => handleNavClick('contacts')}
+                aria-label="Перейти к разделу Наши адреса"
+              >
+                Наши адреса
+              </button>
             </nav>
           </div>
           
@@ -31,16 +66,24 @@ const HeaderSection = () => {
           <div className="header-right">
             {/* Phone Number */}
             <div className="phone-section">
-              <a href="tel:+74954924340" className="phone-number">
+              <a 
+                href="tel:+74954924340" 
+                className="phone-number"
+                aria-label="Позвонить по номеру +7 (495) 492-43-40"
+              >
                 +7 (495) 492-43-40
               </a>
-              <div className="phone-underline"></div>
+              <div className="phone-underline" aria-hidden="true"></div>
             </div>
             
             {/* Consultation Button */}
-            <button className="consultation-button">
+            <button 
+              className="consultation-button"
+              onClick={handleConsultationClick}
+              aria-label="Получить консультацию"
+            >
               <span>Консультация</span>
-              <svg className="arrow-icon" width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <svg className="arrow-icon" width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true">
                 <path d="M3.75 9H14.25M14.25 9L9 3.75M14.25 9L9 14.25" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
