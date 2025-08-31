@@ -1,0 +1,181 @@
+/* Services Section Styles - Pixel Perfect from Figma */
+.services-section {
+  padding: var(--spacing-5xl) 0;
+  background-color: var(--color-grey-100);
+}
+
+.services-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto var(--spacing-4xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.services-title {
+  font-family: var(--font-family);
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-grey-900);
+  line-height: 1.25;
+  margin: 0;
+}
+
+.services-subtitle {
+  font-family: var(--font-family);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-grey-800);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.services-description {
+  font-family: var(--font-family);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-grey-600);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: var(--spacing-2xl);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.service-card {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-grey-200);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl);
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.service-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary-100);
+}
+
+.service-icon {
+  width: 96px;
+  height: 96px;
+  margin-bottom: var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-primary-50);
+  border-radius: var(--radius-2xl);
+  color: var(--color-primary-800);
+}
+
+.service-icon svg {
+  width: 48px;
+  height: 48px;
+}
+
+.service-title {
+  font-family: var(--font-family);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-grey-900);
+  line-height: 1.4;
+  margin: 0 0 var(--spacing-md);
+}
+
+.service-description {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-grey-600);
+  line-height: 1.571;
+  margin: 0 0 var(--spacing-lg);
+}
+
+.service-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.service-feature {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-grey-800);
+  line-height: 1.538;
+}
+
+.feature-check {
+  width: 16px;
+  height: 16px;
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .services-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-xl);
+  }
+}
+
+@media (max-width: 768px) {
+  .services-section {
+    padding: var(--spacing-3xl) 0;
+  }
+  
+  .services-header {
+    margin-bottom: var(--spacing-2xl);
+    gap: var(--spacing-md);
+  }
+  
+  .services-title {
+    font-size: var(--font-size-3xl);
+  }
+  
+  .services-subtitle {
+    font-size: var(--font-size-xl);
+  }
+  
+  .services-description {
+    font-size: var(--font-size-base);
+  }
+  
+  .services-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+  
+  .service-card {
+    padding: var(--spacing-xl);
+  }
+  
+  .service-icon {
+    width: 72px;
+    height: 72px;
+  }
+  
+  .service-icon svg {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .service-title {
+    font-size: var(--font-size-xl);
+  }
+}
+

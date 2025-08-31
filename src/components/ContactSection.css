@@ -1,0 +1,208 @@
+/* Contact Section Styles - Pixel Perfect from Figma */
+.contact-section {
+  padding: var(--spacing-5xl) 0;
+  background-color: var(--color-grey-100);
+}
+
+.contact-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto var(--spacing-4xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.contact-title {
+  font-family: var(--font-family);
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-grey-900);
+  line-height: 1.25;
+  margin: 0;
+}
+
+.contact-subtitle {
+  font-family: var(--font-family);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-grey-800);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.contact-description {
+  font-family: var(--font-family);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-grey-600);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.contact-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3xl);
+}
+
+.contact-info {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-3xl);
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-grey-900);
+  line-height: 1.444;
+}
+
+.contact-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--color-primary-800);
+}
+
+.addresses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: var(--spacing-2xl);
+}
+
+.address-card {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-grey-200);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl);
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.address-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary-100);
+}
+
+.address-title {
+  font-family: var(--font-family);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-grey-900);
+  line-height: 1.4;
+  margin: 0 0 var(--spacing-md);
+}
+
+.address-text {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-grey-600);
+  line-height: 1.571;
+  margin: 0 0 var(--spacing-lg);
+}
+
+.address-actions {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background-color: var(--color-primary-50);
+  border: 1px solid rgba(20, 72, 140, 0.44);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: rgba(20, 72, 140, 0.92);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  line-height: 1.538;
+  letter-spacing: -0.15px;
+}
+
+.action-button:hover {
+  background-color: var(--color-primary-100);
+  border-color: var(--color-primary-800);
+}
+
+.action-button svg {
+  width: 16px;
+  height: 16px;
+  color: rgba(20, 72, 140, 0.44);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .addresses-grid {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: var(--spacing-xl);
+  }
+}
+
+@media (max-width: 768px) {
+  .contact-section {
+    padding: var(--spacing-3xl) 0;
+  }
+  
+  .contact-header {
+    margin-bottom: var(--spacing-2xl);
+    gap: var(--spacing-md);
+  }
+  
+  .contact-title {
+    font-size: var(--font-size-3xl);
+  }
+  
+  .contact-subtitle {
+    font-size: var(--font-size-xl);
+  }
+  
+  .contact-description {
+    font-size: var(--font-size-base);
+  }
+  
+  .contact-content {
+    gap: var(--spacing-2xl);
+  }
+  
+  .contact-info {
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    align-items: center;
+  }
+  
+  .contact-item {
+    font-size: var(--font-size-lg);
+  }
+  
+  .addresses-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+  
+  .address-card {
+    padding: var(--spacing-xl);
+  }
+  
+  .address-actions {
+    flex-direction: column;
+  }
+  
+  .action-button {
+    justify-content: center;
+  }
+}
+

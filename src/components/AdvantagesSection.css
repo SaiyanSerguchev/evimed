@@ -1,0 +1,159 @@
+/* Advantages Section Styles - Pixel Perfect from Figma */
+.advantages-section {
+  padding: var(--spacing-5xl) 0;
+  background-color: var(--color-white);
+}
+
+.advantages-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto var(--spacing-4xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.advantages-title {
+  font-family: var(--font-family);
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-grey-900);
+  line-height: 1.25;
+  margin: 0;
+}
+
+.title-line {
+  width: 80px;
+  height: 4px;
+  background-color: var(--color-primary-800);
+  margin: 0 auto;
+  border-radius: 2px;
+}
+
+.advantages-subtitle {
+  font-family: var(--font-family);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-grey-800);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.advantages-description {
+  font-family: var(--font-family);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-grey-600);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.advantages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-2xl);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.advantage-card {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-grey-200);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl);
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.advantage-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary-100);
+}
+
+.advantage-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-primary-50);
+  border-radius: var(--radius-2xl);
+  color: var(--color-primary-800);
+}
+
+.advantage-icon svg {
+  width: 40px;
+  height: 40px;
+}
+
+.advantage-title {
+  font-family: var(--font-family);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-grey-900);
+  line-height: 1.4;
+  margin: 0 0 var(--spacing-md);
+}
+
+.advantage-description {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-grey-600);
+  line-height: 1.571;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .advantages-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-xl);
+  }
+}
+
+@media (max-width: 768px) {
+  .advantages-section {
+    padding: var(--spacing-3xl) 0;
+  }
+  
+  .advantages-header {
+    margin-bottom: var(--spacing-2xl);
+    gap: var(--spacing-md);
+  }
+  
+  .advantages-title {
+    font-size: var(--font-size-3xl);
+  }
+  
+  .advantages-subtitle {
+    font-size: var(--font-size-xl);
+  }
+  
+  .advantages-description {
+    font-size: var(--font-size-base);
+  }
+  
+  .advantages-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+  
+  .advantage-card {
+    padding: var(--spacing-xl);
+  }
+  
+  .advantage-icon {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .advantage-icon svg {
+    width: 30px;
+    height: 30px;
+  }
+}
+
