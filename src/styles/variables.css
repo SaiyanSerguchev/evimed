@@ -1,16 +1,16 @@
 :root {
-  /* Colors */
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-200: #bfdbfe;
-  --color-primary-300: #93c5fd;
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-primary-800: #1e40af;
-  --color-primary-900: #1e3a8a;
-  --color-primary-950: #172554;
+  /* Colors - Updated based on Figma design */
+  --color-primary-50: rgba(20, 72, 140, 0.06);   /* #14488C with 6% opacity */
+  --color-primary-100: rgba(20, 72, 140, 0.12);  /* #14488C with 12% opacity */
+  --color-primary-200: rgba(20, 72, 140, 0.24);  /* #14488C with 24% opacity */
+  --color-primary-300: rgba(20, 72, 140, 0.44);  /* #14488C with 44% opacity */
+  --color-primary-400: rgba(20, 72, 140, 0.6);   /* #14488C with 60% opacity */
+  --color-primary-500: rgba(20, 72, 140, 0.8);   /* #14488C with 80% opacity */
+  --color-primary-600: rgba(20, 72, 140, 0.92);  /* #14488C with 92% opacity */
+  --color-primary-700: #14488C;                    /* Main brand color from Figma */
+  --color-primary-800: #0f3a75;                    /* Darker variant */
+  --color-primary-900: #0a2c5e;                    /* Darkest variant */
+  --color-primary-950: #061e47;                    /* Ultra dark variant */
 
   --color-grey-50: #f8fafc;
   --color-grey-100: #f1f5f9;
@@ -27,8 +27,20 @@
   --color-white: #ffffff;
   --color-black: #000000;
 
+  /* Additional colors for medical website */
+  --color-accent: #FFD700;                    /* Gold accent color */
+  --color-success: #10B981;                   /* Green for success states */
+  --color-warning: #F59E0B;                   /* Amber for warnings */
+  --color-error: #EF4444;                     /* Red for errors */
+  --color-info: #3B82F6;                      /* Blue for info */
+  
+  /* Stroke colors from Figma */
+  --color-stroke-light: #D3D7E0;              /* Light stroke from Figma */
+  --color-stroke-medium: #A1A8B8;             /* Medium stroke */
+  --color-stroke-dark: #6B7280;               /* Dark stroke */
+
   /* Typography */
-  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  --font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   
   --font-size-xs: 0.75rem;    /* 12px */
   --font-size-sm: 0.875rem;   /* 14px */
@@ -41,6 +53,14 @@
   --font-size-5xl: 3rem;      /* 48px */
   --font-size-6xl: 3.75rem;   /* 60px */
 
+  /* Дополнительные размеры шрифтов */
+  --font-size-body: 1rem;     /* 16px - основной размер для body */
+  --font-size-body-14: 0.875rem;      /* 14px */
+  --font-size-xs-headline: 0.75rem;   /* 12px */
+  --font-size-small-button: 0.875rem; /* 14px */
+  --font-size-4xs-headline: 0.625rem; /* 10px */
+  --font-size-3xs-headline: 0.5rem;   /* 8px */
+
   --font-weight-light: 300;
   --font-weight-normal: 400;
   --font-weight-medium: 500;
@@ -51,6 +71,16 @@
   --line-height-tight: 1.25;
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.75;
+
+  /* Дополнительные межстрочные интервалы */
+  --line-height-body: 1.5;    /* Основной межстрочный интервал для body */
+  --line-height-body-14: 1.25;
+  --line-height-xs-headline: 1.2;
+
+  /* Межбуквенные интервалы */
+  --letter-spacing-body: 0.025em;
+  --letter-spacing-tight: 0.01em;
+  --letter-spacing-wide: 0.05em;
 
   /* Spacing */
   --spacing-xs: 0.25rem;      /* 4px */
