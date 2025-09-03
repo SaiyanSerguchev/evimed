@@ -5,11 +5,9 @@ const AdvantagesSection = () => {
   const advantages = [
     {
       icon: (
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-          <circle cx="20" cy="20" r="18" stroke="currentColor" strokeWidth="2" fill="none"/>
-          <line x1="20" y1="20" x2="20" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-          <line x1="20" y1="20" x2="26" y2="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-          <path d="M 12 20 L 16 24 L 28 12" stroke="#4CAF50" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="32" r="30" fill="rgba(20, 72, 140, 0.06)" stroke="#14488C" strokeWidth="2"/>
+          <path d="M24 32L30 38L40 26" stroke="#14488C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       ),
       title: "Диагностика без очередей",
@@ -17,11 +15,10 @@ const AdvantagesSection = () => {
     },
     {
       icon: (
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-          <circle cx="20" cy="20" r="18" stroke="currentColor" strokeWidth="2" fill="none"/>
-          <path d="M 12 20 L 16 24 L 28 12" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-          <circle cx="20" cy="20" r="8" fill="none" stroke="currentColor" strokeWidth="2"/>
-          <path d="M 20 12 L 20 28 M 12 20 L 28 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="32" r="30" fill="rgba(20, 72, 140, 0.06)" stroke="#14488C" strokeWidth="2"/>
+          <path d="M20 32L28 40L44 24" stroke="#14488C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+          <circle cx="32" cy="32" r="12" fill="none" stroke="#14488C" strokeWidth="2"/>
         </svg>
       ),
       title: "270+ центров диагностики в России",
@@ -29,10 +26,10 @@ const AdvantagesSection = () => {
     },
     {
       icon: (
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-          <circle cx="20" cy="20" r="18" stroke="currentColor" strokeWidth="2" fill="none"/>
-          <path d="M 12 20 L 16 24 L 28 12" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M 15 15 L 25 25 M 25 15 L 15 25" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="32" r="30" fill="rgba(20, 72, 140, 0.06)" stroke="#14488C" strokeWidth="2"/>
+          <rect x="20" y="20" width="24" height="24" rx="2" fill="none" stroke="#14488C" strokeWidth="2"/>
+          <path d="M28 28L36 36M36 28L28 36" stroke="#14488C" strokeWidth="2" strokeLinecap="round"/>
         </svg>
       ),
       title: "Современное оборудование",
@@ -40,10 +37,9 @@ const AdvantagesSection = () => {
     },
     {
       icon: (
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-          <circle cx="20" cy="20" r="18" stroke="currentColor" strokeWidth="2" fill="none"/>
-          <path d="M 12 20 L 16 24 L 28 12" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M 12 16 L 28 16 M 12 24 L 28 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="32" r="30" fill="rgba(20, 72, 140, 0.06)" stroke="#14488C" strokeWidth="2"/>
+          <path d="M24 24L40 24M24 32L40 32M24 40L40 40" stroke="#14488C" strokeWidth="2" strokeLinecap="round"/>
         </svg>
       ),
       title: "Опытные специалисты",
@@ -53,7 +49,7 @@ const AdvantagesSection = () => {
 
   return (
     <section className="advantages-section">
-      <div className="container">
+      <div className="advantages-container">
         <div className="advantages-header">
           <h2 className="advantages-title">Почему мы?</h2>
           <div className="title-line"></div>

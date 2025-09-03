@@ -1,181 +1,210 @@
-/* Services Section Styles - Pixel Perfect from Figma */
+/* Services Section */
 .services-section {
-  padding: var(--spacing-5xl) 0;
-  background-color: var(--color-grey-100);
+  background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+  padding: 120px 0;
+  border-bottom: 1px solid var(--color-stroke-light);
 }
 
+.services-container {
+  max-width: 1376px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* Header */
 .services-header {
   text-align: center;
-  max-width: 800px;
-  margin: 0 auto var(--spacing-4xl);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
+  margin-bottom: 80px;
 }
 
 .services-title {
   font-family: var(--font-family);
-  font-size: var(--font-size-4xl);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-grey-900);
-  line-height: 1.25;
-  margin: 0;
+  font-weight: 600;
+  font-size: 48px;
+  line-height: 1.25em;
+  color: var(--color-black);
+  margin: 0 0 24px 0;
+}
+
+.title-line {
+  width: 80px;
+  height: 4px;
+  background: var(--color-primary-700);
+  margin: 0 auto 32px auto;
+  border-radius: 2px;
 }
 
 .services-subtitle {
   font-family: var(--font-family);
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-grey-800);
-  line-height: 1.4;
-  margin: 0;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.33em;
+  color: var(--color-primary-700);
+  margin: 0 0 24px 0;
 }
 
 .services-description {
   font-family: var(--font-family);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-normal);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.56em;
   color: var(--color-grey-600);
-  line-height: 1.5;
   margin: 0;
-}
-
-.services-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: var(--spacing-2xl);
-  max-width: 1200px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
+/* Grid */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 48px;
+}
+
+/* Cards */
 .service-card {
-  background-color: var(--color-white);
-  border: 1px solid var(--color-grey-200);
-  border-radius: var(--radius-xl);
-  padding: var(--spacing-2xl);
+  background: var(--color-white);
+  border: 1px solid var(--color-stroke-light);
+  border-radius: 24px;
+  padding: 48px 32px;
+  text-align: center;
   transition: all 0.3s ease;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0px 4px 16px rgba(13, 34, 61, 0.04);
+  display: flex;
+  flex-direction: column;
 }
 
 .service-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-  border-color: var(--color-primary-100);
+  transform: translateY(-8px);
+  box-shadow: 0px 12px 32px rgba(13, 34, 61, 0.08);
+  border-color: var(--color-primary-200);
 }
 
 .service-icon {
-  width: 96px;
-  height: 96px;
-  margin-bottom: var(--spacing-lg);
   display: flex;
-  align-items: center;
   justify-content: center;
-  background-color: var(--color-primary-50);
-  border-radius: var(--radius-2xl);
-  color: var(--color-primary-800);
-}
-
-.service-icon svg {
-  width: 48px;
-  height: 48px;
+  align-items: center;
+  margin-bottom: 32px;
+  color: var(--color-primary-700);
 }
 
 .service-title {
   font-family: var(--font-family);
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-grey-900);
-  line-height: 1.4;
-  margin: 0 0 var(--spacing-md);
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.4em;
+  color: var(--color-black);
+  margin: 0 0 16px 0;
 }
 
 .service-description {
   font-family: var(--font-family);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-normal);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5em;
   color: var(--color-grey-600);
-  line-height: 1.571;
-  margin: 0 0 var(--spacing-lg);
+  margin: 0 0 24px 0;
+  flex-grow: 1;
 }
 
+/* Features */
 .service-features {
   list-style: none;
   padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
+  margin: 0 0 32px 0;
+  text-align: left;
 }
 
 .service-feature {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 12px;
+  margin-bottom: 16px;
   font-family: var(--font-family);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-grey-800);
-  line-height: 1.538;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5em;
+  color: var(--color-grey-600);
 }
 
 .feature-check {
-  width: 16px;
-  height: 16px;
-  color: var(--color-accent);
+  color: var(--color-primary-700);
   flex-shrink: 0;
+}
+
+/* Button */
+.service-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 32px;
+  background: var(--color-primary-700);
+  border: none;
+  border-radius: 18px;
+  color: var(--color-white);
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: auto;
+}
+
+.service-button:hover {
+  background: var(--color-primary-800);
+  transform: translateY(-2px);
+}
+
+.button-arrow {
+  transition: transform 0.3s ease;
+}
+
+.service-button:hover .button-arrow {
+  transform: translateX(4px);
 }
 
 /* Responsive Design */
 @media (max-width: 1200px) {
+  .services-container {
+    padding: 0 24px;
+  }
+  
   .services-grid {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--spacing-xl);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
   }
 }
 
 @media (max-width: 768px) {
   .services-section {
-    padding: var(--spacing-3xl) 0;
+    padding: 80px 0;
   }
   
-  .services-header {
-    margin-bottom: var(--spacing-2xl);
-    gap: var(--spacing-md);
+  .services-container {
+    padding: 0 16px;
   }
   
   .services-title {
-    font-size: var(--font-size-3xl);
+    font-size: 36px;
   }
   
   .services-subtitle {
-    font-size: var(--font-size-xl);
+    font-size: 20px;
   }
   
   .services-description {
-    font-size: var(--font-size-base);
+    font-size: 16px;
   }
   
   .services-grid {
     grid-template-columns: 1fr;
-    gap: var(--spacing-lg);
+    gap: 24px;
   }
   
   .service-card {
-    padding: var(--spacing-xl);
-  }
-  
-  .service-icon {
-    width: 72px;
-    height: 72px;
-  }
-  
-  .service-icon svg {
-    width: 36px;
-    height: 36px;
-  }
-  
-  .service-title {
-    font-size: var(--font-size-xl);
+    padding: 32px 24px;
   }
 }
 

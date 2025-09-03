@@ -5,54 +5,67 @@ const ServicesSection = () => {
   const services = [
     {
       icon: (
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-          <rect x="8" y="8" width="32" height="32" rx="4" stroke="currentColor" strokeWidth="2" fill="none"/>
-          <line x1="8" y1="16" x2="40" y2="16" stroke="currentColor" strokeWidth="2"/>
-          <circle cx="24" cy="28" r="4" fill="currentColor"/>
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+          <rect x="8" y="8" width="48" height="48" rx="8" fill="rgba(20, 72, 140, 0.06)" stroke="#14488C" strokeWidth="2"/>
+          <path d="M20 20L28 28L44 12" stroke="#14488C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+          <circle cx="32" cy="32" r="16" fill="none" stroke="#14488C" strokeWidth="2" strokeDasharray="4 4"/>
         </svg>
       ),
       title: "Рентгенография",
-      description: "Традиционные двухмерные снимки для диагностики различных патологий",
-      features: ["Быстрое выполнение", "Высокая точность", "Доступная цена"]
+      description: "Классические двухмерные снимки для диагностики стоматологических проблем",
+      features: ["Быстрое выполнение", "Высокое качество", "Мгновенный результат"]
     },
     {
       icon: (
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-          <circle cx="24" cy="24" r="20" stroke="currentColor" strokeWidth="2" fill="none"/>
-          <path d="M 12 24 L 20 32 L 36 16" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-          <circle cx="24" cy="24" r="8" fill="none" stroke="currentColor" strokeWidth="2"/>
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+          <rect x="8" y="8" width="48" height="48" rx="8" fill="rgba(20, 72, 140, 0.06)" stroke="#14488C" strokeWidth="2"/>
+          <path d="M20 20L28 28L44 12" stroke="#14488C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M16 16L48 16M16 32L48 32M16 48L48 48" stroke="#14488C" strokeWidth="2" strokeLinecap="round"/>
         </svg>
       ),
       title: "Компьютерная томография",
-      description: "Современные 3D исследования для детальной диагностики",
-      features: ["3D изображения", "Высокое разрешение", "Безопасность"]
+      description: "Современные трехмерные исследования для точной диагностики",
+      features: ["3D моделирование", "Высокая точность", "Детальная визуализация"]
     },
     {
       icon: (
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-          <path d="M 24 8 L 32 16 L 24 24 L 16 16 Z" stroke="currentColor" strokeWidth="2" fill="none"/>
-          <path d="M 24 24 L 32 32 L 24 40 L 16 32 Z" stroke="currentColor" strokeWidth="2" fill="none"/>
-          <line x1="24" y1="8" x2="24" y2="40" stroke="currentColor" strokeWidth="2"/>
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+          <rect x="8" y="8" width="48" height="48" rx="8" fill="rgba(20, 72, 140, 0.06)" stroke="#14488C" strokeWidth="2"/>
+          <path d="M20 20L28 28L44 12" stroke="#14488C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+          <circle cx="32" cy="32" r="12" fill="none" stroke="#14488C" strokeWidth="2"/>
+          <path d="M32 20L32 44M20 32L44 32" stroke="#14488C" strokeWidth="2" strokeLinecap="round"/>
         </svg>
       ),
       title: "Консультации специалистов",
-      description: "Профессиональные консультации опытных врачей-рентгенологов",
-      features: ["Опытные врачи", "Подробные объяснения", "Рекомендации"]
+      description: "Профессиональные консультации по результатам исследований",
+      features: ["Опытные врачи", "Подробные объяснения", "Рекомендации по лечению"]
+    },
+    {
+      icon: (
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+          <rect x="8" y="8" width="48" height="48" rx="8" fill="rgba(20, 72, 140, 0.06)" stroke="#14488C" strokeWidth="2"/>
+          <path d="M20 20L28 28L44 12" stroke="#14488C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M24 24L40 24M24 32L40 32M24 40L40 40" stroke="#14488C" strokeWidth="2" strokeLinecap="round"/>
+        </svg>
+      ),
+      title: "Подготовка к исследованиям",
+      description: "Подробные инструкции по подготовке к диагностическим процедурам",
+      features: ["Четкие инструкции", "Поддержка 24/7", "Минимальные ограничения"]
     }
   ];
 
   return (
     <section className="services-section">
-      <div className="container">
+      <div className="services-container">
         <div className="services-header">
-          <h2 className="services-title">Услуги</h2>
+          <h2 className="services-title">Наши услуги</h2>
           <div className="title-line"></div>
           <p className="services-subtitle">
-            Наши услуги
+            Полный спектр диагностических услуг
           </p>
           <p className="services-description">
-            Предоставляем полный спектр услуг в области рентгенодиагностики 
-            для точной постановки диагноза и эффективного лечения.
+            Предоставляем современные методы диагностики для точного выявления 
+            проблем челюстно-лицевой области с использованием передового оборудования.
           </p>
         </div>
         
@@ -67,13 +80,19 @@ const ServicesSection = () => {
               <ul className="service-features">
                 {service.features.map((feature, featureIndex) => (
                   <li key={featureIndex} className="service-feature">
-                    <svg className="feature-check" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M 3 8 L 7 12 L 13 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <svg className="feature-check" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <path d="M16 6L8 14L4 10" stroke="#14488C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                     {feature}
                   </li>
                 ))}
               </ul>
+              <button className="service-button">
+                <span>Подробнее</span>
+                <svg className="button-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M8 4L16 12L8 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
             </div>
           ))}
         </div>
