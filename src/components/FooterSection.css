@@ -1,178 +1,208 @@
-/* Footer Section Styles - Pixel Perfect from Figma */
+/* Footer Section */
 .footer-section {
-  background-color: var(--color-dark-900);
-  color: var(--color-white);
-  padding: var(--spacing-5xl) 0 var(--spacing-2xl);
+  background: var(--color-white);
+  border-top: 1px solid var(--color-stroke-light);
+  padding: 80px 0 40px;
 }
 
+.footer-container {
+  max-width: 1376px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* Footer Content */
 .footer-content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--spacing-3xl);
-  margin-bottom: var(--spacing-3xl);
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 64px;
+  margin-bottom: 64px;
 }
 
-.footer-section {
+/* Logo Section */
+.footer-logo-section {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: 24px;
 }
 
-.footer-title {
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo-symbol {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-text span {
   font-family: var(--font-family);
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-white);
-  line-height: 1.4;
-  margin: 0;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.25em;
+  color: var(--color-primary-700);
 }
 
 .footer-description {
   font-family: var(--font-family);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-normal);
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 1.571;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5em;
+  color: var(--color-grey-600);
+  margin: 0;
+  max-width: 320px;
+}
+
+/* Footer Sections */
+.footer-services,
+.footer-contact,
+.footer-addresses {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.footer-title {
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.25em;
+  color: var(--color-black);
   margin: 0;
 }
 
-.social-links {
+/* Footer Navigation */
+.footer-nav {
   display: flex;
-  gap: var(--spacing-md);
-}
-
-.social-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-md);
-  color: rgba(255, 255, 255, 0.7);
-  transition: all 0.3s ease;
-}
-
-.social-link:hover {
-  background-color: var(--color-primary-800);
-  color: var(--color-white);
-}
-
-.social-icon {
-  width: 20px;
-  height: 20px;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .footer-link {
   font-family: var(--font-family);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-normal);
-  color: rgba(255, 255, 255, 0.7);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5em;
+  color: var(--color-grey-600);
   text-decoration: none;
-  line-height: 1.571;
   transition: color 0.3s ease;
 }
 
 .footer-link:hover {
-  color: var(--color-white);
+  color: var(--color-primary-700);
 }
 
-.contact-info {
+/* Contact Info */
+.contact-info,
+.address-info {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: 16px;
 }
 
-.contact-item {
+.contact-item,
+.address-item {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  font-family: var(--font-family);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-normal);
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 1.571;
+  gap: 12px;
 }
 
-.contact-icon {
+.contact-icon,
+.address-icon {
   width: 20px;
   height: 20px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-grey-500);
   flex-shrink: 0;
 }
 
+.contact-item span,
+.address-item span {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5em;
+  color: var(--color-grey-600);
+}
+
+/* Footer Bottom */
 .footer-bottom {
+  border-top: 1px solid var(--color-stroke-light);
+  padding-top: 32px;
+}
+
+.footer-bottom-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: var(--spacing-2xl);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .copyright {
   font-family: var(--font-family);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-normal);
-  color: rgba(255, 255, 255, 0.5);
-  line-height: 1.571;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5em;
+  color: var(--color-grey-500);
 }
 
-.footer-links {
+.footer-bottom-nav {
   display: flex;
-  gap: var(--spacing-xl);
+  gap: 32px;
 }
 
 .footer-bottom-link {
   font-family: var(--font-family);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-normal);
-  color: rgba(255, 255, 255, 0.5);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5em;
+  color: var(--color-grey-500);
   text-decoration: none;
-  line-height: 1.571;
   transition: color 0.3s ease;
 }
 
 .footer-bottom-link:hover {
-  color: var(--color-white);
+  color: var(--color-primary-700);
 }
 
 /* Responsive Design */
 @media (max-width: 1200px) {
   .footer-content {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--spacing-2xl);
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+  
+  .footer-logo-section {
+    grid-column: 1 / -1;
   }
 }
 
 @media (max-width: 768px) {
   .footer-section {
-    padding: var(--spacing-3xl) 0 var(--spacing-xl);
+    padding: 60px 0 32px;
+  }
+  
+  .footer-container {
+    padding: 0 24px;
   }
   
   .footer-content {
     grid-template-columns: 1fr;
-    gap: var(--spacing-xl);
-    margin-bottom: var(--spacing-2xl);
+    gap: 40px;
   }
   
-  .footer-section {
-    gap: var(--spacing-md);
-  }
-  
-  .footer-title {
-    font-size: var(--font-size-lg);
-  }
-  
-  .footer-bottom {
+  .footer-bottom-content {
     flex-direction: column;
-    gap: var(--spacing-lg);
+    gap: 24px;
     text-align: center;
   }
   
-  .footer-links {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--spacing-lg);
+  .footer-bottom-nav {
+    flex-direction: column;
+    gap: 16px;
   }
 }
 

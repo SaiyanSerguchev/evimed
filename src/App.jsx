@@ -12,8 +12,8 @@ function App() {
     <div className="App">
       <HeaderSection />
       <HeroBanner />
-      <ServicesSection />
       <AdvantagesSection />
+      <ServicesSection />
       <InstructionsSection />
       <ContactSection />
       <FooterSection />
