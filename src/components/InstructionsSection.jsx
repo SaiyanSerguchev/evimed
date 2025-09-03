@@ -6,45 +6,53 @@ const InstructionsSection = () => {
     {
       step: 1,
       title: "Запись на прием",
-      description: "Позвоните нам или запишитесь онлайн на удобное для вас время",
+      description: "Позвоните нам или запишитесь онлайн на удобное для вас время. Мы подберем оптимальное время для исследования.",
       icon: (
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-          <path d="M 8 12 L 32 12 L 32 28 L 8 28 Z" stroke="currentColor" strokeWidth="2" fill="none"/>
-          <line x1="8" y1="16" x2="32" y2="16" stroke="currentColor" strokeWidth="2"/>
-          <circle cx="20" cy="22" r="3" fill="currentColor"/>
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+          <rect x="8" y="8" width="48" height="48" rx="8" fill="rgba(20, 72, 140, 0.06)" stroke="#14488C" strokeWidth="2"/>
+          <path d="M20 20L28 28L44 12" stroke="#14488C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+          <rect x="16" y="16" width="32" height="24" rx="4" fill="none" stroke="#14488C" strokeWidth="2"/>
+          <line x1="16" y1="24" x2="48" y2="24" stroke="#14488C" strokeWidth="2"/>
+          <circle cx="32" cy="32" r="4" fill="#14488C"/>
         </svg>
       )
     },
     {
       step: 2,
       title: "Подготовка к исследованию",
-      description: "Получите инструкции по подготовке к исследованию",
+      description: "Получите подробные инструкции по подготовке к исследованию. Минимальные ограничения для вашего комфорта.",
       icon: (
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-          <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="2" fill="none"/>
-          <path d="M 20 12 L 20 28 M 12 20 L 28 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+          <rect x="8" y="8" width="48" height="48" rx="8" fill="rgba(20, 72, 140, 0.06)" stroke="#14488C" strokeWidth="2"/>
+          <path d="M20 20L28 28L44 12" stroke="#14488C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+          <circle cx="32" cy="32" r="20" fill="none" stroke="#14488C" strokeWidth="2"/>
+          <path d="M32 16L32 48M16 32L48 32" stroke="#14488C" strokeWidth="2" strokeLinecap="round"/>
         </svg>
       )
     },
     {
       step: 3,
       title: "Проведение исследования",
-      description: "Проходите исследование в комфортной обстановке",
+      description: "Проходите исследование в комфортной обстановке. Наши специалисты обеспечат максимальный комфорт.",
       icon: (
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-          <rect x="8" y="8" width="24" height="24" rx="4" stroke="currentColor" strokeWidth="2" fill="none"/>
-          <circle cx="20" cy="20" r="6" fill="currentColor"/>
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+          <rect x="8" y="8" width="48" height="48" rx="8" fill="rgba(20, 72, 140, 0.06)" stroke="#14488C" strokeWidth="2"/>
+          <path d="M20 20L28 28L44 12" stroke="#14488C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+          <rect x="16" y="16" width="32" height="32" rx="6" fill="none" stroke="#14488C" strokeWidth="2"/>
+          <circle cx="32" cy="32" r="8" fill="#14488C"/>
         </svg>
       )
     },
     {
       step: 4,
       title: "Получение результатов",
-      description: "Получите результаты исследования сразу после процедуры",
+      description: "Получите результаты исследования сразу после процедуры. Быстро, качественно и без ожидания.",
       icon: (
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-          <path d="M 8 16 L 20 28 L 32 16" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M 8 12 L 20 24 L 32 12" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+          <rect x="8" y="8" width="48" height="48" rx="8" fill="rgba(20, 72, 140, 0.06)" stroke="#14488C" strokeWidth="2"/>
+          <path d="M20 20L28 28L44 12" stroke="#14488C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M16 24L32 40L48 24" stroke="#14488C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M16 20L32 36L48 20" stroke="#14488C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       )
     }
@@ -52,7 +60,7 @@ const InstructionsSection = () => {
 
   return (
     <section className="instructions-section">
-      <div className="container">
+      <div className="instructions-container">
         <div className="instructions-header">
           <h2 className="instructions-title">Как это работает</h2>
           <div className="title-line"></div>
@@ -82,8 +90,3 @@ const InstructionsSection = () => {
 };
 
 export default InstructionsSection;
-
-
-
-
-
