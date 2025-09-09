@@ -30,7 +30,7 @@
 
 .services-toprow {
   display: flex;
-  gap: 32px;
+  gap: 16px;
   align-items: center;
   flex-wrap: wrap;
 }
@@ -42,6 +42,15 @@
   font-size: 28px;
   line-height: 36px;
   margin: 0;
+  flex-shrink: 0;
+}
+
+.services-title-line {
+  height: 4px;
+  background: var(--color-grey-100);
+  border-radius: 2px;
+  flex: 1;
+  margin: 0 16px;
 }
 
 .choose-service-btn {
@@ -55,7 +64,9 @@
   border-radius: 16px;
   color: rgba(20, 72, 140, 0.92);
   font: 500 13px/20px var(--font-family, 'Montserrat');
+  flex-shrink: 0;
 }
+
 
 .choose-service-btn:hover {
   filter: brightness(0.98);
