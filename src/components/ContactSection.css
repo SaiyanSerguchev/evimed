@@ -1,7 +1,9 @@
 /* Contact Section */
 .contact-section {
   background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
-  padding: 120px 0;
+  height: 720px; /* total height including padding */
+  box-sizing: border-box; /* include padding in height */
+  padding: 32px 0; /* adjust vertical padding */
   border-bottom: 1px solid var(--color-stroke-light);
 }
 
@@ -13,60 +15,179 @@
 
 /* Header */
 .contact-header {
-  text-align: center;
-  margin-bottom: 80px;
+  text-align: left;
+  margin-bottom: 24px; /* compact header to fit 720px total */
+}
+
+.contact-kicker {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1.5em;
+  letter-spacing: 16%;
+  text-transform: uppercase;
+  color: var(--color-primary-700);
+  margin: 0 0 12px 0;
 }
 
 .contact-title {
   font-family: var(--font-family);
-  font-weight: 600;
-  font-size: 48px;
-  line-height: 1.25em;
+  font-weight: 500;
+  font-size: 28px;
+  line-height: 1.29em;
   color: var(--color-black);
-  margin: 0 0 24px 0;
+  margin: 0 0 16px 0;
 }
 
 .title-line {
-  width: 80px;
-  height: 4px;
-  background: var(--color-primary-700);
-  margin: 0 auto 32px auto;
-  border-radius: 2px;
-}
-
-.contact-subtitle {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 24px;
-  line-height: 1.33em;
-  color: var(--color-primary-700);
-  margin: 0 0 24px 0;
+  width: 520px;
+  height: 1px;
+  background: var(--color-stroke-light);
+  margin: 0 0 16px 0;
 }
 
 .contact-description {
   font-family: var(--font-family);
   font-weight: 400;
-  font-size: 18px;
-  line-height: 1.56em;
+  font-size: 14px;
+  line-height: 1.57em;
+  letter-spacing: 0.15%;
   color: var(--color-grey-600);
   margin: 0;
-  max-width: 600px;
-  margin: 0 auto;
+  max-width: 656px;
 }
 
 /* Content */
 .contact-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: start;
+  gap: 48px;
+  align-items: stretch; /* make columns equal height */
+  height: calc(720px - 64px); /* section height minus vertical padding */
+  overflow: hidden; /* clip anything that exceeds height */
+}
+
+/* Map on the right instead of form */
+.contact-map {
+  height: 100%;
+  width: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.contact-map img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* fill the right column */
+  display: block;
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.contact-map img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* fill the right column */
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .contact-section { height: auto; padding: 48px 0; }
+  .contact-content {
+    grid-template-columns: 1fr;
+    height: auto; /* let it grow on mobile */
+    overflow: visible;
+    gap: 24px;
+  }
 }
 
 /* Contact Info */
 .contact-info {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 24px;
+}
+
+/* Simple text lines */
+.contact-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contact-line {
+  font-family: var(--font-family);
+  font-size: 16px;
+  line-height: 1.5em;
+  color: var(--color-black);
+}
+
+.contact-hours {
+  color: var(--color-grey-600);
+}
+
+/* Branches */
+.contact-branches {
+  margin-top: 8px;
+  max-height: calc(100% - 120px); /* reserve space for simple lines above */
+  overflow: hidden; /* clip overflowing cards at the bottom */
+}
+
+.branches-title {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.4em;
+  color: var(--color-black);
+  margin: 12px 0;
+}
+
+.branches-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr; /* one card per row */
+  gap: 12px;
+}
+
+.branch-item {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  padding: 20px;
+  background: var(--color-white);
+  border: 1px solid var(--color-stroke-light);
+  border-radius: 16px;
+  box-shadow: 0px 4px 16px rgba(13, 34, 61, 0.04);
+  transition: all 0.3s ease;
+}
+
+.branch-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 8px 24px rgba(13, 34, 61, 0.08);
+  border-color: var(--color-primary-200);
+}
+
+.branch-name {
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.4em;
+  color: var(--color-black);
+}
+
+.branch-address {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.57em;
+  color: var(--color-grey-600);
+}
+
+@media (max-width: 768px) {
+  .title-line { width: 100%; }
+  .branches-list { grid-template-columns: 1fr; }
 }
 
 .contact-item {

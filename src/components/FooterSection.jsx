@@ -20,21 +20,16 @@ const FooterSection = () => {
                 <span>Эвимед</span>
               </div>
             </div>
-            <p className="footer-description">
-              Федеральная сеть независимых центров рентгенодиагностики. 
-              Предоставляем услуги в области рентгенодиагностики для стоматологов, 
-              отоларингологов и челюстно-лицевых хирургов.
-            </p>
+            <p className="footer-description">Независимые центры рентгенодиагностики</p>
           </div>
 
           {/* Services Section */}
           <div className="footer-services">
-            <h3 className="footer-title">Услуги</h3>
+            <h3 className="footer-title">Навигация</h3>
             <nav className="footer-nav">
-              <a href="#" className="footer-link">Рентгенография</a>
-              <a href="#" className="footer-link">Компьютерная томография</a>
-              <a href="#" className="footer-link">Консультации специалистов</a>
-              <a href="#" className="footer-link">Подготовка к исследованиям</a>
+              <a href="#" className="footer-link">Почему мы?</a>
+              <a href="#" className="footer-link">Услуги</a>
+              <a href="#" className="footer-link">Наши адреса</a>
             </nav>
           </div>
 
@@ -44,45 +39,17 @@ const FooterSection = () => {
             <div className="contact-info">
               <div className="contact-item">
                 <svg className="contact-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" stroke="currentColor" strokeWidth="2" fill="none"/>
-                  <path d="M10 4v6l4 2" stroke="currentColor" strokeWidth="2" fill="none"/>
-                </svg>
-                <span>Пн-Пт: 8:00-20:00</span>
-              </div>
-              <div className="contact-item">
-                <svg className="contact-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" stroke="currentColor" strokeWidth="2" fill="none"/>
-                  <path d="M10 4v6l4 2" stroke="currentColor" strokeWidth="2" fill="none"/>
-                </svg>
-                <span>Сб-Вс: 9:00-18:00</span>
-              </div>
-              <div className="contact-item">
-                <svg className="contact-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="2"/>
                   <path d="M10 4v6l4 2" stroke="currentColor" strokeWidth="2" fill="none"/>
                 </svg>
                 <span>+7 (495) 492-43-40</span>
               </div>
-            </div>
-          </div>
-
-          {/* Addresses Section */}
-          <div className="footer-addresses">
-            <h3 className="footer-title">Адреса</h3>
-            <div className="address-info">
-              <div className="address-item">
-                <svg className="address-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" stroke="currentColor" strokeWidth="2" fill="none"/>
-                  <path d="M10 4v6l4 2" stroke="currentColor" strokeWidth="2" fill="none"/>
+              <div className="contact-item">
+                <svg className="contact-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" strokeWidth="2"/>
+                  <path d="M3 6l7 5 7-5" stroke="currentColor" strokeWidth="2" fill="none"/>
                 </svg>
-                <span>Якутск, пр. Ленина 1</span>
-              </div>
-              <div className="address-item">
-                <svg className="address-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" stroke="currentColor" strokeWidth="2" fill="none"/>
-                  <path d="M10 4v6l4 2" stroke="currentColor" strokeWidth="2" fill="none"/>
-                </svg>
-                <span>Якутск, пр. Кирова 25</span>
+                <span>info@axiomaykt.ru</span>
               </div>
             </div>
           </div>
@@ -92,12 +59,10 @@ const FooterSection = () => {
         <div className="footer-bottom">
           <div className="footer-bottom-content">
             <div className="copyright">
-              © 2024 Эвимед. Все права защищены.
+              © 2025, Независимые центры рентгенодиагностики «Evimed»
             </div>
             <nav className="footer-bottom-nav">
               <a href="#" className="footer-bottom-link">Политика конфиденциальности</a>
-              <a href="#" className="footer-bottom-link">Условия использования</a>
-              <a href="#" className="footer-bottom-link">Карта сайта</a>
             </nav>
           </div>
         </div>
