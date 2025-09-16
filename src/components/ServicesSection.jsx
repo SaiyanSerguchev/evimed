@@ -130,6 +130,7 @@ const ServicesSection = () => {
             <h2 className="services-main-title">
               Глубокое обследование и персональное лечение
             </h2>
+            <div className="services-title-line"></div>
             <button className="choose-service-btn" type="button">
               <span>Выбрать услугу</span>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none">

@@ -1,6 +1,10 @@
 /* Header Section Styles - Pixel Perfect from Figma */
 .header-section {
+  background-color: transparent;
   padding: 24px 0;
+  border-bottom: none;
+  box-shadow: none;
+  
 }
 
 .header-content {
