@@ -126,3 +126,9 @@ section {
   margin: 0;
   padding: 0;
 }
+
+.dark-wrapper {
+  background: linear-gradient(180deg, #0F1A25 0%, #121B26 100%);
+  margin: 0 auto;
+  width: 1440px;
+}

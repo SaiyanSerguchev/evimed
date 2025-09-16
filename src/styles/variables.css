@@ -24,8 +24,14 @@
   --color-grey-900: #0f172a;
   --color-grey-950: #020617;
   
-  --color-greylight-700: #C8DEFA;
-  --color-greylight-50: rgba(200, 222, 250, 0.12); 
+  --color-greylight-700: #C8DEFA;                    /* Light blue from Figma */
+  --color-greylight-600: rgba(200, 222, 250, 0.92);
+  --color-greylight-500: rgba(200, 222, 250, 0.8);
+  --color-greylight-400: rgba(200, 222, 250, 0.6);
+  --color-greylight-300: rgba(200, 222, 250, 0.44);
+  --color-greylight-200: rgba(200, 222, 250, 0.24);
+  --color-greylight-100: rgba(200, 222, 250, 0.12);
+  --color-greylight-50: rgba(200, 222, 250, 0.06); 
 
   --color-white: #ffffff;
   --color-black: #000000;

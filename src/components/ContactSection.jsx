@@ -20,10 +20,7 @@ const ContactSection = () => {
   // Simple text contacts
   const contactText = {
     phone,
-    email,
-    address: branches?.[0]?.address || 'г. Якутск, пр. Ленина 1',
-    addressTitle: branches?.[0]?.title || 'Головной центр рентгено-диагностики',
-    hours: 'Пн-Пт: 8:00-20:00, Сб-Вс: 9:00-18:00',
+    email
   };
 
   return (
@@ -31,21 +28,20 @@ const ContactSection = () => {
       <div className="contact-container">
         <div className="contact-header">
           <div className="contact-kicker">{kicker}</div>
-          <h2 className="contact-title">{title}</h2>
-          <div className="title-line"></div>
+          <h2 className="contact-title">{title}          
+            <div className="title-line"></div>
+          </h2>
           <p className="contact-description">{description}</p>
         </div>
         
         <div className="contact-content">
           <div className="contact-info">
-            <div className="contact-lines">
-              <div className="contact-line"><strong>Телефон:</strong> {contactText.phone}</div>
-              <div className="contact-line"><strong>Email:</strong> {contactText.email}</div>
-              <div className="contact-line"><strong>Адрес:</strong> {contactText.address}</div>
-              <div className="contact-line contact-hours">{contactText.hours}</div>
+            <div className="contact-details">
+              <div className="contact-lines">
+                <div className="contact-line">{contactText.phone}</div>
+                <div className="contact-line">{contactText.email}</div>
+              </div>
             </div>
-
-            {branches && branches.length > 0 && (
               <div className="contact-branches">
                 <h3 className="branches-title">Адреса</h3>
                 <ul className="branches-list">
@@ -57,13 +53,11 @@ const ContactSection = () => {
                   ))}
                 </ul>
               </div>
-            )}
-          </div>
-          
-          <div className="contact-map" role="img" aria-label="Карта филиалов">
-            <img src={contactsMap} alt="Карта филиалов" />
           </div>
         </div>
+      </div>
+      <div className="contact-map" role="img" aria-label="Карта филиалов">
+        <img src={contactsMap} alt="Карта филиалов" />
       </div>
     </section>
   );

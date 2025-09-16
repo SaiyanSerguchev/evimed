@@ -2,7 +2,11 @@
 .services-section {
   background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
   padding: 120px 0;
-  border-bottom: 1px solid var(--color-stroke-light);
+  border-bottom-left-radius: 65px;
+  border-bottom-right-radius: 65px;
+  overflow: hidden;
+  width:1440px;
+  margin: 0 auto;
 }
 
 .services-container {
@@ -151,8 +155,8 @@
   justify-content: space-between; /* keep footer at the bottom */
   gap: 16px;
   background: linear-gradient(180deg, #F5F7FA 0%, rgba(245, 247, 250, 0) 100%), #EBEDF2;
-  border-radius: 32px; /* large rounded corners like in the mock */
-  padding: 28px 32px 24px 32px; /* density like on the screenshot */
+  border-radius: 64px; /* large rounded corners like in the mock */
+  padding: 40px 48px; /* density like on the screenshot */
   min-height: 248px; /* target card height */
   box-shadow:
     inset 0px -4px 8px rgba(13, 34, 61, 0.04),
@@ -302,7 +306,7 @@
 .services-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 48px;
+  gap: 32px;
 }
 
 /* Responsive */

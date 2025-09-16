@@ -4,6 +4,7 @@ import HeroBanner from './components/HeroBanner';
 import ServicesSection from './components/ServicesSection';
 import AdvantagesSection from './components/AdvantagesSection';
 import InstructionsSection from './components/InstructionsSection';
+import SectionDivider from './components/SectionDivider';
 import ContactSection from './components/ContactSection';
 import FooterSection from './components/FooterSection';
 
@@ -13,9 +14,13 @@ function App() {
       <HeaderSection />
       <HeroBanner />
       <AdvantagesSection />
-      <ServicesSection />
-      <InstructionsSection />
-      <ContactSection />
+      <div className="dark-wrapper">
+        <ServicesSection />
+        <SectionDivider />
+        <InstructionsSection />
+        <SectionDivider />
+        <ContactSection />
+      </div>
       <FooterSection />
     </div>
   );

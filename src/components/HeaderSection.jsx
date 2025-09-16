@@ -72,7 +72,6 @@ const HeaderSection = () => {
               >
                 +7 (495) 492-43-40
               </a>
-              <div className="phone-underline" aria-hidden="true"></div>
             </div>
             
             {/* Consultation Button */}
