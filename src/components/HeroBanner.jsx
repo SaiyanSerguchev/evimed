@@ -1,11 +1,21 @@
 import React from 'react';
 import './HeroBanner.css';
+import heroEquipment from '../assets/images/hero/hero-equipment.png';
 
 const HeroBanner = () => {
   return (
     <section className="hero-banner">
       {/* Background Image */}
       <div className="hero-background"></div>
+      
+      {/* Hero Image */}
+      <div className="hero-image">
+        <img 
+          src={heroEquipment} 
+          alt="Ортопантомограф OP300" 
+          className="equipment-image"
+        />
+      </div>
       
       {/* Hero Content */}
       <div className="hero-content">

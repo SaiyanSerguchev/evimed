@@ -7,8 +7,8 @@
 }
 
 .advantages-container {
-  max-width: 1376px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
   padding: 0 32px;
 }
 
@@ -68,8 +68,8 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 32px;
-  max-width: 1376px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
 }
 
 /* Cards */

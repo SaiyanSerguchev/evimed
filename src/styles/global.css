@@ -24,9 +24,9 @@ body {
 
 /* Container */
 .container {
-  max-width: 1350px;
-  margin: 0 auto;
-  padding: 0 var(--spacing-xl);
+  width: 100%;
+  margin: 0;
+  padding: 0 32px;
 }
 
 /* Utility Classes */
@@ -129,6 +129,6 @@ section {
 
 .dark-wrapper {
   background: linear-gradient(180deg, #0F1A25 0%, #121B26 100%);
-  margin: 0 auto;
-  width: 1440px;
+  margin: 0;
+  width: 100%;
 }

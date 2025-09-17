@@ -5,13 +5,13 @@
   border-bottom-left-radius: 65px;
   border-bottom-right-radius: 65px;
   overflow: hidden;
-  width:1440px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
 }
 
 .services-container {
-  max-width: 1376px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
   padding: 0 32px;
 }
 

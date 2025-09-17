@@ -12,7 +12,8 @@
   align-items: center;
   justify-content: space-between;
   height: 36px;
-  margin: 0 auto;
+  margin: 0;
+  padding: 0;
 }
 
 /* Left Section */
@@ -174,8 +175,7 @@
 /* Responsive Design */
 @media (max-width: 1200px) {
   .header-content {
-    max-width: 100%;
-    padding: 0 var(--spacing-xl);
+    padding: 0 24px;
   }
   
   .header-left {

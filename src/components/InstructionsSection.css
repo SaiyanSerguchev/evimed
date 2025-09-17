@@ -1,16 +1,16 @@
 /* Instructions Section — Dark Themed, closer to mock */
 .instr-section {
-  max-width: 1440px;
+  width: 100%;
   padding: 112px 0 96px 0;
   position: relative;
   overflow: hidden;
-  margin: 0 auto;
+  margin: 0;
 }
 
 .instr-container {
   position: relative;
-  max-width: 1376px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
   padding: 0 32px;
   display: grid;
   grid-template-columns: minmax(0, 900px) 1fr; /* left text width */
