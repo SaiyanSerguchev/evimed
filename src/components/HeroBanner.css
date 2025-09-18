@@ -2,9 +2,11 @@
 .hero-banner {
   position: relative;
   width: calc(100% - 64px);
-  height: 680px;
-  margin: -24px 32px 75px 32px; /* Заходим на область хедера, отступы по бокам */
-  padding: 0 117px;
+  height: 900px;
+  margin-bottom: 72px; /* Заходим на область хедера, отступы по бокам */
+  margin-left:32px;
+  margin-right:32px;
+  padding: 117px;
   overflow: visible;
   z-index: 1;
 }
@@ -121,9 +123,9 @@
 
 .equipment-image {
   width: 100%;
-  height: 100%;
+  height: 120%;
   object-fit: cover;
-  object-position: center right;
+  object-position: center;
   filter: drop-shadow(0px 8px 16px rgba(20, 72, 140, 0.15));
   transition: transform 0.3s ease;
   mask-image: url("../assets/images/hero/MaskHeroBanner.png");

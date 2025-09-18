@@ -168,7 +168,8 @@
   background: linear-gradient(180deg, #F5F7FA 0%, rgba(245, 247, 250, 0) 100%), #EBEDF2;
   border-radius: 64px; /* large rounded corners like in the mock */
   padding: 40px 48px; /* density like on the screenshot */
-  min-height: 248px; /* target card height */
+  max-height: 302px; /* target card height */
+  max-width: 437px;
   box-shadow:
     inset 0px -4px 8px rgba(13, 34, 61, 0.04),
     inset 0px 6px 4px rgba(255, 255, 255, 0.32),
@@ -176,6 +177,7 @@
     0px 1px 1px rgba(13, 34, 61, 0.12),
     0px 4px 8px rgba(13, 34, 61, 0.06);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
 }
 
 /* Hover state — like in Advantages */
@@ -316,7 +318,7 @@
 /* Generic grid (legacy fallback) */
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(436px, 1fr));
   gap: 32px;
 }
 
