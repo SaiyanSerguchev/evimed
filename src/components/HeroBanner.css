@@ -17,7 +17,7 @@
   width: 100%;
   height: 100%;
   margin: 0;
-  padding: 96px 32px;
+  padding: 96px 117px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -71,7 +71,7 @@
 }
 
 .hero-button:hover {
-  background: var(--color-primary-800);
+  background: var(--color-primary-500);
   box-shadow: 0px 12px 24px rgba(20, 72, 140, 0.3);
 }
 
@@ -103,6 +103,20 @@
   z-index: 1;
 }
 
+/* Hero Slide */
+.hero-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.hero-slide.active {
+  opacity: 1;
+}
 
 /* Hero Image Section - Full Banner */
 .hero-image {
@@ -110,32 +124,25 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 974px;
   z-index: 2;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  mask-image: url("../assets/images/hero/MaskHeroBanner.png");
+  mask-image: url("../assets/images/hero/maskbanner.svg");
   mask-position: center;
   mask-repeat: no-repeat;
   mask-size: cover;
+  margin-top: -50px;
 }
 
 .equipment-image {
   width: 100%;
-  height: 120%;
+  height: 100%;
   object-fit: cover;
   object-position: center;
   filter: drop-shadow(0px 8px 16px rgba(20, 72, 140, 0.15));
   transition: transform 0.3s ease;
-  mask-image: url("../assets/images/hero/MaskHeroBanner.png");
-  mask-position: center;
-  mask-repeat: no-repeat;
-  mask-size: cover;
-}
-
-.equipment-image:hover {
-  transform: scale(1.02);
 }
 
 /* Slider Navigation */
@@ -203,15 +210,15 @@
 .slider-dot {
   width: 8px;
   height: 8px;
-  border-radius: 3px;
-  background-color: var(--color-grey-400);
+  border-radius: 50%;
+  background: var(--color-grey-400);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .slider-dot.active {
-  width: 8x;
-  background-color: var(--color-primary-700);
+  background: var(--color-primary-700);
+  transform: scale(1.2);
 }
 
 .slider-dot:hover {

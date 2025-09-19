@@ -1,7 +1,7 @@
 /* Header Section Styles - Pixel Perfect from Figma */
 .header-section {
   background-color: transparent;
-  padding: 24px 0;
+  padding: 32px 0;
   border-bottom: none;
   box-shadow: none;
   
@@ -152,7 +152,6 @@
   background-color: var(--color-primary-100);
   border-color: var(--color-primary-300);
   color: var(--color-primary-800);
-  transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
