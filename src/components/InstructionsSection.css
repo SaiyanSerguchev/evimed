@@ -54,7 +54,7 @@
 
 .instr-title-divider {
   height: 1px;
-  width: 620px; /* fixed length like in mock */
+  width: 100%; /* fixed length like in mock */
   background: rgba(255,255,255,0.16);
 }
 
@@ -63,12 +63,12 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 6px 20px;
+  padding: 8px 20px;
   background: rgba(200, 222, 250, 0.10);
   border: 1px solid var(--color-primary-400);
   border-radius: 18px;
   color: #C8DEFA;
-  font: 500 15px/20px var(--font-family, 'Montserrat');
+  font: 500 18px/22px var(--font-family, 'Montserrat');
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
