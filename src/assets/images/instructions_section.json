@@ -2046,7 +2046,7 @@
                                     "paragraphIndent": 0,
                                     "paragraphSpacing": 12,
                                     "autoRename": true,
-                                    "fontSize": 12,
+                                    "fontSize": 18,
                                     "fontName": {
                                         "family": "Montserrat",
                                         "style": "Bold"
@@ -3044,7 +3044,7 @@
                                             "paragraphIndent": 0,
                                             "paragraphSpacing": 0,
                                             "autoRename": true,
-                                            "fontSize": 28,
+                                            "fontSize": 30,
                                             "fontName": {
                                                 "family": "Montserrat",
                                                 "style": "Medium"
@@ -4644,7 +4644,7 @@
                                                     "paragraphIndent": 0,
                                                     "paragraphSpacing": 0,
                                                     "autoRename": true,
-                                                    "fontSize": 13,
+                                                    "fontSize": 15,
                                                     "fontName": {
                                                         "family": "Montserrat",
                                                         "style": "Medium"
@@ -7305,7 +7305,7 @@
                                             "paragraphIndent": 0,
                                             "paragraphSpacing": 0,
                                             "autoRename": true,
-                                            "fontSize": 28,
+                                            "fontSize": 30,
                                             "fontName": {
                                                 "family": "Montserrat",
                                                 "style": "Medium"
@@ -13723,7 +13723,7 @@
                             "paragraphIndent": 0,
                             "paragraphSpacing": 8,
                             "autoRename": true,
-                            "fontSize": 14,
+                            "fontSize": 18,
                             "fontName": {
                                 "family": "Montserrat",
                                 "style": "Regular"
@@ -16499,7 +16499,7 @@
                                     "paragraphIndent": 0,
                                     "paragraphSpacing": 8,
                                     "autoRename": true,
-                                    "fontSize": 16,
+                                    "fontSize": 18,
                                     "fontName": {
                                         "family": "Montserrat",
                                         "style": "Regular"
@@ -20860,7 +20860,7 @@
                                     "paragraphIndent": 0,
                                     "paragraphSpacing": 8,
                                     "autoRename": true,
-                                    "fontSize": 16,
+                                    "fontSize": 18,
                                     "fontName": {
                                         "family": "Montserrat",
                                         "style": "Regular"
@@ -25540,7 +25540,7 @@
                                     "paragraphIndent": 0,
                                     "paragraphSpacing": 8,
                                     "autoRename": true,
-                                    "fontSize": 16,
+                                    "fontSize": 18,
                                     "fontName": {
                                         "family": "Montserrat",
                                         "style": "Regular"
@@ -26858,7 +26858,7 @@
                             "paragraphIndent": 0,
                             "paragraphSpacing": 0,
                             "autoRename": true,
-                            "fontSize": 16,
+                            "fontSize": 18,
                             "fontName": {
                                 "family": "Montserrat",
                                 "style": "Medium"

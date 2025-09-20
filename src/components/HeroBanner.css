@@ -36,7 +36,7 @@
 .hero-title {
   font-family: var(--font-family);
   font-weight: 500;
-  font-size: 32px;
+  font-size: 34px;
   line-height: 1.25em;
   color: var(--color-black);
   opacity: 0.92;
@@ -46,7 +46,7 @@
 .hero-description {
   font-family: var(--font-family);
   font-weight: 400;
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1.44em;
   letter-spacing: 0.15%;
   color: var(--color-grey-600);
@@ -78,7 +78,7 @@
 .hero-button-text {
   font-family: var(--font-family);
   font-weight: 500;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.5em;
   letter-spacing: -0.94%;
   color: var(--color-greylight-700);

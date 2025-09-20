@@ -62,7 +62,7 @@
 .logo-text span {
   font-family: var(--font-family);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.25em;
   color: var(--color-primary-700);
 }
@@ -70,7 +70,7 @@
 .footer-description {
   font-family: 'Montserrat', sans-serif;
   font-weight: 400;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.5em;
   letter-spacing: 4.17%;
   color: #485366;
@@ -90,7 +90,7 @@
 .footer-title {
   font-family: var(--font-family);
   font-weight: 600;
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1.25em;
   color: var(--color-black);
   margin: 0;
@@ -107,7 +107,7 @@
 .footer-nav-link {
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.5em;
   color: #11171F;
   text-decoration: none;
@@ -147,7 +147,7 @@
 .footer-contact-link {
   font-family: 'Montserrat', sans-serif;
   font-weight: 400;
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1.333em;
   color: #11171F;
   text-decoration: none;
@@ -194,7 +194,7 @@
 .address-item span {
   font-family: var(--font-family);
   font-weight: 400;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.5em;
   color: var(--color-grey-600);
 }
@@ -248,7 +248,7 @@
 .footer-copyright {
   font-family: 'Montserrat', sans-serif;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.571em;
   letter-spacing: 0.15%;
   color: #485366;
@@ -258,7 +258,7 @@
 .footer-privacy-link {
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.714em;
   color: #11171F;
   opacity: 0.88;

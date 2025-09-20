@@ -8,7 +8,7 @@
 
 .advantages-container {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   margin: 0;
   padding: 0 32px;
 }
@@ -22,7 +22,7 @@
 .advantages-subtitle {
   font-family: var(--font-family);
   font-weight: 700;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.5em;
   letter-spacing: 16%;
   text-transform: uppercase;
@@ -33,7 +33,7 @@
 .advantages-title {
   font-family: var(--font-family);
   font-weight: 500;
-  font-size: 28px;
+  font-size: 30px;
   line-height: 1.29em;
   letter-spacing: 0.54%;
   color: var(--color-black);
@@ -57,7 +57,7 @@
 .advantages-description {
   font-family: var(--font-family);
   font-weight: 400;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.57em;
   letter-spacing: 0.15%;
   color: var(--color-grey-600);
@@ -72,15 +72,15 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 48px;
   margin: 0 auto;
-  width:1376px;
+  height: 60vh;
 }
 
 /* Cards */
 .advantage-card {
   position: relative;
-  height: 500px;
+  height: 100%;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  max-width:380px;
+  max-width:auto;
 }
 
 .advantage-card:hover {
@@ -143,7 +143,7 @@
 .advantage-title {
   font-family: var(--font-family);
   font-weight: 500;
-  font-size: 20px;
+  font-size: 22px;
   line-height: 1.4em;
   letter-spacing: 0.75%;
   color: var(--color-black);
@@ -158,7 +158,7 @@
 .advantage-description {
   font-family: var(--font-family);
   font-weight: 400;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.57em;
   color: var(--color-grey-600);
   margin: 0;
@@ -255,11 +255,11 @@
   }
   
   .advantages-title {
-    font-size: 24px;
+    font-size: 26px;
   }
   
   .advantages-description {
-    font-size: 13px;
+    font-size: 15px;
   }
   
   .advantages-grid {

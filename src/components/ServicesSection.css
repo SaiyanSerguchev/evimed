@@ -27,7 +27,7 @@
   color: #14488C;
   font-family: var(--font-family, 'Montserrat');
   font-weight: 700;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 18px;
   text-transform: uppercase;
 }
@@ -43,7 +43,7 @@
   color: #1A232E;
   font-family: var(--font-family, 'Montserrat');
   font-weight: 500;
-  font-size: 28px;
+  font-size: 30px;
   line-height: 36px;
   margin: 0;
   flex-shrink: 0;
@@ -67,7 +67,7 @@
   border: 1px solid rgba(20, 72, 140, 0.44);
   border-radius: 16px;
   color: rgba(20, 72, 140, 0.92);
-  font: 500 13px/20px var(--font-family, 'Montserrat');
+  font: 500 15px/20px var(--font-family, 'Montserrat');
   flex-shrink: 0;
 }
 
@@ -80,7 +80,7 @@
   color: #485366;
   font-family: var(--font-family, 'Montserrat');
   font-weight: 400;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 22px;
   margin: 8px 0 0 0;
   max-width: 800px;
@@ -116,7 +116,7 @@
   min-height: 36px;
   background: #E6EDF5;
   color: rgba(20, 72, 140, 0.92);
-  font: 500 13px/20px var(--font-family, 'Montserrat');
+  font: 500 15px/20px var(--font-family, 'Montserrat');
   border: 0;
   border-radius: 18px;
   cursor: pointer;
@@ -223,7 +223,7 @@
 }
 
 .ct-title-line {
-  font-size: 18px;
+  font-size: 20px;
   line-height: 26px;
   display: -webkit-box;
   -webkit-line-clamp: 1;
@@ -238,7 +238,7 @@
 .ct-desc {
   color: #485366;
   font-family: var(--font-family, 'Montserrat');
-  font-size: 14px;
+  font-size: 16px;
   line-height: 22px;
   margin: 0;
   display: -webkit-box;
@@ -259,7 +259,7 @@
   align-items: center;
   gap: 12px;
   color: #485366;
-  font: 400 14px/22px var(--font-family, 'Montserrat');
+  font: 400 16px/22px var(--font-family, 'Montserrat');
 }
 
 /* Footer */
@@ -339,7 +339,7 @@
   }
 
   .services-main-title {
-    font-size: 24px;
+    font-size: 26px;
     line-height: 32px;
   }
 

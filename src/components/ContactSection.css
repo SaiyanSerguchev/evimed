@@ -33,7 +33,7 @@
 .contact-kicker {
   font-family: var(--font-family);
   font-weight: 700;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.5em;
   letter-spacing: 16%;
   text-transform: uppercase;
@@ -44,7 +44,7 @@
 .contact-title {
   font-family: var(--font-family);
   font-weight: 500;
-  font-size: 28px;
+  font-size: 30px;
   line-height: 1.29em;
   color: var(--color-black);
   margin: 0 0 16px 0;
@@ -62,7 +62,7 @@
 .contact-description {
   font-family: var(--font-family);
   font-weight: 400;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.57em;
   letter-spacing: 0.15%;
   color: var(--color-grey-600);
@@ -132,7 +132,7 @@
 .contact-line {
   font-family: var(--font-family);
   font-weight: 400;
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1.5em;
   color: var(--color-black);
   border-bottom: 1px dashed rgba(10, 41, 82, 0.24);
@@ -156,7 +156,7 @@
 .branches-title {
   font-family: var(--font-family);
   font-weight: 500;
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1.4em;
   color: var(--color-black);
   margin: 12px 0;
@@ -216,7 +216,7 @@
 .branch-name {
   font-family: var(--font-family);
   font-weight: 600;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.4em;
   color: var(--color-black);
 }
@@ -224,7 +224,7 @@
 .branch-address {
   font-family: var(--font-family);
   font-weight: 400;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.57em;
   color: var(--color-grey-600);
 }
@@ -271,7 +271,7 @@
 .contact-item-title {
   font-family: var(--font-family);
   font-weight: 600;
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1.33em;
   color: var(--color-black);
   margin: 0 0 8px 0;
@@ -280,7 +280,7 @@
 .contact-value {
   font-family: var(--font-family);
   font-weight: 500;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.5em;
   color: var(--color-primary-700);
   margin: 0 0 8px 0;
@@ -289,7 +289,7 @@
 .contact-description-text {
   font-family: var(--font-family);
   font-weight: 400;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.5em;
   color: var(--color-grey-600);
   margin: 0;
@@ -307,7 +307,7 @@
 .form-title {
   font-family: var(--font-family);
   font-weight: 600;
-  font-size: 24px;
+  font-size: 26px;
   line-height: 1.33em;
   color: var(--color-black);
   margin: 0 0 32px 0;
@@ -334,7 +334,7 @@
 .form-label {
   font-family: var(--font-family);
   font-weight: 500;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.5em;
   color: var(--color-black);
 }
@@ -346,7 +346,7 @@
   border-radius: 12px;
   font-family: var(--font-family);
   font-weight: 400;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.5em;
   color: var(--color-black);
   background: var(--color-white);
@@ -382,7 +382,7 @@
   color: var(--color-white);
   font-family: var(--font-family);
   font-weight: 500;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.5em;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -423,15 +423,15 @@
   }
   
   .contact-title {
-    font-size: 36px;
+    font-size: 38px;
   }
   
   .contact-subtitle {
-    font-size: 20px;
+    font-size: 22px;
   }
   
   .contact-description {
-    font-size: 16px;
+    font-size: 18px;
   }
   
   .contact-content {

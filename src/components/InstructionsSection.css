@@ -25,7 +25,7 @@
   grid-column: 1 / -1; /* full width */
   font-family: var(--font-family, 'Montserrat');
   font-weight: 700;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.5em; /* match Advantages */
   letter-spacing: 3px; /* match Advantages */
   text-transform: uppercase;
@@ -44,7 +44,7 @@
 .instr-title {
   font-family: var(--font-family, 'Montserrat');
   font-weight: 500; /* match Advantages title weight */
-  font-size: 28px; /* exactly as Advantages */
+  font-size: 30px; /* exactly as Advantages */
   line-height: 1.29em; /* match Advantages */
   letter-spacing: 0.54%; /* match Advantages */
   color: rgba(255,255,255,0.88); /* softened */
@@ -68,7 +68,7 @@
   border: 1px solid var(--color-primary-400);
   border-radius: 18px;
   color: #C8DEFA;
-  font: 500 13px/20px var(--font-family, 'Montserrat');
+  font: 500 15px/20px var(--font-family, 'Montserrat');
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
@@ -81,7 +81,7 @@
 .instr-lead {
   font-family: var(--font-family, 'Montserrat');
   font-weight: 300; /* match Advantages description weight */
-  font-size: 14px;   /* match Advantages description size */
+  font-size: 16px;   /* match Advantages description size */
   line-height: 1.57em; /* match Advantages description line-height */
   letter-spacing: 0.15%; /* match Advantages description letter-spacing */
   color: rgba(255, 255, 255, 0.72);
@@ -137,7 +137,7 @@
 .instr-item-text {
   font-family: var(--font-family, 'Montserrat');
   font-weight: 300; /* align with Advantages title weight */
-  font-size: 18px;  /* comfortable size for list */
+  font-size: 20px;  /* comfortable size for list */
   line-height: 1.4em; /* match Advantages card title line-height */
   letter-spacing: 0.75%; /* match Advantages card title letter-spacing */
   color: rgba(255,255,255,0.88);
@@ -204,9 +204,9 @@
 @media (max-width: 768px) {
   .instr-section { padding: 72px 0; }
   .instr-container { padding: 0 16px; }
-  .instr-title { font-size: 32px; }
+  .instr-title { font-size: 34px; }
   .instr-title-row { grid-template-columns: 1fr auto; }
   .instr-title-divider { display: none; }
-  .instr-item-text { font-size: 16px; line-height: 24px; }
+  .instr-item-text { font-size: 18px; line-height: 24px; }
   .instr-item::before { left: 24px; top: 56px; }
 }
