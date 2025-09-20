@@ -120,7 +120,7 @@ const ServicesSection = () => {
   }, []);
 
   return (
-    <section className="services-section">
+    <section className="services-section" id="services">
       <div className="services-container">
         {/* Top area */}
         <div className="services-top">

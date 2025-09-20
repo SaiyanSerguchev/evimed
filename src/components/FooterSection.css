@@ -101,6 +101,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  align-items: flex-start;
 }
 
 .footer-nav-link {
@@ -112,6 +113,7 @@
   text-decoration: none;
   transition: color 0.2s ease;
   width:120px;
+  text-align: left;
 }
 
 .footer-nav-link:hover {

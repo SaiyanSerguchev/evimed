@@ -10,6 +10,15 @@
 </head>
 <body>
     <div id="root"></div>
+    <script>
+      if (!('scrollBehavior' in document.documentElement.style)) {
+        var script = document.createElement('script');
+        script.src = 'https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js';
+        script.onload = function() {
+          smoothscroll.polyfill();
+        };
+        document.body.appendChild(script);
+      }
+    </script>
 </body>
 </html>
-

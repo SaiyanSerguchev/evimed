@@ -24,7 +24,7 @@ const ContactSection = () => {
   };
 
   return (
-    <section className="contact-section">
+    <section className="contact-section" id="contacts">
       <div className="contact-container">
         <div className="contact-header">
           <div className="contact-kicker">{kicker}</div>

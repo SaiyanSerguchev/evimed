@@ -62,7 +62,7 @@ const AdvantagesSection = () => {
   ];
 
   return (
-    <section className="advantages-section">
+    <section className="advantages-section" id="advantages">
       <div className="advantages-container">
         <div className="advantages-header">
             <div className="advantages-subtitle">Почему мы?</div>
