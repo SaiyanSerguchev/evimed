@@ -131,13 +131,16 @@
 
 .contact-line {
   font-family: var(--font-family);
-  font-weight: 300;
+  font-weight: 400;
   font-size: 18px;
   line-height: 1.5em;
   color: var(--color-black);
   border-bottom: 1px dashed rgba(10, 41, 82, 0.24);
 }
 
+.contact-line:hover {
+  color: var(--color-primary-700);
+}
 
 .contact-hours {
   color: var(--color-grey-600);

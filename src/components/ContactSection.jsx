@@ -38,8 +38,8 @@ const ContactSection = () => {
           <div className="contact-info">
             <div className="contact-details">
               <div className="contact-lines">
-                <div className="contact-line">{contactText.phone}</div>
-                <div className="contact-line">{contactText.email}</div>
+                <a href="tel:+74954924340" className="contact-line">{contactText.phone}</a>
+                <a href="mailto:info@axiomaykt.ru" className="contact-line">{contactText.email}</a>
               </div>
             </div>
               <div className="contact-branches">

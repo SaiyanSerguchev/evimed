@@ -43,8 +43,8 @@ const InstructionsSection = () => {
           <div className="instr-title-divider" aria-hidden></div>
           <button className="instr-link" type="button" aria-label="Подробная инструкция">
             <span>Подробная инструкция</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-              <path d="M8 5L16 12L8 19" stroke="#C8DEFA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M4.875 5.625C4.875 5.21079 5.21079 4.875 5.625 4.875H12.375C12.7892 4.875 13.125 5.21079 13.125 5.625V12.375C13.125 12.7892 12.7892 13.125 12.375 13.125C11.9608 13.125 11.625 12.7892 11.625 12.375V7.43566L6.53033 12.5303C6.23744 12.8232 5.76256 12.8232 5.46967 12.5303C5.17678 12.2374 5.17678 11.7626 5.46967 11.4697L10.5643 6.375H5.625C5.21079 6.375 4.875 6.03921 4.875 5.625Z" fill="#C8DEFA" fill-opacity="0.44"/>
             </svg>
           </button>
         </div>
@@ -69,8 +69,8 @@ const InstructionsSection = () => {
           <div className="instr-cta-wrap">
             <button className="instr-cta" type="button">
               <span>Записаться на прием</span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-                <path d="M8 5L16 12L8 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M11.9107 4.41082C12.2362 4.08539 12.7638 4.08539 13.0893 4.41083L18.0892 9.41083C18.4146 9.73626 18.4146 10.2639 18.0892 10.5893L13.0893 15.5893C12.7638 15.9148 12.2362 15.9148 11.9107 15.5893C11.5853 15.2639 11.5853 14.7363 11.9107 14.4108L15.4881 10.8334H2.49996C2.03972 10.8334 1.66663 10.4603 1.66663 10.0001C1.66663 9.53984 2.03972 9.16675 2.49996 9.16675H15.4881L11.9107 5.58933C11.5853 5.2639 11.5853 4.73626 11.9107 4.41082Z" fill="#14488C" fill-opacity="0.44"/>
               </svg>
             </button>
           </div>

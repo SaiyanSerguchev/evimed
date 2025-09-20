@@ -78,7 +78,6 @@
 .nav-button:hover {
   background-color: var(--color-grey-100);
   color: var(--color-grey-900);
-  transform: translateY(-1px);
 }
 
 .nav-button:active {
@@ -111,6 +110,7 @@
 .phone-number {
   font-family: var(--font-family);
   font-weight: var(--font-weight-normal);
+  font-size: 18px;
   color: var(--color-grey-900);
   text-decoration: none;
   line-height: var(--line-height-xs-headline);
@@ -121,7 +121,6 @@
 
 .phone-number:hover {
   color: var(--color-primary-700);
-  text-decoration: underline;
 }
 
 
