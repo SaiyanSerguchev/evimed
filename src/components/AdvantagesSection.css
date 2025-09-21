@@ -131,6 +131,15 @@
 
 }
 
+.advantage-card:hover .advantage-button:hover {
+  background: var(--color-primary-500);
+  border-color: var(--color-primary-500);
+}
+
+.advantage-card:hover .advantage-button:hover  svg{
+  fill: var(--color-white);
+}
+
 .advantage-text {
   display: flex;
   flex-direction: column;
@@ -188,7 +197,7 @@
 .advantage-button {
   width: 44px;
   height: 44px;
-  background: rgba(200, 222, 250, 0.12);
+  background: var(--color-greylight-100);
   border: 1px solid rgba(20, 72, 140, 0.44);
   border-radius: 22px;
   display: flex;
