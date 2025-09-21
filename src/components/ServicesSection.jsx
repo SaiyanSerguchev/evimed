@@ -1,16 +1,43 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import './ServicesSection.css';
 
 const ServicesSection = () => {
+  // Tabs state
+  const [activeTab, setActiveTab] = useState(1); // Default to second tab (index 1)
+  const [isDragging, setIsDragging] = useState(false);
+  const tabsRef = useRef(null);
+  
   // Tabs/categories from the design
   const tabs = [
-    { label: 'Двухмерные рентгенологические исследования', active: false },
-    { label: 'Трехмерные рентгенологические исследования челюстей (КЛКТ)', active: true },
-    { label: 'ЛОР-исследования', active: false },
-    { label: 'Дополнительные услуги', active: false },
-    { label: 'Пакетные предложения', active: false },
-    { label: 'Распечатка и дублирование', active: false },
+    { label: 'Двухмерные рентгенологические исследования' },
+    { label: 'Трехмерные рентгенологические исследования челюстей (КЛКТ)' },
+    { label: 'ЛОР-исследования' },
+    { label: 'Дополнительные услуги' },
+    { label: 'Пакетные предложения' },
+    { label: 'Распечатка и дублирование' },
   ];
+  
+  // Handle mouse down for drag scrolling
+  const handleMouseDown = (e) => {
+    if (e.button !== 0) return; // Only left mouse button
+    setIsDragging(true);
+    tabsRef.current.style.cursor = 'grabbing';
+  };
+  
+  // Handle mouse move for drag scrolling
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    tabsRef.current.scrollLeft -= e.movementX;
+  };
+  
+  // Handle mouse up/leave to stop dragging
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    if (tabsRef.current) {
+      tabsRef.current.style.cursor = 'grab';
+    }
+  };
 
   // Статичные карточки КТ (5 штук) напрямую из макета
   const ctOptions = [
@@ -66,57 +93,11 @@ const ServicesSection = () => {
     },
   ];
 
-  // Drag-to-scroll for tabs
-  const tabsRef = useRef(null);
+  // Set cursor style on mount/update
   useEffect(() => {
-    const el = tabsRef.current;
-    if (!el) return;
-
-    let isDown = false;
-    let startX = 0;
-    let scrollLeft = 0;
-
-    const onMouseDown = (e) => {
-      isDown = true;
-      el.classList.add('is-dragging');
-      startX = e.pageX - el.offsetLeft;
-      scrollLeft = el.scrollLeft;
-    };
-    const onMouseLeave = () => {
-      isDown = false;
-      el.classList.remove('is-dragging');
-    };
-    const onMouseUp = () => {
-      isDown = false;
-      el.classList.remove('is-dragging');
-    };
-    const onMouseMove = (e) => {
-      if (!isDown) return;
-      e.preventDefault();
-      const x = e.pageX - el.offsetLeft;
-      const walk = x - startX; // positive -> move right
-      el.scrollLeft = scrollLeft - walk;
-    };
-
-    el.addEventListener('mousedown', onMouseDown);
-    el.addEventListener('mouseleave', onMouseLeave);
-    el.addEventListener('mouseup', onMouseUp);
-    el.addEventListener('mousemove', onMouseMove);
-
-    // Support pointer events (for better cross-browser behavior)
-    const onPointerDown = (e) => {
-      if (e.pointerType === 'touch') return; // native touch scroll works
-      el.setPointerCapture?.(e.pointerId);
-    };
-    el.addEventListener('pointerdown', onPointerDown);
-
-    return () => {
-      el.removeEventListener('mousedown', onMouseDown);
-      el.removeEventListener('mouseleave', onMouseLeave);
-      el.removeEventListener('mouseup', onMouseUp);
-      el.removeEventListener('mousemove', onMouseMove);
-      el.removeEventListener('pointerdown', onPointerDown);
-    };
+    if (tabsRef.current) {
+      tabsRef.current.style.cursor = 'grab';
+    }
   }, []);
 
   return (
@@ -149,12 +130,20 @@ const ServicesSection = () => {
         </div>
 
         {/* Tabs */}
-        <div className="services-tabs" ref={tabsRef}>
+        <div 
+          className="services-tabs" 
+          ref={tabsRef}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+        >
           {tabs.map((tab, idx) => (
             <button
               key={idx}
-              className={`services-tab ${tab.active ? 'active' : ''}`}
+              className={`services-tab ${activeTab === idx ? 'active' : ''}`}
               type="button"
+              onClick={() => setActiveTab(idx)}
             >
               {tab.label}
             </button>

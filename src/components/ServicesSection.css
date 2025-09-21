@@ -92,41 +92,57 @@
   gap: 16px;
   margin: 32px 0 32px 0;
   overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   cursor: grab;
+  position: relative;
+  scroll-behavior: smooth;
 }
 
 .services-tabs::-webkit-scrollbar {
   display: none; /* Chrome/Safari */
 }
 
-.services-tabs.is-dragging {
+.services-tabs:active {
   cursor: grabbing;
 }
 
 .services-tab {
-  flex: 0 0 auto; /* prevent wrapping and shrinking */
+  flex: 0 0 auto;
+  padding: 12px 24px;
+  background: #F1F5F9;
+  border-radius: 32px;
+
+  white-space: nowrap;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 20px;
+  padding: 9px 21px;
   min-height: 36px;
   background: #E6EDF5;
   color: rgba(20, 72, 140, 0.92);
-  font: 500 15px/20px var(--font-family, 'Montserrat');
+  font: 400 16px/20px var(--font-family, 'Montserrat');
   border: 0;
   border-radius: 18px;
   cursor: pointer;
-  user-select: none; /* avoid text selection while dragging */
+
+}
+
+.services-tab:hover {
+  background: var(--color-greylight-400);
 }
 
 .services-tab.active {
-  background: #14488C;
+  background: var(--color-primary-700);
   color: #C8DEFA;
 }
+
+.services-tab.active:hover {
+  background: var(--color-primary-500);
+  color: var(--color-white);
+}
+
 
 /* Promo banner */
 .promo-banner {
