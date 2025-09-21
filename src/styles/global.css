@@ -128,7 +128,7 @@ section {
 }
 
 .dark-wrapper {
-  background: linear-gradient(180deg, #0F1A25 0%, #121B26 100%);
+  background: linear-gradient(180deg, #16202a 50%,rgba(11, 22, 31, 1)  60%);
   margin: 0;
   width: 100%;
 }
