@@ -24,6 +24,7 @@ const ContactSection = () => {
   };
 
   const [isDragging, setIsDragging] = useState(false);
+  const [activeBranch, setActiveBranch] = useState(0); // Track active branch index
   const listRef = useRef(null);
 
   // Обработчики
@@ -70,7 +71,10 @@ const ContactSection = () => {
                 onMouseUp={handleMouseUp}
                 onMouseLeave={handleMouseUp}>
                   {branches.map((b, i) => (
-                    <li className="branch-item" key={`${b.title}-${i}`}>
+                    <li 
+                      className={`branch-item ${i === activeBranch ? 'active' : ''}`} 
+                      key={`${b.title}-${i}`}
+                      onClick={() => setActiveBranch(i)}>
                       <div className="branch-content">
                         <div className="branch-name">{b.title}</div>
                         <div className="branch-address">{b.address}</div>

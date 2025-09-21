@@ -5,6 +5,7 @@
   width: 100%;
   margin: 0;
   padding: 52px 32px;
+  border-top: 1px solid var(--color-grey-100);
 }
 
 .footer-container {
@@ -102,6 +103,7 @@
   flex-direction: column;
   gap: 24px;
   align-items: flex-start;
+  white-space: nowrap;
 }
 
 .footer-nav-link {
