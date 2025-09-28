@@ -101,8 +101,8 @@ const HeroBanner = () => {
         </div>
         
         <div className="slider-dots">
-          <div className={`slider-dot ${currentSlide === 0 ? 'active' : ''}`}></div>
-          <div className={`slider-dot ${currentSlide === 1 ? 'active' : ''}`}></div>
+          <button className={`slider-dot ${currentSlide === 0 ? 'active' : ''}`} onClick={prevSlide} disabled={currentSlide === 0}></button>
+          <button className={`slider-dot ${currentSlide === 1 ? 'active' : ''}`} onClick={nextSlide} disabled={currentSlide === totalSlides - 1}></button>
         </div>
       </div>
     </section>

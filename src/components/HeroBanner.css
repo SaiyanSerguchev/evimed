@@ -151,13 +151,13 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 4;
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   height: 100%;
   pointer-events: none;
+  z-index: 6;
 }
 
 .slider-arrows {
@@ -208,8 +208,8 @@
 }
 
 .slider-dot {
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   background: var(--color-grey-400);
   cursor: pointer;
@@ -261,7 +261,7 @@
   }
   
   .hero-image {
-    position: relative;
+    /*position: relative;*/
     order: 1;
     height: 300px;
     justify-content: center;

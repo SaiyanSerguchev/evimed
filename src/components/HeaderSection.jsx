@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import './HeaderSection.css';
 import SymbolLogo from '../assets/images/icons/Symbol_Logo.svg';
 import EvimedLogo from '../assets/images/icons/Evimed.svg';
+import HamburgerIcon from '../assets/images/icons/hamburger.svg';
 
 const HeaderSection = () => {
   const handleLogoClick = () => {
@@ -23,13 +24,18 @@ const HeaderSection = () => {
   };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const mobileMenuRef = useRef(null);
 
-  // Close dropdown when clicking outside
+  // Close dropdown and mobile menu when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
+      }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target) && !event.target.closest('.mobile-menu-button')) {
+        setIsMobileMenuOpen(false);
       }
     }
 
@@ -41,6 +47,19 @@ const HeaderSection = () => {
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleMobileNavClick = (section) => {
+    closeMobileMenu();
+    handleNavClick(section);
   };
 
   return (
@@ -79,6 +98,7 @@ const HeaderSection = () => {
             </nav>
           </div>
           <div className="header-right">
+
             <div className="phone-section" ref={dropdownRef} onMouseEnter={toggleDropdown} onMouseLeave={toggleDropdown}>
               <a 
                 href="tel:+74954924340" 
@@ -110,6 +130,9 @@ const HeaderSection = () => {
                 </div>
               )}
             </div>
+            <button className="mobile-menu-button" onClick={toggleMobileMenu} aria-label="Открыть меню" aria-expanded={isMobileMenuOpen}>
+              <img src={HamburgerIcon} alt="Меню" width={24} height={24} />
+            </button>
             <button className="consultation-button" onClick={handleConsultationClick} aria-label="Получить консультацию">
               <span>Консультация</span>
               <svg className="arrow-icon" width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true">
@@ -117,6 +140,52 @@ const HeaderSection = () => {
               </svg>
             </button>
           </div>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'active' : ''}`} onClick={closeMobileMenu}></div>
+      <div ref={mobileMenuRef} className={`mobile-menu ${isMobileMenuOpen ? 'active' : ''}`}>
+        <div className="mobile-menu-header">
+          <div className="logo" onClick={() => { handleLogoClick(); closeMobileMenu(); }}>
+            <div className="logo-symbol">
+              <img src={SymbolLogo} alt="Evimed Symbol" width="28" height="28" />
+            </div>
+            <img src={EvimedLogo} alt="Evimed" className="logo-text" width="96" height="16" />
+          </div>
+          <button className="close-menu" onClick={closeMobileMenu} aria-label="Закрыть меню">
+            &times;
+          </button>
+        </div>
+        <nav className="mobile-nav">
+          <button 
+            className="mobile-nav-button" 
+            onClick={() => handleMobileNavClick('advantages')}
+          >
+            Почему мы?
+          </button>
+          <button 
+            className="mobile-nav-button" 
+            onClick={() => handleMobileNavClick('services')}
+          >
+            Услуги
+          </button>
+          <button 
+            className="mobile-nav-button" 
+            onClick={() => handleMobileNavClick('contacts')}
+          >
+            Наши адреса
+          </button>
+        </nav>
+        <div className="mobile-contacts">
+          <a href="tel:+74954924340" className="mobile-phone">+7 (495) 492-43-40</a>
+          <div className="mobile-working-hours">
+            <span>Время работы:</span>
+            <span>Ежедневно <b>10:00-20:00</b></span>
+          </div>
+          <button className="mobile-callback" onClick={() => { handleConsultationClick(); closeMobileMenu(); }}>
+            Обратный звонок
+          </button>
         </div>
       </div>
     </header>
