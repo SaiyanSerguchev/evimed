@@ -5,23 +5,12 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Build outputs
-dist/
-build/
-*.tgz
-*.tar.gz
-
 # Environment variables
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
-
-# Cache directories
-.cache/
-.parcel-cache/
-.webpack/
 
 # Logs
 logs
@@ -68,31 +57,6 @@ coverage/
 # Yarn Integrity file
 .yarn-integrity
 
-# parcel-bundler cache
-.cache
-.parcel-cache
-
-# Next.js build output
-.next
-out
-
-# Nuxt.js build / generate output
-.nuxt
-dist
-
-# Gatsby files
-.cache/
-public
-
-# Vuepress build output
-.vuepress/dist
-
-# Serverless directories
-.serverless/
-
-# FuseBox cache
-.fusebox/
-
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
@@ -119,16 +83,24 @@ public
 ehthumbs.db
 Thumbs.db
 
-# Temporary folders
-tmp/
-temp/
+# Database
+*.sqlite
+*.sqlite3
+*.db
 
-# Webpack
-webpack-stats.json
+# Prisma
+prisma/migrations/
+
+# Docker
+.dockerignore
 
 # Testing
 coverage/
 .nyc_output/
+
+# Temporary folders
+tmp/
+temp/
 
 # Misc
 *.tsbuildinfo
