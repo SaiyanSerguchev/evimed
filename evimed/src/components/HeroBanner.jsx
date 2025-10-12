@@ -4,7 +4,51 @@ import heroEquipment from '../assets/images/hero/hero-equipment.png';
 
 const HeroBanner = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const totalSlides = 2;
+  const [banners, setBanners] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const API_BASE = 'http://localhost:5000/api';
+
+  useEffect(() => {
+    loadBanners();
+  }, []);
+
+  const loadBanners = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/banners`);
+      const data = await response.json();
+      setBanners(data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Ошибка загрузки баннеров:', error);
+      // Fallback к статичным данным
+      setBanners([
+        {
+          id: 1,
+          title: 'Федеральная сеть независимых центров рентгенодиагностики «Эвимед»',
+          description: 'Предоставляем услуги в области рентгенодиагностики для стоматологов, оториноларингологов и челюстно–лицевых хирургов.',
+          buttonText: 'Записаться на прием',
+          buttonUrl: '/appointment',
+          imageUrl: heroEquipment,
+          imageAlt: 'Ортопантомограф OP300',
+          order: 0
+        },
+        {
+          id: 2,
+          title: 'Мы открыли уникальный центр функциональной диагностики!',
+          description: 'Предоставляем услуги в области рентгенодиагностики для стоматологов, оториноларингологов и челюстно–лицевых хирургов.',
+          buttonText: 'Записаться на прием',
+          buttonUrl: '/appointment',
+          imageUrl: heroEquipment,
+          imageAlt: 'Центр функциональной диагностики',
+          order: 1
+        }
+      ]);
+      setLoading(false);
+    }
+  };
+
+  const totalSlides = banners.length || 2;
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev === totalSlides - 1 ? 0 : prev + 1));
@@ -15,75 +59,66 @@ const HeroBanner = () => {
   };
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      nextSlide();
-    }, 5000);
-    
-    return () => clearInterval(timer);
-  }, [currentSlide]);
+    if (totalSlides > 1) {
+      const timer = setInterval(() => {
+        nextSlide();
+      }, 5000);
+      
+      return () => clearInterval(timer);
+    }
+  }, [currentSlide, totalSlides]);
+
+  if (loading) {
+    return (
+      <section className="hero-banner">
+        <div className="hero-content">
+          <div className="hero-text">
+            <h1 className="hero-title">Загрузка...</h1>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="hero-banner">
-      
-      {/* Слайд 1 */}
-      <div className={`hero-slide ${currentSlide === 0 ? 'active' : ''}`}>
-        {/* Hero Image */}
-        <div className="hero-image">
-          <img 
-            src={heroEquipment} 
-            alt="Ортопантомограф OP300" 
-            className="equipment-image"
-          />
-        </div>
-        
-        {/* Hero Content */}
-        <div className="hero-content">
-          {/* Text Content */}
-          <div className="hero-text">
-            <h1 className="hero-title">
-              Федеральная сеть независимых центров рентгенодиагностики «Эвимед»
-            </h1>
-            <p className="hero-description">
-              Предоставляем услуги в области рентгенодиагностики для стоматологов, оториноларингологов и челюстно–лицевых хирургов.
-            </p>
+      {banners.map((banner, index) => (
+        <div key={banner.id} className={`hero-slide ${currentSlide === index ? 'active' : ''}`}>
+          {/* Hero Image */}
+          <div className="hero-image">
+            <img 
+              src={banner.imageUrl || heroEquipment} 
+              alt={banner.imageAlt || 'Медицинское оборудование'} 
+              className="equipment-image"
+            />
           </div>
           
-          {/* CTA Button */}
-          <button className="hero-button">
-            <span className="hero-button-text">Записаться на прием</span>
-            <svg className="hero-button-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M1.67 10H15.83M15.83 10L10 4.17M15.83 10L10 15.83" stroke="currentColor" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      {/* Слайд 2 */}
-      <div className={`hero-slide ${currentSlide === 1 ? 'active' : ''}`}>
-        <div className="hero-image">
-          <img 
-            src={heroEquipment} 
-            alt="Центр функциональной диагностики" 
-            className="equipment-image"
-          />
-        </div>
-        <div className="hero-content">
-          <div className="hero-text">
-            <h1 className="hero-title">
-              Мы открыли уникальный центр функциональной диагностики!
-            </h1>
-            <p className="hero-description">
-              Предоставляем услуги в области рентгенодиагностики для стоматологов, оториноларингологов и челюстно–лицевых хирургов.
-            </p>
+          {/* Hero Content */}
+          <div className="hero-content">
+            {/* Text Content */}
+            <div className="hero-text">
+              <h1 className="hero-title">
+                {banner.title}
+              </h1>
+              {banner.description && (
+                <p className="hero-description">
+                  {banner.description}
+                </p>
+              )}
+            </div>
+            
+            {/* CTA Button */}
+            {banner.buttonText && (
+              <button className="hero-button" onClick={() => banner.buttonUrl && (window.location.href = banner.buttonUrl)}>
+                <span className="hero-button-text">{banner.buttonText}</span>
+                <svg className="hero-button-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M1.67 10H15.83M15.83 10L10 4.17M15.83 10L10 15.83" stroke="currentColor" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            )}
           </div>
-          <button className="hero-button">
-            <span className="hero-button-text">Записаться на прием</span>
-            <svg className="hero-button-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M1.67 10H15.83M15.83 10L10 4.17M15.83 10L10 15.83" stroke="currentColor" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
         </div>
-      </div>
+      ))}
 
       {/* Slider Navigation */}
       <div className="hero-slider-nav">
@@ -101,8 +136,13 @@ const HeroBanner = () => {
         </div>
         
         <div className="slider-dots">
-          <button className={`slider-dot ${currentSlide === 0 ? 'active' : ''}`} onClick={prevSlide} disabled={currentSlide === 0}></button>
-          <button className={`slider-dot ${currentSlide === 1 ? 'active' : ''}`} onClick={nextSlide} disabled={currentSlide === totalSlides - 1}></button>
+          {banners.map((banner, index) => (
+            <button 
+              key={banner.id}
+              className={`slider-dot ${currentSlide === index ? 'active' : ''}`} 
+              onClick={() => setCurrentSlide(index)}
+            ></button>
+          ))}
         </div>
       </div>
     </section>

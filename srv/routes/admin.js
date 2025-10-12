@@ -2,6 +2,7 @@ const express = require('express');
 const User = require('../models/User');
 const Service = require('../models/Service');
 const Appointment = require('../models/Appointment');
+const Banner = require('../models/Banner');
 const adminAuth = require('../middleware/admin');
 const prisma = require('../lib/prisma');
 const router = express.Router();
@@ -9,10 +10,11 @@ const router = express.Router();
 // Dashboard stats
 router.get('/dashboard', adminAuth, async (req, res) => {
   try {
-    const [usersCount, servicesCount, appointmentsCount, todayAppointments, recentAppointments] = await Promise.all([
+    const [usersCount, servicesCount, appointmentsCount, bannersCount, todayAppointments, recentAppointments] = await Promise.all([
       prisma.user.count(),
       prisma.service.count({ where: { isActive: true } }),
       prisma.appointment.count(),
+      prisma.banner.count({ where: { isActive: true } }),
       prisma.appointment.count({
         where: {
           appointmentDate: {
@@ -45,6 +47,7 @@ router.get('/dashboard', adminAuth, async (req, res) => {
         totalUsers: usersCount,
         totalServices: servicesCount,
         totalAppointments: appointmentsCount,
+        totalBanners: bannersCount,
         todayAppointments: todayAppointments
       },
       recentAppointments: recentAppointments.map(apt => ({

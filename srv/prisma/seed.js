@@ -7,20 +7,25 @@ async function main() {
   console.log('🌱 Seeding database...');
 
   // Create admin user
-  const adminPassword = await bcrypt.hash('admin123', 10);
+  const adminPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'admin123', 10);
   const admin = await prisma.user.upsert({
-    where: { email: 'admin@evimed.ru' },
+    where: { email: process.env.ADMIN_EMAIL || 'admin@evimed.ru' },
     update: {},
     create: {
-      name: 'Администратор',
-      email: 'admin@evimed.ru',
-      phone: '+7 (999) 123-45-67',
+      name: process.env.ADMIN_NAME || 'Администратор',
+      email: process.env.ADMIN_EMAIL || 'admin@evimed.ru',
+      phone: process.env.ADMIN_PHONE || '+7 (999) 123-45-67',
       passwordHash: adminPassword,
       role: 'admin'
     }
   });
 
   console.log('✅ Admin user created:', admin.email);
+  console.log('📧 Admin credentials:');
+  console.log(`   Email: ${admin.email}`);
+  console.log(`   Password: ${process.env.ADMIN_PASSWORD || 'admin123'}`);
+  console.log(`   Name: ${admin.name}`);
+  console.log(`   Phone: ${admin.phone}`);
 
   // Create sample services
   const services = [
@@ -69,12 +74,49 @@ async function main() {
   ];
 
   for (const serviceData of services) {
-    const service = await prisma.service.upsert({
-      where: { name: serviceData.name },
-      update: {},
-      create: serviceData
+    try {
+      const service = await prisma.service.upsert({
+        where: { name: serviceData.name },
+        update: {},
+        create: serviceData
+      });
+      console.log('✅ Service created:', service.name);
+    } catch (error) {
+      // Если сервис уже существует, просто создаем новый
+      const service = await prisma.service.create({
+        data: serviceData
+      });
+      console.log('✅ Service created:', service.name);
+    }
+  }
+
+  // Create sample banners
+  const banners = [
+    {
+      title: 'Федеральная сеть независимых центров рентгенодиагностики «Эвимед»',
+      description: 'Предоставляем услуги в области рентгенодиагностики для стоматологов, оториноларингологов и челюстно–лицевых хирургов.',
+      buttonText: 'Записаться на прием',
+      buttonUrl: '/appointment',
+      imageUrl: null, // Будет использоваться дефолтное изображение
+      imageAlt: 'Ортопантомограф OP300',
+      order: 0
+    },
+    {
+      title: 'Мы открыли уникальный центр функциональной диагностики!',
+      description: 'Предоставляем услуги в области рентгенодиагностики для стоматологов, оториноларингологов и челюстно–лицевых хирургов.',
+      buttonText: 'Записаться на прием',
+      buttonUrl: '/appointment',
+      imageUrl: null, // Будет использоваться дефолтное изображение
+      imageAlt: 'Центр функциональной диагностики',
+      order: 1
+    }
+  ];
+
+  for (const bannerData of banners) {
+    const banner = await prisma.banner.create({
+      data: bannerData
     });
-    console.log('✅ Service created:', service.name);
+    console.log('✅ Banner created:', banner.title);
   }
 
   console.log('🎉 Seeding completed!');

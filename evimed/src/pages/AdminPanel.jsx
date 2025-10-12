@@ -9,12 +9,22 @@ const AdminPanel = () => {
   const [services, setServices] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [users, setUsers] = useState([]);
+  const [banners, setBanners] = useState([]);
   const [newService, setNewService] = useState({
     name: '',
     description: '',
     price: '',
     duration: '',
     category: ''
+  });
+  const [newBanner, setNewBanner] = useState({
+    title: '',
+    description: '',
+    buttonText: '',
+    buttonUrl: '',
+    imageUrl: '',
+    imageAlt: '',
+    order: 0
   });
 
   const API_BASE = 'http://localhost:5000/api';
@@ -95,6 +105,18 @@ const AdminPanel = () => {
     }
   };
 
+  const loadBanners = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/admin/banners`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      setBanners(data);
+    } catch (error) {
+      console.error('Ошибка загрузки баннеров:', error);
+    }
+  };
+
   const addService = async (e) => {
     e.preventDefault();
     try {
@@ -135,6 +157,72 @@ const AdminPanel = () => {
         loadAppointments();
       } else {
         alert('Ошибка обновления статуса');
+      }
+    } catch (error) {
+      alert('Ошибка подключения к серверу');
+    }
+  };
+
+  const addBanner = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${API_BASE}/admin/banners`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(newBanner)
+      });
+      
+      if (response.ok) {
+        setNewBanner({ title: '', description: '', buttonText: '', buttonUrl: '', imageUrl: '', imageAlt: '', order: 0 });
+        loadBanners();
+        alert('Баннер добавлен успешно');
+      } else {
+        const data = await response.json();
+        alert('Ошибка: ' + data.error);
+      }
+    } catch (error) {
+      alert('Ошибка подключения к серверу');
+    }
+  };
+
+  const updateBanner = async (id, updateData) => {
+    try {
+      const response = await fetch(`${API_BASE}/admin/banners/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updateData)
+      });
+      
+      if (response.ok) {
+        loadBanners();
+      } else {
+        alert('Ошибка обновления баннера');
+      }
+    } catch (error) {
+      alert('Ошибка подключения к серверу');
+    }
+  };
+
+  const deleteBanner = async (id) => {
+    if (!confirm('Вы уверены, что хотите удалить этот баннер?')) return;
+    
+    try {
+      const response = await fetch(`${API_BASE}/admin/banners/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        loadBanners();
+        alert('Баннер удален успешно');
+      } else {
+        alert('Ошибка удаления баннера');
       }
     } catch (error) {
       alert('Ошибка подключения к серверу');
@@ -206,27 +294,37 @@ const AdminPanel = () => {
         >
           Пользователи
         </button>
+        <button 
+          className={activeTab === 'banners' ? 'active' : ''}
+          onClick={() => { setActiveTab('banners'); loadBanners(); }}
+        >
+          Баннеры
+        </button>
       </nav>
 
       <main className="admin-content">
-        {activeTab === 'dashboard' && dashboardData && (
+        {activeTab === 'dashboard' && dashboardData && dashboardData.stats && (
           <div className="dashboard">
             <div className="stats-grid">
               <div className="stat-card">
                 <h3>Всего пользователей</h3>
-                <p className="stat-number">{dashboardData.stats.totalUsers}</p>
+                <p className="stat-number">{dashboardData.stats.totalUsers || 0}</p>
               </div>
               <div className="stat-card">
                 <h3>Услуг</h3>
-                <p className="stat-number">{dashboardData.stats.totalServices}</p>
+                <p className="stat-number">{dashboardData.stats.totalServices || 0}</p>
               </div>
               <div className="stat-card">
                 <h3>Всего записей</h3>
-                <p className="stat-number">{dashboardData.stats.totalAppointments}</p>
+                <p className="stat-number">{dashboardData.stats.totalAppointments || 0}</p>
               </div>
               <div className="stat-card">
                 <h3>Записей сегодня</h3>
-                <p className="stat-number">{dashboardData.stats.todayAppointments}</p>
+                <p className="stat-number">{dashboardData.stats.todayAppointments || 0}</p>
+              </div>
+              <div className="stat-card">
+                <h3>Баннеров</h3>
+                <p className="stat-number">{dashboardData.stats.totalBanners || 0}</p>
               </div>
             </div>
 
@@ -243,7 +341,7 @@ const AdminPanel = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {dashboardData.recentAppointments.map(appointment => (
+                  {dashboardData.recentAppointments && dashboardData.recentAppointments.map(appointment => (
                     <tr key={appointment.id}>
                       <td>{appointment.user_name}</td>
                       <td>{appointment.service_name}</td>
@@ -254,6 +352,15 @@ const AdminPanel = () => {
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'dashboard' && !dashboardData && (
+          <div className="dashboard">
+            <div className="loading-message">
+              <h3>Загрузка данных...</h3>
+              <p>Пожалуйста, подождите, пока загрузятся данные дашборда.</p>
             </div>
           </div>
         )}
@@ -388,6 +495,90 @@ const AdminPanel = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {activeTab === 'banners' && (
+          <div className="banners-management">
+            <div className="add-banner-form">
+              <h3>Добавить баннер</h3>
+              <form onSubmit={addBanner}>
+                <input
+                  type="text"
+                  placeholder="Заголовок"
+                  value={newBanner.title}
+                  onChange={(e) => setNewBanner({...newBanner, title: e.target.value})}
+                  required
+                />
+                <textarea
+                  placeholder="Описание"
+                  value={newBanner.description}
+                  onChange={(e) => setNewBanner({...newBanner, description: e.target.value})}
+                />
+                <input
+                  type="text"
+                  placeholder="Текст кнопки"
+                  value={newBanner.buttonText}
+                  onChange={(e) => setNewBanner({...newBanner, buttonText: e.target.value})}
+                />
+                <input
+                  type="text"
+                  placeholder="URL кнопки"
+                  value={newBanner.buttonUrl}
+                  onChange={(e) => setNewBanner({...newBanner, buttonUrl: e.target.value})}
+                />
+                <input
+                  type="text"
+                  placeholder="URL изображения"
+                  value={newBanner.imageUrl}
+                  onChange={(e) => setNewBanner({...newBanner, imageUrl: e.target.value})}
+                />
+                <input
+                  type="text"
+                  placeholder="Alt текст изображения"
+                  value={newBanner.imageAlt}
+                  onChange={(e) => setNewBanner({...newBanner, imageAlt: e.target.value})}
+                />
+                <input
+                  type="number"
+                  placeholder="Порядок"
+                  value={newBanner.order}
+                  onChange={(e) => setNewBanner({...newBanner, order: parseInt(e.target.value)})}
+                />
+                <button type="submit">Добавить баннер</button>
+              </form>
+            </div>
+
+            <div className="banners-list">
+              <h3>Список баннеров</h3>
+              <div className="banners-grid">
+                {banners.map(banner => (
+                  <div key={banner.id} className="banner-card">
+                    <div className="banner-preview">
+                      <h4>{banner.title}</h4>
+                      <p>{banner.description}</p>
+                      {banner.buttonText && (
+                        <button className="preview-button">{banner.buttonText}</button>
+                      )}
+                    </div>
+                    <div className="banner-actions">
+                      <button 
+                        className={`toggle-btn ${banner.isActive ? 'active' : 'inactive'}`}
+                        onClick={() => updateBanner(banner.id, { isActive: !banner.isActive })}
+                      >
+                        {banner.isActive ? 'Активен' : 'Неактивен'}
+                      </button>
+                      <button 
+                        className="delete-btn"
+                        onClick={() => deleteBanner(banner.id)}
+                      >
+                        Удалить
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </main>
