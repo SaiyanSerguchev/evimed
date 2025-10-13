@@ -194,29 +194,12 @@ const AdminPanel = () => {
       </header>
 
       <nav className="admin-nav">
+        
         <button 
           className={activeTab === 'dashboard' ? 'active' : ''}
           onClick={() => setActiveTab('dashboard')}
         >
           Дашборд
-        </button>
-                <button
-                  className={activeTab === 'services-tree' ? 'active' : ''}
-                  onClick={() => setActiveTab('services-tree')}
-                >
-                  Услуги
-                </button>
-        <button 
-          className={activeTab === 'appointments' ? 'active' : ''}
-          onClick={() => { setActiveTab('appointments'); loadAppointments(); }}
-        >
-          Записи
-        </button>
-        <button 
-          className={activeTab === 'users' ? 'active' : ''}
-          onClick={() => { setActiveTab('users'); loadUsers(); }}
-        >
-          Пользователи
         </button>
         <button 
           className={activeTab === 'banners' ? 'active' : ''}
@@ -224,18 +207,36 @@ const AdminPanel = () => {
         >
           Баннеры
         </button>
-                <button
-                  className={activeTab === 'advantages' ? 'active' : ''}
-                  onClick={() => { setActiveTab('advantages'); loadAdvantages(); }}
-                >
-                  Преимущества
-                </button>
-                <button
-                  className={activeTab === 'branches' ? 'active' : ''}
-                  onClick={() => setActiveTab('branches')}
-                >
-                  Филиалы
-                </button>
+        <button
+          className={activeTab === 'advantages' ? 'active' : ''}
+          onClick={() => { setActiveTab('advantages'); loadAdvantages(); }}
+        >
+          Преимущества
+        </button>
+        <button
+          className={activeTab === 'services-tree' ? 'active' : ''}
+          onClick={() => setActiveTab('services-tree')}
+        >
+          Услуги
+        </button>
+        <button 
+          className={activeTab === 'appointments' ? 'active' : ''}
+          onClick={() => { setActiveTab('appointments'); loadAppointments(); }}
+        >
+          Записи
+        </button>
+        <button
+          className={activeTab === 'branches' ? 'active' : ''}
+          onClick={() => setActiveTab('branches')}
+        >
+          Филиалы
+        </button>
+        <button 
+          className={activeTab === 'users' ? 'active' : ''}
+          onClick={() => { setActiveTab('users'); loadUsers(); }}
+        >
+          Пользователи
+        </button>
       </nav>
 
       <main className="admin-content">
