@@ -8,9 +8,11 @@ import SectionDivider from './components/SectionDivider';
 import ContactSection from './components/ContactSection';
 import FooterSection from './components/FooterSection';
 import AdminPanel from './pages/AdminPanel';
+import AppointmentModal from './components/AppointmentModal';
 
 function App() {
   const [showAdmin, setShowAdmin] = useState(false);
+  const [showAppointmentModal, setShowAppointmentModal] = useState(false);
 
   // Проверяем URL для показа админ панели
   React.useEffect(() => {
@@ -26,7 +28,7 @@ function App() {
   return (
     <div className="App">
       <HeaderSection />
-      <HeroBanner />
+      <HeroBanner onOpenAppointment={() => setShowAppointmentModal(true)} />
       <AdvantagesSection />
       <div className="dark-wrapper">
         <ServicesSection />
@@ -36,6 +38,11 @@ function App() {
         <ContactSection />
       </div>
       <FooterSection />
+      
+      <AppointmentModal 
+        isOpen={showAppointmentModal} 
+        onClose={() => setShowAppointmentModal(false)} 
+      />
     </div>
   );
 }

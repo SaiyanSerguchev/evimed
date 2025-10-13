@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './HeroBanner.css';
 import heroEquipment from '../assets/images/hero/hero-equipment.png';
 
-const HeroBanner = () => {
+const HeroBanner = ({ onOpenAppointment }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [banners, setBanners] = useState([]);
 
@@ -85,7 +85,7 @@ const HeroBanner = () => {
             </div>
             
             {/* CTA Button */}
-            <button className="hero-button" onClick={() => window.location.href = '/appointment'}>
+            <button className="hero-button" onClick={onOpenAppointment}>
               <span className="hero-button-text">Записаться на прием</span>
               <svg className="hero-button-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M1.67 10H15.83M15.83 10L10 4.17M15.83 10L10 15.83" stroke="currentColor" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
