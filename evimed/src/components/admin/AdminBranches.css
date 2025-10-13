@@ -2,6 +2,10 @@
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border: 1px solid #e0e0e0;
 }
 
 .branches-header {
@@ -15,22 +19,24 @@
 
 .branches-header h2 {
   margin: 0;
-  color: #333;
+  color: #1a1a1a;
   font-size: 24px;
+  font-weight: 600;
 }
 
 .refresh-btn {
-  background: #007bff;
-  color: white;
+  background: #404040;
+  color: #ffffff;
   border: none;
   padding: 8px 16px;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .refresh-btn:hover {
-  background: #0056b3;
+  background: #1a1a1a;
 }
 
 .add-branch-form {
@@ -38,12 +44,14 @@
   padding: 20px;
   border-radius: 8px;
   margin-bottom: 30px;
+  border: 1px solid #e0e0e0;
 }
 
 .add-branch-form h3 {
   margin: 0 0 15px 0;
-  color: #333;
-  font-size: 18px;
+  color: #1a1a1a;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .add-branch-form form {
@@ -60,31 +68,40 @@
 
 .add-branch-form input {
   padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 16px;
+  background: #ffffff;
+  color: #1a1a1a;
+  transition: border-color 0.3s;
+}
+
+.add-branch-form input:focus {
+  outline: none;
+  border-color: #404040;
 }
 
 .add-branch-form button {
-  background: #28a745;
-  color: white;
+  background: #1a1a1a;
+  color: #ffffff;
   border: none;
   padding: 12px 20px;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   align-self: flex-start;
 }
 
 .add-branch-form button:hover {
-  background: #218838;
+  background: #404040;
 }
 
 .branches-list h3 {
   margin: 0 0 20px 0;
-  color: #333;
-  font-size: 18px;
+  color: #1a1a1a;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .branches-grid {
@@ -94,37 +111,42 @@
 }
 
 .branch-card {
-  background: white;
+  background: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: box-shadow 0.3s;
+}
+
+.branch-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .branch-preview h4 {
   margin: 0 0 10px 0;
-  color: #333;
-  font-size: 16px;
+  color: #1a1a1a;
+  font-size: 18px;
   font-weight: 600;
 }
 
 
 .branch-preview p {
   margin: 5px 0;
-  color: #666;
-  font-size: 14px;
+  color: #666666;
+  font-size: 16px;
   line-height: 1.4;
 }
 
 .branch-address {
   font-weight: 500;
-  color: #333 !important;
+  color: #1a1a1a !important;
 }
 
 .branch-phone,
 .branch-email,
 .branch-hours {
-  color: #666 !important;
+  color: #666666 !important;
 }
 
 .branch-meta {
@@ -134,8 +156,8 @@
 }
 
 .branch-meta span {
-  font-size: 12px;
-  color: #999;
+  font-size: 14px;
+  color: #999999;
 }
 
 .branch-actions {
@@ -147,17 +169,18 @@
 
 
 .edit-btn {
-  background: #007bff;
-  color: white;
+  background: #404040;
+  color: #ffffff;
   border: none;
   padding: 4px 8px;
-  border-radius: 3px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .edit-btn:hover {
-  background: #0056b3;
+  background: #1a1a1a;
 }
 
 .delete-btn {
@@ -167,7 +190,7 @@
   padding: 4px 8px;
   border-radius: 3px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 16px;
 }
 
 .delete-btn:hover {
@@ -177,14 +200,16 @@
 .branch-edit-form {
   background: #f8f9fa;
   padding: 15px;
-  border-radius: 6px;
+  border-radius: 8px;
   margin-top: 10px;
+  border: 1px solid #e0e0e0;
 }
 
 .branch-edit-form h4 {
   margin: 0 0 15px 0;
-  color: #333;
-  font-size: 16px;
+  color: #1a1a1a;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 .branch-edit-form form {
@@ -201,9 +226,17 @@
 
 .branch-edit-form input {
   padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 16px;
+  background: #ffffff;
+  color: #1a1a1a;
+  transition: border-color 0.3s;
+}
+
+.branch-edit-form input:focus {
+  outline: none;
+  border-color: #404040;
 }
 
 .edit-actions {
@@ -213,38 +246,40 @@
 }
 
 .save-btn {
-  background: #28a745;
-  color: white;
+  background: #1a1a1a;
+  color: #ffffff;
   border: none;
   padding: 8px 16px;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .save-btn:hover {
-  background: #218838;
+  background: #404040;
 }
 
 .cancel-btn {
-  background: #6c757d;
-  color: white;
+  background: #666666;
+  color: #ffffff;
   border: none;
   padding: 8px 16px;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .cancel-btn:hover {
-  background: #5a6268;
+  background: #404040;
 }
 
 .admin-branches-loading {
   text-align: center;
   padding: 40px;
-  color: #666;
-  font-size: 16px;
+  color: #666666;
+  font-size: 18px;
 }
 
 /* Адаптивность */

@@ -201,12 +201,6 @@ const AdminBanners = ({ banners, onLoadBanners, token, API_BASE }) => {
                   </div>
                   <div className="banner-actions">
                     <button 
-                      className={`toggle-btn ${banner.isActive ? 'active' : 'inactive'}`}
-                      onClick={() => updateBanner(banner.id, { isActive: !banner.isActive })}
-                    >
-                      {banner.isActive ? 'Активен' : 'Неактивен'}
-                    </button>
-                    <button 
                       className="edit-btn"
                       onClick={() => editBanner(banner)}
                     >

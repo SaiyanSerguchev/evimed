@@ -2,6 +2,10 @@
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border: 1px solid #e0e0e0;
 }
 
 .tree-header {
@@ -15,22 +19,24 @@
 
 .tree-header h2 {
   margin: 0;
-  color: #333;
+  color: #1a1a1a;
   font-size: 24px;
+  font-weight: 600;
 }
 
 .refresh-btn {
-  background: #007bff;
-  color: white;
+  background: #404040;
+  color: #ffffff;
   border: none;
   padding: 8px 16px;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .refresh-btn:hover {
-  background: #0056b3;
+  background: #1a1a1a;
 }
 
 .add-forms {
@@ -41,21 +47,24 @@
   padding: 20px;
   background: #f8f9fa;
   border-radius: 8px;
+  border: 1px solid #e0e0e0;
 }
 
 .add-category-form,
 .add-service-form {
-  background: white;
+  background: #ffffff;
   padding: 20px;
-  border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border: 1px solid #e0e0e0;
 }
 
 .add-category-form h3,
 .add-service-form h3 {
   margin: 0 0 15px 0;
-  color: #333;
-  font-size: 16px;
+  color: #1a1a1a;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .add-category-form form,
@@ -71,9 +80,21 @@
 .add-service-form textarea,
 .add-service-form select {
   padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 16px;
+  background: #ffffff;
+  color: #1a1a1a;
+  transition: border-color 0.3s;
+}
+
+.add-category-form input:focus,
+.add-category-form textarea:focus,
+.add-service-form input:focus,
+.add-service-form textarea:focus,
+.add-service-form select:focus {
+  outline: none;
+  border-color: #404040;
 }
 
 .add-category-form textarea,
@@ -84,26 +105,28 @@
 
 .add-category-form button,
 .add-service-form button {
-  background: #28a745;
-  color: white;
+  background: #1a1a1a;
+  color: #ffffff;
   border: none;
   padding: 10px 16px;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
   margin-top: 10px;
+  font-weight: 500;
 }
 
 .add-category-form button:hover,
 .add-service-form button:hover {
-  background: #218838;
+  background: #404040;
 }
 
 .services-tree {
-  background: white;
+  background: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   overflow: hidden;
+  border: 1px solid #e0e0e0;
 }
 
 .tree-category {
@@ -146,18 +169,18 @@
 
 .category-name {
   font-weight: 600;
-  font-size: 16px;
-  color: #333;
+  font-size: 18px;
+  color: #1a1a1a;
 }
 
 .category-name.inactive {
-  color: #999;
+  color: #999999;
   text-decoration: line-through;
 }
 
 .category-meta {
-  color: #666;
-  font-size: 14px;
+  color: #666666;
+  font-size: 16px;
 }
 
 .category-actions {
@@ -165,37 +188,26 @@
   gap: 8px;
 }
 
-.status-btn {
-  padding: 4px 8px;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.status-btn.active {
-  background: #d4edda;
-  color: #155724;
-}
-
-.status-btn.inactive {
-  background: #f8d7da;
-  color: #721c24;
+.category-actions .edit-btn {
+  min-width: 140px;
+  white-space: nowrap;
 }
 
 .edit-btn {
-  background: #007bff;
-  color: white;
+  background: #404040;
+  color: #ffffff;
   border: none;
-  padding: 4px 8px;
-  border-radius: 3px;
+  padding: 6px 12px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  min-width: 120px;
+  white-space: nowrap;
 }
 
 .edit-btn:hover {
-  background: #0056b3;
+  background: #1a1a1a;
 }
 
 .delete-btn {
@@ -205,7 +217,7 @@
   padding: 4px 8px;
   border-radius: 3px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 16px;
 }
 
 .delete-btn:hover {
@@ -229,9 +241,19 @@
 .edit-form textarea,
 .edit-form select {
   padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 16px;
+  background: #ffffff;
+  color: #1a1a1a;
+  transition: border-color 0.3s;
+}
+
+.edit-form input:focus,
+.edit-form textarea:focus,
+.edit-form select:focus {
+  outline: none;
+  border-color: #404040;
 }
 
 .edit-form textarea {
@@ -248,31 +270,33 @@
 }
 
 .save-btn {
-  background: #28a745;
-  color: white;
+  background: #1a1a1a;
+  color: #ffffff;
   border: none;
   padding: 8px 16px;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .save-btn:hover {
-  background: #218838;
+  background: #404040;
 }
 
 .cancel-btn {
-  background: #6c757d;
-  color: white;
+  background: #666666;
+  color: #ffffff;
   border: none;
   padding: 8px 16px;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .cancel-btn:hover {
-  background: #5a6268;
+  background: #404040;
 }
 
 .category-services {
@@ -280,17 +304,6 @@
   background: white;
 }
 
-.tree-service {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 20px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.tree-service:last-child {
-  border-bottom: none;
-}
 
 .service-info {
   flex: 1;
@@ -301,24 +314,24 @@
 
 .service-name {
   font-weight: 500;
-  color: #333;
-  font-size: 14px;
+  color: #1a1a1a;
+  font-size: 16px;
 }
 
 .service-name.inactive {
-  color: #999;
+  color: #999999;
   text-decoration: line-through;
 }
 
 .service-price {
-  color: #28a745;
+  color: #1a1a1a;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .service-duration {
-  color: #666;
-  font-size: 13px;
+  color: #666666;
+  font-size: 14px;
 }
 
 .service-actions {
@@ -326,18 +339,85 @@
   gap: 6px;
 }
 
-.service-actions .status-btn,
-.service-actions .edit-btn,
 .service-actions .delete-btn {
   padding: 3px 6px;
-  font-size: 11px;
+  font-size: 12px;
+}
+
+.service-actions .edit-btn {
+  padding: 6px 12px;
+  font-size: 12px;
+  min-width: 120px;
+  white-space: nowrap;
 }
 
 .admin-services-tree-loading {
   text-align: center;
   padding: 40px;
-  color: #666;
+  color: #666666;
+  font-size: 18px;
+}
+
+/* Стили для редактирования услуг */
+.service-container {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.service-container:last-child {
+  border-bottom: none;
+}
+
+.tree-service {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+}
+
+.service-edit-form {
+  padding: 20px;
+  background: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+  margin: 0 20px;
+}
+
+.service-edit-form form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  align-items: start;
+}
+
+.service-edit-form input,
+.service-edit-form textarea,
+.service-edit-form select {
+  padding: 8px 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
   font-size: 16px;
+  background: #ffffff;
+  color: #1a1a1a;
+  transition: border-color 0.3s;
+}
+
+.service-edit-form input:focus,
+.service-edit-form textarea:focus,
+.service-edit-form select:focus {
+  outline: none;
+  border-color: #404040;
+}
+
+.service-edit-form textarea {
+  grid-column: 1 / -1;
+  min-height: 60px;
+  resize: vertical;
+}
+
+.service-edit-form .edit-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
 }
 
 /* Адаптивность */
@@ -371,7 +451,8 @@
     align-self: flex-end;
   }
   
-  .edit-form form {
+  .edit-form form,
+  .service-edit-form form {
     grid-template-columns: 1fr;
   }
 }

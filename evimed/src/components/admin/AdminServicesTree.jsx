@@ -399,12 +399,6 @@ const AdminServicesTree = ({ token, API_BASE }) => {
                 </div>
                 <div className="category-actions">
                   <button
-                    className={`status-btn ${category.isActive ? 'active' : 'inactive'}`}
-                    onClick={() => toggleCategoryStatus(category.id, !category.isActive)}
-                  >
-                    {category.isActive ? 'Активна' : 'Неактивна'}
-                  </button>
-                  <button
                     className="edit-btn"
                     onClick={() => editCategory(category)}
                   >
@@ -454,38 +448,34 @@ const AdminServicesTree = ({ token, API_BASE }) => {
               {isExpanded && (
                 <div className="category-services">
                   {categoryServices.map(service => (
-                    <div key={service.id} className="tree-service">
-                      <div className="service-info">
-                        <span className={`service-name ${!service.isActive ? 'inactive' : ''}`}>
-                          {service.name}
-                        </span>
-                        <span className="service-price">{service.price} ₽</span>
-                        <span className="service-duration">{service.duration}</span>
-                      </div>
-                      <div className="service-actions">
-                        <button
-                          className={`status-btn ${service.isActive ? 'active' : 'inactive'}`}
-                          onClick={() => toggleServiceStatus(service.id, !service.isActive)}
-                        >
-                          {service.isActive ? 'Активна' : 'Неактивна'}
-                        </button>
-                        <button
-                          className="edit-btn"
-                          onClick={() => editService(service)}
-                        >
-                          Редактировать
-                        </button>
-                        <button
-                          className="delete-btn"
-                          onClick={() => deleteService(service.id)}
-                        >
-                          Удалить
-                        </button>
+                    <div key={service.id} className="service-container">
+                      <div className="tree-service">
+                        <div className="service-info">
+                          <span className={`service-name ${!service.isActive ? 'inactive' : ''}`}>
+                            {service.name}
+                          </span>
+                          <span className="service-price">{service.price} ₽</span>
+                          <span className="service-duration">{service.duration}</span>
+                        </div>
+                        <div className="service-actions">
+                          <button
+                            className="edit-btn"
+                            onClick={() => editService(service)}
+                          >
+                            Редактировать
+                          </button>
+                          <button
+                            className="delete-btn"
+                            onClick={() => deleteService(service.id)}
+                          >
+                            Удалить
+                          </button>
+                        </div>
                       </div>
 
                       {/* Редактирование услуги */}
                       {editingService === service.id && (
-                        <div className="edit-form">
+                        <div className="service-edit-form">
                           <form onSubmit={saveServiceEdit}>
                             <input
                               type="text"

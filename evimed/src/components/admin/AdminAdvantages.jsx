@@ -27,7 +27,10 @@ const AdminAdvantages = ({ advantages, onLoadAdvantages, token, API_BASE }) => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(editAdvantageData)
+        body: JSON.stringify({
+          title: editAdvantageData.title,
+          description: editAdvantageData.description
+        })
       });
       
       if (response.ok) {
@@ -99,15 +102,6 @@ const AdminAdvantages = ({ advantages, onLoadAdvantages, token, API_BASE }) => {
                       placeholder="Описание"
                       value={editAdvantageData.description}
                       onChange={(e) => setEditAdvantageData({...editAdvantageData, description: e.target.value})}
-                      required
-                    />
-                    <input
-                      type="number"
-                      placeholder="Порядковый номер"
-                      value={editAdvantageData.order}
-                      onChange={(e) => setEditAdvantageData({...editAdvantageData, order: parseInt(e.target.value)})}
-                      min="1"
-                      max="4"
                       required
                     />
                     <div className="edit-actions">

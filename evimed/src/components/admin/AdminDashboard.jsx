@@ -43,10 +43,6 @@ const AdminDashboard = ({ dashboardData }) => {
           <h3>Записей сегодня</h3>
           <p className="stat-number">{dashboardData.stats.todayAppointments || 0}</p>
         </div>
-        <div className="stat-card">
-          <h3>Баннеров</h3>
-          <p className="stat-number">{dashboardData.stats.totalBanners || 0}</p>
-        </div>
       </div>
 
       <div className="recent-appointments">
