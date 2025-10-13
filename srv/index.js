@@ -22,9 +22,16 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/appointments', require('./routes/appointments'));
 app.use('/api/services', require('./routes/services'));
+app.use('/api/service-categories', require('./routes/service-categories'));
 app.use('/api/banners', require('./routes/banners'));
+app.use('/api/advantages', require('./routes/advantages'));
+app.use('/api/branches', require('./routes/branches'));
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/admin/services', require('./routes/admin-services'));
+app.use('/api/admin/service-categories', require('./routes/admin-service-categories'));
 app.use('/api/admin/banners', require('./routes/admin-banners'));
+app.use('/api/admin/advantages', require('./routes/admin-advantages'));
+app.use('/api/admin/branches', require('./routes/admin-branches'));
 
 // Health check
 app.get('/health', (req, res) => {

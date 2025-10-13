@@ -228,6 +228,35 @@
   color: #485366;
 }
 
+.branch-hours {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.4em;
+  letter-spacing: 0.15%;
+  color: #485366;
+  opacity: 0.8;
+  font-style: italic;
+}
+
+.branch-item.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.branch-item.loading .branch-name {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
 .branch-actions {
   display: flex;
   gap: 12px;

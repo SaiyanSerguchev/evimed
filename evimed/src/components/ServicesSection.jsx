@@ -7,15 +7,99 @@ const ServicesSection = () => {
   const [isDragging, setIsDragging] = useState(false);
   const tabsRef = useRef(null);
   
-  // Tabs/categories from the design
-  const tabs = [
-    { label: 'Двухмерные рентгенологические исследования' },
-    { label: 'Трехмерные рентгенологические исследования челюстей (КЛКТ)' },
-    { label: 'ЛОР-исследования' },
-    { label: 'Дополнительные услуги' },
-    { label: 'Пакетные предложения' },
-    { label: 'Распечатка и дублирование' },
-  ];
+  // Data state
+  const [categories, setCategories] = useState([]);
+  const [services, setServices] = useState([]);
+  
+  const API_BASE = 'http://localhost:5000/api';
+
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
+  useEffect(() => {
+    if (categories.length > 0) {
+      loadServicesForCategory(categories[activeTab]?.id);
+    }
+  }, [categories, activeTab]);
+
+  const loadCategories = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/service-categories`);
+      const data = await response.json();
+      setCategories(data);
+    } catch (error) {
+      console.error('Ошибка загрузки категорий:', error);
+      // Fallback к статичным данным
+      setCategories([
+        { id: 1, name: 'Двухмерные рентгенологические исследования', order: 1 },
+        { id: 2, name: 'Трехмерные рентгенологические исследования челюстей (КЛКТ)', order: 2 },
+        { id: 3, name: 'ЛОР-исследования', order: 3 },
+        { id: 4, name: 'Дополнительные услуги', order: 4 },
+        { id: 5, name: 'Пакетные предложения', order: 5 },
+        { id: 6, name: 'Распечатка и дублирование', order: 6 }
+      ]);
+    }
+  };
+
+  const loadServicesForCategory = async (categoryId) => {
+    if (!categoryId) return;
+    
+    try {
+      const response = await fetch(`${API_BASE}/services/category/${categoryId}`);
+      const data = await response.json();
+      setServices(data);
+    } catch (error) {
+      console.error('Ошибка загрузки услуг:', error);
+      // Fallback к статичным данным для КЛКТ
+      if (categoryId === 2) {
+        setServices([
+          {
+            id: 1,
+            name: '5×5 см, KaVo / область одного сегмента (4-6 зубов)',
+            description: '3D-снимок отображает реальные размеры и пропорции анатомических структур',
+            duration: '15–30 мин',
+            preparation: 'Без подготовки',
+            price: 1200
+          },
+          {
+            id: 2,
+            name: '6×8 см, KaVo / область зубных дуг (запись на CD)',
+            description: '3D-снимок отображает реальные размеры и пропорции анатомических структур',
+            duration: '1-2 часа',
+            preparation: 'Требуется подготовка',
+            price: 1700
+          },
+          {
+            id: 3,
+            name: '8×8 см, KaVo / область зубных дуг, нижнечелюстной канал (запись на CD)',
+            description: '3D-снимок отображает реальные размеры и пропорции анатомических структур без искажений и со всех сторон. Это позволяет максимально детально изучить диагностическую картину и корректно спланировать лечение.',
+            duration: '15 мин',
+            preparation: 'Без подготовки',
+            price: 2400
+          },
+          {
+            id: 4,
+            name: '8×15 см, KaVo / зубные дуги, нижнечелюстной канал, дно верхнечелюстной пазухи',
+            description: '3D-снимок отображает реальные размеры и пропорции анатомических структур',
+            duration: '30 мин',
+            preparation: 'Требуется подготовка',
+            price: 3300
+          },
+          {
+            id: 5,
+            name: '13×15 см, KaVo / полная челюстно-лицевая область, ВНЧС (CD-запись)',
+            description: '3D-снимок отображает реальные размеры и пропорции анатомических структур без искажений и со всех сторон. Это позволяет максимально детально изучить диагностическую картину и корректно спланировать лечение.',
+            duration: '1 час',
+            preparation: 'Без подготовки',
+            price: 3500
+          }
+        ]);
+      } else {
+        setServices([]);
+      }
+    }
+  };
   
   // Handle mouse down for drag scrolling
   const handleMouseDown = (e) => {
@@ -38,60 +122,6 @@ const ServicesSection = () => {
       tabsRef.current.style.cursor = 'grab';
     }
   };
-
-  // Статичные карточки КТ (5 штук) напрямую из макета
-  const ctOptions = [
-    {
-      titleRow1: '5×5 см, KaVo / область одного',
-      titleRow2: 'сегмента (4-6 зубов)',
-      description:
-        '3D-снимок отображает реальные размеры и пропорции анатомических структур',
-      time: '15–30 мин',
-      preparation: 'Без подготовки',
-      price: '1 200',
-      currency: '₽',
-    },
-    {
-      titleRow1: '6×8 см, KaVo / область зубных дуг',
-      titleRow2: '(запись на CD)',
-      description:
-        '3D-снимок отображает реальные размеры и пропорции анатомических структур',
-      time: '1-2 часа',
-      preparation: 'Требуется подготовка',
-      price: '1 700',
-      currency: '₽',
-    },
-    {
-      titleRow1: '8×8 см, KaVo / область зубных дуг,',
-      titleRow2: 'нижнечелюстной канал (запись на CD)',
-      description:
-        '3D-снимок отображает реальные размеры и пропорции анатомических структур без искажений и со всех сторон. Это позволяет максимально детально изучить диагностическую картину и корректно спланировать лечение.',
-      time: '15 мин',
-      preparation: 'Без подготовки',
-      price: '2 400',
-      currency: '₽',
-    },
-    {
-      titleRow1: '8×15 см, KaVo / зубные дуги, ниж-',
-      titleRow2: 'нечелюстной канал, дно верхнечелюстной пазухи)',
-      description:
-        '3D-снимок отображает реальные размеры и пропорции анатомических структур',
-      time: '30 мин',
-      preparation: 'Требуется подготовка',
-      price: '3 300',
-      currency: '₽',
-    },
-    {
-      titleRow1: '13×15 см, KaVo / полная челюстно-',
-      titleRow2: 'лицевая область, ВНЧС (CD-запись)',
-      description:
-        '3D-снимок отображает реальные размеры и пропорции анатомических структур без искажений и со всех сторон. Это позволяет максимально детально изучить диагностическую картину и корректно спланировать лечение.',
-      time: '1 час',
-      preparation: 'Без подготовки',
-      price: '3 500',
-      currency: '₽',
-    },
-  ];
 
   // Set cursor style on mount/update
   useEffect(() => {
@@ -138,14 +168,14 @@ const ServicesSection = () => {
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
         >
-          {tabs.map((tab, idx) => (
+          {categories.map((category, idx) => (
             <button
-              key={idx}
+              key={category.id}
               className={`services-tab ${activeTab === idx ? 'active' : ''}`}
               type="button"
               onClick={() => setActiveTab(idx)}
             >
-              {tab.label}
+              {category.name}
             </button>
           ))}
         </div>
@@ -174,35 +204,34 @@ const ServicesSection = () => {
 
         {/* CT Cards */}
         <div className="services-grid ct-grid">
-          {ctOptions.map((item, idx) => (
-            <div key={idx} className="ct-card">
+          {services.map((service, idx) => (
+            <div key={service.id || idx} className="ct-card">
               <div className="ct-head">
                 <div className="ct-title">
-                  <div className="ct-title-line">{item.titleRow1}</div>
-                  <div className="ct-title-line secondary">{item.titleRow2}</div>
+                  <div className="ct-title-line">{service.name}</div>
                 </div>
-                <p className="ct-desc">{item.description}</p>
+                <p className="ct-desc">{service.description}</p>
               </div>
               <div className="ct-meta">
                 <div className="ct-meta-item">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" clip-rule="evenodd" d="M0.833374 10C0.833374 4.93743 4.93743 0.833374 10 0.833374C15.0627 0.833374 19.1667 4.93743 19.1667 10C19.1667 15.0627 15.0627 19.1667 10 19.1667C4.93743 19.1667 0.833374 15.0627 0.833374 10ZM10 2.50004C5.8579 2.50004 2.50004 5.8579 2.50004 10C2.50004 14.1422 5.8579 17.5 10 17.5C14.1422 17.5 17.5 14.1422 17.5 10C17.5 5.8579 14.1422 2.50004 10 2.50004ZM10.0036 4.16671C10.4638 4.16675 10.8369 4.53989 10.8368 5.00012L10.8364 9.65856L14.1253 12.9475C14.4508 13.273 14.4508 13.8006 14.1253 14.126C13.7999 14.4515 13.2723 14.4515 12.9468 14.126L9.41374 10.593C9.25744 10.4367 9.16964 10.2247 9.16966 10.0036L9.17017 4.99996C9.17021 4.53972 9.54334 4.16666 10.0036 4.16671Z" fill="#14488C" fill-opacity="0.44"/>
+                  <path fillRule="evenodd" clipRule="evenodd" d="M0.833374 10C0.833374 4.93743 4.93743 0.833374 10 0.833374C15.0627 0.833374 19.1667 4.93743 19.1667 10C19.1667 15.0627 15.0627 19.1667 10 19.1667C4.93743 19.1667 0.833374 15.0627 0.833374 10ZM10 2.50004C5.8579 2.50004 2.50004 5.8579 2.50004 10C2.50004 14.1422 5.8579 17.5 10 17.5C14.1422 17.5 17.5 14.1422 17.5 10C17.5 5.8579 14.1422 2.50004 10 2.50004ZM10.0036 4.16671C10.4638 4.16675 10.8369 4.53989 10.8368 5.00012L10.8364 9.65856L14.1253 12.9475C14.4508 13.273 14.4508 13.8006 14.1253 14.126C13.7999 14.4515 13.2723 14.4515 12.9468 14.126L9.41374 10.593C9.25744 10.4367 9.16964 10.2247 9.16966 10.0036L9.17017 4.99996C9.17021 4.53972 9.54334 4.16666 10.0036 4.16671Z" fill="#14488C" fillOpacity="0.44"/>
                   </svg>
-                  <span>{item.time}</span>
+                  <span>{service.duration}</span>
                 </div>
                 <div className="ct-meta-item">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M0.833374 10C0.833374 4.93743 4.93743 0.833374 10 0.833374C15.0627 0.833374 19.1667 4.93743 19.1667 10C19.1667 15.0627 15.0627 19.1667 10 19.1667C4.93743 19.1667 0.833374 15.0627 0.833374 10ZM10 2.50004C5.8579 2.50004 2.50004 5.8579 2.50004 10C2.50004 14.1422 5.8579 17.5 10 17.5C14.1422 17.5 17.5 14.1422 17.5 10C17.5 5.8579 14.1422 2.50004 10 2.50004Z" fill="#14488C" fill-opacity="0.44"/>
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M13.9226 7.74412C14.2481 8.06955 14.2481 8.59719 13.9226 8.92263L9.75596 13.0893C9.43053 13.4147 8.90289 13.4147 8.57745 13.0893L6.07745 10.5893C5.75201 10.2639 5.75201 9.73622 6.07745 9.41078C6.40289 9.08535 6.93053 9.08535 7.25596 9.41078L9.16671 11.3215L12.7441 7.74412C13.0696 7.41868 13.5972 7.41868 13.9226 7.74412Z" fill="#14488C" fill-opacity="0.44"/>
+                <path fillRule="evenodd" clipRule="evenodd" d="M0.833374 10C0.833374 4.93743 4.93743 0.833374 10 0.833374C15.0627 0.833374 19.1667 4.93743 19.1667 10C19.1667 15.0627 15.0627 19.1667 10 19.1667C4.93743 19.1667 0.833374 15.0627 0.833374 10ZM10 2.50004C5.8579 2.50004 2.50004 5.8579 2.50004 10C2.50004 14.1422 5.8579 17.5 10 17.5C14.1422 17.5 17.5 14.1422 17.5 10C17.5 5.8579 14.1422 2.50004 10 2.50004Z" fill="#14488C" fillOpacity="0.44"/>
+                <path fillRule="evenodd" clipRule="evenodd" d="M13.9226 7.74412C14.2481 8.06955 14.2481 8.59719 13.9226 8.92263L9.75596 13.0893C9.43053 13.4147 8.90289 13.4147 8.57745 13.0893L6.07745 10.5893C5.75201 10.2639 5.75201 9.73622 6.07745 9.41078C6.40289 9.08535 6.93053 9.08535 7.25596 9.41078L9.16671 11.3215L12.7441 7.74412C13.0696 7.41868 13.5972 7.41868 13.9226 7.74412Z" fill="#14488C" fillOpacity="0.44"/>
                 </svg>
-                  <span>{item.preparation}</span>
+                  <span>{service.preparation}</span>
                 </div>
               </div>
 
               <div className="ct-footer">
                 <div className="ct-price">
-                  <span className="ct-price-value">{item.price}</span>
-                  <span className="ct-price-currency">{item.currency}</span>
+                  <span className="ct-price-value">{service.price}</span>
+                  <span className="ct-price-currency">₽</span>
                 </div>
                 <div className="ct-actions">
                   <button className="ct-icon-btn" type="button" aria-label="Подробнее">

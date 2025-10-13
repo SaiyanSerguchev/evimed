@@ -2,13 +2,14 @@ const prisma = require('../lib/prisma');
 
 class User {
   static async create(userData) {
-    const { name, email, phone, password, role = 'user' } = userData;
+    const { name, email, phone, login, password, role = 'user' } = userData;
     
     return await prisma.user.create({
       data: {
         name,
         email,
         phone,
+        login,
         passwordHash: password,
         role
       },
@@ -17,6 +18,7 @@ class User {
         name: true,
         email: true,
         phone: true,
+        login: true,
         role: true,
         createdAt: true
       }
@@ -29,6 +31,12 @@ class User {
     });
   }
 
+  static async findByLogin(login) {
+    return await prisma.user.findUnique({
+      where: { login }
+    });
+  }
+
   static async findById(id) {
     return await prisma.user.findUnique({
       where: { id: parseInt(id) },
@@ -37,6 +45,7 @@ class User {
         name: true,
         email: true,
         phone: true,
+        login: true,
         role: true,
         createdAt: true
       }
@@ -55,6 +64,7 @@ class User {
         name: true,
         email: true,
         phone: true,
+        login: true,
         role: true,
         updatedAt: true
       }
@@ -75,7 +85,8 @@ class User {
     const where = search ? {
       OR: [
         { name: { contains: search, mode: 'insensitive' } },
-        { email: { contains: search, mode: 'insensitive' } }
+        { email: { contains: search, mode: 'insensitive' } },
+        { login: { contains: search, mode: 'insensitive' } }
       ]
     } : {};
 
@@ -89,6 +100,7 @@ class User {
           name: true,
           email: true,
           phone: true,
+          login: true,
           role: true,
           createdAt: true
         },

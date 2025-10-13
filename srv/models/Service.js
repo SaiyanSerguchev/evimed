@@ -4,7 +4,23 @@ class Service {
   static async getAll() {
     return await prisma.service.findMany({
       where: { isActive: true },
-      orderBy: { name: 'asc' }
+      orderBy: { order: 'asc' },
+      include: {
+        category: true
+      }
+    });
+  }
+
+  static async getByCategory(categoryId) {
+    return await prisma.service.findMany({
+      where: { 
+        categoryId: parseInt(categoryId),
+        isActive: true 
+      },
+      orderBy: { order: 'asc' },
+      include: {
+        category: true
+      }
     });
   }
 
@@ -13,20 +29,28 @@ class Service {
       where: { 
         id: parseInt(id),
         isActive: true 
+      },
+      include: {
+        category: true
       }
     });
   }
 
   static async create(serviceData) {
-    const { name, description, price, duration, category } = serviceData;
+    const { name, description, price, duration, preparation, categoryId, order } = serviceData;
     
     return await prisma.service.create({
       data: {
         name,
         description,
         price: parseFloat(price),
-        duration: parseInt(duration),
-        category
+        duration,
+        preparation,
+        categoryId: parseInt(categoryId),
+        order: parseInt(order) || 0
+      },
+      include: {
+        category: true
       }
     });
   }
@@ -35,13 +59,14 @@ class Service {
     const data = { ...updateData };
     
     if (data.price) data.price = parseFloat(data.price);
-    if (data.duration) data.duration = parseInt(data.duration);
+    if (data.categoryId) data.categoryId = parseInt(data.categoryId);
+    if (data.order !== undefined) data.order = parseInt(data.order);
     
     return await prisma.service.update({
       where: { id: parseInt(id) },
-      data: {
-        ...data,
-        updatedAt: new Date()
+      data: data,
+      include: {
+        category: true
       }
     });
   }
@@ -54,23 +79,43 @@ class Service {
     });
   }
 
+  static async getAllForAdmin() {
+    return await prisma.service.findMany({
+      orderBy: { order: 'asc' },
+      include: {
+        category: true
+      }
+    });
+  }
+
   static async getStats() {
     const total = await prisma.service.count({
       where: { isActive: true }
     });
 
     const byCategory = await prisma.service.groupBy({
-      by: ['category'],
+      by: ['categoryId'],
       where: { isActive: true },
-      _count: { category: true }
+      _count: { categoryId: true }
     });
+
+    // Get category names
+    const categoryStats = await Promise.all(
+      byCategory.map(async (item) => {
+        const category = await prisma.serviceCategory.findUnique({
+          where: { id: item.categoryId },
+          select: { name: true }
+        });
+        return {
+          category: category?.name || 'Неизвестная категория',
+          count: item._count.categoryId
+        };
+      })
+    );
 
     return {
       total,
-      byCategory: byCategory.map(item => ({
-        category: item.category || 'Без категории',
-        count: item._count.category
-      }))
+      byCategory: categoryStats
     };
   }
 }

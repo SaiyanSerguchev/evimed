@@ -13,8 +13,9 @@ datasource db {
 model User {
   id            Int      @id @default(autoincrement())
   name          String
-  email         String   @unique
+  email         String?  @unique
   phone         String?
+  login         String?  @unique
   passwordHash  String   @map("password_hash")
   role          String   @default("user")
   createdAt     DateTime @default(now()) @map("created_at")
@@ -26,18 +27,36 @@ model User {
   @@map("users")
 }
 
-model Service {
+model ServiceCategory {
   id          Int      @id @default(autoincrement())
   name        String   @unique
   description String?
-  price       Decimal  @db.Decimal(10, 2)
-  duration    Int      // in minutes
-  category    String?
+  order       Int      @default(0)
   isActive    Boolean  @default(true) @map("is_active")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   // Relations
+  services    Service[]
+
+  @@map("service_categories")
+}
+
+model Service {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  price       Decimal  @db.Decimal(10, 2)
+  duration    String?  // "15-30 мин", "1-2 часа", etc.
+  preparation String?  // "Без подготовки", "Требуется подготовка"
+  categoryId  Int      @map("category_id")
+  order       Int      @default(0)
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  category     ServiceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   appointments Appointment[]
 
   @@map("services")
@@ -75,4 +94,31 @@ model Banner {
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@map("banners")
+}
+
+model Advantage {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  order       Int      @unique // 1, 2, 3, 4 - уникальный порядок
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("advantages")
+}
+
+model Branch {
+  id          Int      @id @default(autoincrement())
+  title       String
+  address     String
+  phone       String?
+  email       String?
+  workingHours String? @map("working_hours")
+  order       Int      @default(0)
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("branches")
 }

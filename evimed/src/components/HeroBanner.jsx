@@ -5,7 +5,6 @@ import heroEquipment from '../assets/images/hero/hero-equipment.png';
 const HeroBanner = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [banners, setBanners] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   const API_BASE = 'http://localhost:5000/api';
 
@@ -18,7 +17,6 @@ const HeroBanner = () => {
       const response = await fetch(`${API_BASE}/banners`);
       const data = await response.json();
       setBanners(data);
-      setLoading(false);
     } catch (error) {
       console.error('Ошибка загрузки баннеров:', error);
       // Fallback к статичным данным
@@ -27,24 +25,15 @@ const HeroBanner = () => {
           id: 1,
           title: 'Федеральная сеть независимых центров рентгенодиагностики «Эвимед»',
           description: 'Предоставляем услуги в области рентгенодиагностики для стоматологов, оториноларингологов и челюстно–лицевых хирургов.',
-          buttonText: 'Записаться на прием',
-          buttonUrl: '/appointment',
-          imageUrl: heroEquipment,
-          imageAlt: 'Ортопантомограф OP300',
-          order: 0
+          order: 1
         },
         {
           id: 2,
           title: 'Мы открыли уникальный центр функциональной диагностики!',
           description: 'Предоставляем услуги в области рентгенодиагностики для стоматологов, оториноларингологов и челюстно–лицевых хирургов.',
-          buttonText: 'Записаться на прием',
-          buttonUrl: '/appointment',
-          imageUrl: heroEquipment,
-          imageAlt: 'Центр функциональной диагностики',
-          order: 1
+          order: 2
         }
       ]);
-      setLoading(false);
     }
   };
 
@@ -67,18 +56,6 @@ const HeroBanner = () => {
       return () => clearInterval(timer);
     }
   }, [currentSlide, totalSlides]);
-
-  if (loading) {
-    return (
-      <section className="hero-banner">
-        <div className="hero-content">
-          <div className="hero-text">
-            <h1 className="hero-title">Загрузка...</h1>
-          </div>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section className="hero-banner">
@@ -108,14 +85,12 @@ const HeroBanner = () => {
             </div>
             
             {/* CTA Button */}
-            {banner.buttonText && (
-              <button className="hero-button" onClick={() => banner.buttonUrl && (window.location.href = banner.buttonUrl)}>
-                <span className="hero-button-text">{banner.buttonText}</span>
-                <svg className="hero-button-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M1.67 10H15.83M15.83 10L10 4.17M15.83 10L10 15.83" stroke="currentColor" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
-            )}
+            <button className="hero-button" onClick={() => window.location.href = '/appointment'}>
+              <span className="hero-button-text">Записаться на прием</span>
+              <svg className="hero-button-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M1.67 10H15.83M15.83 10L10 4.17M15.83 10L10 15.83" stroke="currentColor" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
           </div>
         </div>
       ))}

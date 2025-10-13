@@ -17,13 +17,13 @@ router.get('/', adminAuth, async (req, res) => {
 // Create banner
 router.post('/', adminAuth, async (req, res) => {
   try {
-    const { title, description, buttonText, buttonUrl, imageUrl, imageAlt, order } = req.body;
+    const { title, description, order } = req.body;
     
     if (!title) {
       return res.status(400).json({ error: 'Title is required' });
     }
 
-    const bannerData = { title, description, buttonText, buttonUrl, imageUrl, imageAlt, order };
+    const bannerData = { title, description, order };
     const banner = await Banner.create(bannerData);
     res.status(201).json(banner);
   } catch (error) {
@@ -35,15 +35,11 @@ router.post('/', adminAuth, async (req, res) => {
 // Update banner
 router.put('/:id', adminAuth, async (req, res) => {
   try {
-    const { title, description, buttonText, buttonUrl, imageUrl, imageAlt, order, isActive } = req.body;
+    const { title, description, order, isActive } = req.body;
     const updateData = {};
     
     if (title !== undefined) updateData.title = title;
     if (description !== undefined) updateData.description = description;
-    if (buttonText !== undefined) updateData.buttonText = buttonText;
-    if (buttonUrl !== undefined) updateData.buttonUrl = buttonUrl;
-    if (imageUrl !== undefined) updateData.imageUrl = imageUrl;
-    if (imageAlt !== undefined) updateData.imageAlt = imageAlt;
     if (order !== undefined) updateData.order = order;
     if (isActive !== undefined) updateData.isActive = isActive;
 

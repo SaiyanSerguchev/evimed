@@ -18,17 +18,13 @@ class Banner {
   }
 
   static async create(bannerData) {
-    const { title, description, buttonText, buttonUrl, imageUrl, imageAlt, order } = bannerData;
+    const { title, description, order } = bannerData;
     
     return await prisma.banner.create({
       data: {
         title,
         description,
-        buttonText,
-        buttonUrl,
-        imageUrl,
-        imageAlt,
-        order: order || 0
+        order: order || 1
       }
     });
   }
@@ -44,15 +40,14 @@ class Banner {
   }
 
   static async delete(id) {
-    return await prisma.banner.update({
-      where: { id: parseInt(id) },
-      data: { isActive: false },
-      select: { id: true }
+    return await prisma.banner.delete({
+      where: { id: parseInt(id) }
     });
   }
 
   static async getAllForAdmin() {
     return await prisma.banner.findMany({
+      where: { isActive: true },
       orderBy: { order: 'asc' }
     });
   }

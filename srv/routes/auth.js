@@ -44,23 +44,31 @@ router.post('/register', async (req, res) => {
 // Login
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { login, password } = req.body;
 
-    // Find user
-    const user = await User.findByEmail(email);
+    // Find user by login (for admin) or email (for regular users)
+    let user;
+    if (login.includes('@')) {
+      // If it looks like an email, search by email
+      user = await User.findByEmail(login);
+    } else {
+      // Otherwise search by login
+      user = await User.findByLogin(login);
+    }
+
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     // Check password
-    const isValidPassword = await bcrypt.compare(password, user.password_hash);
+    const isValidPassword = await bcrypt.compare(password, user.passwordHash);
     if (!isValidPassword) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     // Generate JWT
     const token = jwt.sign(
-      { userId: user.id, email: user.email },
+      { userId: user.id, email: user.email, login: user.login },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
@@ -68,7 +76,14 @@ router.post('/login', async (req, res) => {
     res.json({
       message: 'Login successful',
       token,
-      user: { id: user.id, name: user.name, email: user.email, phone: user.phone }
+      user: { 
+        id: user.id, 
+        name: user.name, 
+        email: user.email, 
+        phone: user.phone,
+        login: user.login,
+        role: user.role
+      }
     });
   } catch (error) {
     console.error('Login error:', error);

@@ -1,7 +1,7 @@
 import React from 'react';
 import './ContactSection.css';
 import contactsMap from '../assets/images/contacts/contactsmap.png';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 const ContactSection = () => {
   const kicker = 'Адреса и контакты';
@@ -10,12 +10,34 @@ const ContactSection = () => {
   const phone = '+7 (495) 492-43-40';
   const email = 'info@axiomaykt.ru';
 
-  const branches = [
-    { title: 'Головной центр рентгено-диагностики', address: 'Якутск, пр. Ленина 1, этаж 7, офис 721' },
-    { title: 'Филиал на Кирова', address: 'Якутск, пр. Кирова 28, этаж 1, офис 101' },
-    { title: 'Филиал из будущего', address: 'Якутск, пр. Ленина 1, этаж 7, офис 721' },
-    { title: 'Филиал из будущего', address: 'Якутск, пр. Ленина 1, этаж 7, офис 721' },
-  ];
+  // Data state
+  const [branches, setBranches] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const API_BASE = 'http://localhost:5000/api';
+
+  useEffect(() => {
+    loadBranches();
+  }, []);
+
+  const loadBranches = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/branches`);
+      const data = await response.json();
+      setBranches(data);
+    } catch (error) {
+      console.error('Ошибка загрузки филиалов:', error);
+      // Fallback к статичным данным
+      setBranches([
+        { id: 1, title: 'Головной центр рентгено-диагностики', address: 'Якутск, пр. Ленина 1, этаж 7, офис 721' },
+        { id: 2, title: 'Филиал на Кирова', address: 'Якутск, пр. Кирова 28, этаж 1, офис 101' },
+        { id: 3, title: 'Филиал на Автодорожной', address: 'Якутск, ул. Автодорожная 15, этаж 2, офис 201' },
+        { id: 4, title: 'Филиал на Промышленной', address: 'Якутск, ул. Промышленная 8, этаж 3, офис 301' }
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Simple text contacts
   const contactText = {
@@ -70,15 +92,25 @@ const ContactSection = () => {
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
                 onMouseLeave={handleMouseUp}>
-                  {branches.map((b, i) => (
-                    <li 
-                      className={`branch-item ${i === activeBranch ? 'active' : ''}`} 
-                      key={`${b.title}-${i}`}
-                      onClick={() => setActiveBranch(i)}>
+                  {loading ? (
+                    <li className="branch-item loading">
                       <div className="branch-content">
-                        <div className="branch-name">{b.title}</div>
-                        <div className="branch-address">{b.address}</div>
+                        <div className="branch-name">Загрузка филиалов...</div>
                       </div>
+                    </li>
+                  ) : (
+                    branches.map((branch, i) => (
+                      <li 
+                        className={`branch-item ${i === activeBranch ? 'active' : ''}`} 
+                        key={branch.id || i}
+                        onClick={() => setActiveBranch(i)}>
+                        <div className="branch-content">
+                          <div className="branch-name">{branch.title}</div>
+                          <div className="branch-address">{branch.address}</div>
+                          {branch.workingHours && (
+                            <div className="branch-hours">{branch.workingHours}</div>
+                          )}
+                        </div>
                       <div className="branch-actions">
                         <button className="branch-action branch-action-primary">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -93,7 +125,8 @@ const ContactSection = () => {
                         </button>
                       </div>
                     </li>
-                  ))}
+                    ))
+                  )}
                 </ul>
               </div>
           </div>
