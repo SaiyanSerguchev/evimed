@@ -118,7 +118,6 @@ const AppointmentModal = ({ isOpen, onClose }) => {
             )}
             <div className="service-content">
               <h3 className="service-title">{service.title}</h3>
-              <p className="service-description">{service.description}</p>
             </div>
             {!service.image && (
               <div className="service-arrow">

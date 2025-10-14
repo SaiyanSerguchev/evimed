@@ -154,7 +154,7 @@
   width: 100%;
   height: 140px;
   margin-bottom: 0;
-  border-radius: 0;
+  border-radius: 0 0 44px 44px;
   overflow: hidden;
   background: #1A232E;
   display: flex;
@@ -165,6 +165,7 @@
   bottom: 0;
   left: 0;
   right: 0;
+  z-index: 1;
 }
 
 .service-image img {
@@ -181,6 +182,8 @@
   padding: 28px;
   position: relative;
   z-index: 2;
+  border-radius: 44px 44px 0 0;
+  overflow: hidden;
 }
 
 .service-title {
@@ -408,20 +411,19 @@
   background: transparent;
   border-top: 1px solid rgba(22, 35, 61, 0.17);
   display: flex;
-  justify-content: space-between;
   align-items: center;
   height: 68px;
 }
 
 .btn {
-  padding: 24px 117px;
+  flex: 1;
+  padding: 0;
   border-radius: 0;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
   border: none;
-  min-width: auto;
   height: 68px;
   display: flex;
   align-items: center;
