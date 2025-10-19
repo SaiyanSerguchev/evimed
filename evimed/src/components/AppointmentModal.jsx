@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './AppointmentModal.css';
 
 const AppointmentModal = ({ isOpen, onClose }) => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -14,29 +15,54 @@ const AppointmentModal = ({ isOpen, onClose }) => {
     comment: ''
   });
 
+  const categories = [
+    {
+      id: 1,
+      title: 'Рентгенологические исследования',
+      description: '2D и 3D снимки',
+      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjE1IiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDIxNSAxNDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMTUiIGhlaWdodD0iMTQwIiBmaWxsPSIjRUJFREY2Ii8+CjxwYXRoIGQ9Ik0yMCAzMEgxOTVWMTEwSDIwVjMwWiIgZmlsbD0iI0U1RTdFQiIvPgo8cGF0aCBkPSJNMzAgNDBIMTg1VjEwMEgzMFY0MFoiIGZpbGw9IiNEM0Q3RTAiLz4KPHBhdGggZD0iTTQwIDUwSDE3NVY5MEg0MFY1MFoiIGZpbGw9IiNCNkI5QjYiLz4KPHBhdGggZD0iTTUwIDYwSDE2NVY4MEg1MFY2MFoiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTYwIDcwSDE1NVY3MEg2MFY3MFoiIGZpbGw9IiM2QjcyODAiLz4KPC9zdmc+'
+    },
+    {
+      id: 2,
+      title: 'ЛОР-исследования',
+      description: 'Исследования уха, горла и носа',
+      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjE1IiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDIxNSAxNDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMTUiIGhlaWdodD0iMTQwIiBmaWxsPSIjRUJFREY2Ii8+CjxjaXJjbGUgY3g9IjEwNy41IiBjeT0iNzAiIHI9IjQwIiBmaWxsPSIjRTVFN0VCIi8+CjxjaXJjbGUgY3g9IjEwNy41IiBjeT0iNzAiIHI9IjMwIiBmaWxsPSIjRDNEN0UwIi8+CjxjaXJjbGUgY3g9IjEwNy41IiBjeT0iNzAiIHI9IjIwIiBmaWxsPSIjQjZCOUI2Ii8+CjxjaXJjbGUgY3g9IjEwNy41IiBjeT0iNzAiIHI9IjEwIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPg=='
+    },
+    {
+      id: 3,
+      title: 'Консультация',
+      description: 'Нужна помощь специалиста',
+      image: null
+    }
+  ];
+
   const services = [
     {
       id: 1,
+      categoryId: 1,
       title: 'Двухмерные рентгенологические исследования',
       description: 'Стандартные рентгеновские снимки',
       image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjE1IiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDIxNSAxNDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMTUiIGhlaWdodD0iMTQwIiBmaWxsPSIjRUJFREY2Ii8+CjxwYXRoIGQ9Ik0yMCAzMEgxOTVWMTEwSDIwVjMwWiIgZmlsbD0iI0U1RTdFQiIvPgo8cGF0aCBkPSJNMzAgNDBIMTg1VjEwMEgzMFY0MFoiIGZpbGw9IiNEM0Q3RTAiLz4KPHBhdGggZD0iTTQwIDUwSDE3NVY5MEg0MFY1MFoiIGZpbGw9IiNCNkI5QjYiLz4KPHBhdGggZD0iTTUwIDYwSDE2NVY4MEg1MFY2MFoiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTYwIDcwSDE1NVY3MEg2MFY3MFoiIGZpbGw9IiM2QjcyODAiLz4KPC9zdmc+'
     },
     {
       id: 2,
+      categoryId: 1,
       title: 'Трехмерные рентгенологические исследования челюстей (3D КЛКТ)',
       description: 'Трехмерная компьютерная томография',
       image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjE1IiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDIxNSAxNDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMTUiIGhlaWdodD0iMTQwIiBmaWxsPSIjRkZGRkZGIi8+CjxjaXJjbGUgY3g9IjEwNy41IiBjeT0iNzAiIHI9IjQwIiBmaWxsPSIjMTQ0ODhDIiBmaWxsLW9wYWNpdHk9IjAuMyIvPgo8Y2lyY2xlIGN4PSIxMDcuNSIgY3k9IjcwIiByPSIzMCIgZmlsbD0iIzE0NDg4QyIgZmlsbC1vcGFjaXR5PSIwLjUiLz4KPGNpcmNsZSBjeD0iMTA3LjUiIGN5PSI3MCIgcj0iMjAiIGZpbGw9IiMxNDQ4OEMiLz4KPHBhdGggZD0iTTg3LjUgNTVMMTI3LjUgNTVMMTI3LjUgODVMODcuNSA4NUw4Ny41IDU1WiIgZmlsbD0iIzE0NDg4QyIgZmlsbC1vcGFjaXR5PSIwLjIiLz4KPC9zdmc+'
     },
     {
       id: 3,
+      categoryId: 2,
       title: 'ЛОР-исследования (2D РГ / 3D КЛКТ)',
       description: 'Исследования уха, горла и носа',
       image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjE1IiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDIxNSAxNDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMTUiIGhlaWdodD0iMTQwIiBmaWxsPSIjRUJFREY2Ii8+CjxjaXJjbGUgY3g9IjEwNy41IiBjeT0iNzAiIHI9IjQwIiBmaWxsPSIjRTVFN0VCIi8+CjxjaXJjbGUgY3g9IjEwNy41IiBjeT0iNzAiIHI9IjMwIiBmaWxsPSIjRDNEN0UwIi8+CjxjaXJjbGUgY3g9IjEwNy41IiBjeT0iNzAiIHI9IjIwIiBmaWxsPSIjQjZCOUI2Ii8+CjxjaXJjbGUgY3g9IjEwNy41IiBjeT0iNzAiIHI9IjEwIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPg=='
     },
     {
       id: 4,
-      title: 'Не знаю. Нужна консультация',
-      description: 'Консультация специалиста',
+      categoryId: 3,
+      title: 'Консультация специалиста',
+      description: 'Помощь в выборе исследования',
       image: null
     }
   ];
@@ -53,8 +79,22 @@ const AppointmentModal = ({ isOpen, onClose }) => {
     '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'
   ];
 
+  // Отключаем скролл при открытии модального окна
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    // Очищаем стили при размонтировании компонента
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   const handleNext = () => {
-    if (currentStep < 3) {
+    if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -63,6 +103,11 @@ const AppointmentModal = ({ isOpen, onClose }) => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
+  };
+
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category);
+    setSelectedService(null); // Сбрасываем выбранную услугу при смене категории
   };
 
   const handleServiceSelect = (service) => {
@@ -92,6 +137,7 @@ const AppointmentModal = ({ isOpen, onClose }) => {
   const handleSubmit = () => {
     // Здесь будет логика отправки данных
     console.log('Appointment data:', {
+      category: selectedCategory,
       service: selectedService,
       branch: selectedBranch,
       date: selectedDate,
@@ -103,23 +149,24 @@ const AppointmentModal = ({ isOpen, onClose }) => {
 
   const renderStep1 = () => (
     <div className="appointment-step">
-      <h2 className="appointment-title">Какой снимок вас интересует?</h2>
+      <h2 className="appointment-title">Выберите категорию услуги</h2>
       <div className="services-grid">
-        {services.map(service => (
+        {categories.map(category => (
           <div
-            key={service.id}
-            className={`service-card ${selectedService?.id === service.id ? 'selected' : ''}`}
-            onClick={() => handleServiceSelect(service)}
+            key={category.id}
+            className={`service-card ${selectedCategory?.id === category.id ? 'selected' : ''}`}
+            onClick={() => handleCategorySelect(category)}
           >
-            {service.image && (
+            {category.image && (
               <div className="service-image">
-                <img src={service.image} alt={service.title} />
+                <img src={category.image} alt={category.title} />
               </div>
             )}
             <div className="service-content">
-              <h3 className="service-title">{service.title}</h3>
+              <h3 className="service-title">{category.title}</h3>
+              <p className="service-description">{category.description}</p>
             </div>
-            {!service.image && (
+            {!category.image && (
               <div className="service-arrow">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -132,7 +179,43 @@ const AppointmentModal = ({ isOpen, onClose }) => {
     </div>
   );
 
-  const renderStep2 = () => (
+  const renderStep2 = () => {
+    const filteredServices = services.filter(service => service.categoryId === selectedCategory?.id);
+    
+    return (
+      <div className="appointment-step">
+        <h2 className="appointment-title">Выберите конкретную услугу</h2>
+        <div className="services-grid">
+          {filteredServices.map(service => (
+            <div
+              key={service.id}
+              className={`service-card ${selectedService?.id === service.id ? 'selected' : ''}`}
+              onClick={() => handleServiceSelect(service)}
+            >
+              {service.image && (
+                <div className="service-image">
+                  <img src={service.image} alt={service.title} />
+                </div>
+              )}
+              <div className="service-content">
+                <h3 className="service-title">{service.title}</h3>
+                <p className="service-description">{service.description}</p>
+              </div>
+              {!service.image && (
+                <div className="service-arrow">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const renderStep3 = () => (
     <div className="appointment-step">
       <h2 className="appointment-title">Выберите филиал и время</h2>
       
@@ -187,7 +270,7 @@ const AppointmentModal = ({ isOpen, onClose }) => {
     </div>
   );
 
-  const renderStep3 = () => (
+  const renderStep4 = () => (
     <div className="appointment-step">
       <h2 className="appointment-title">Ваши контактные данные</h2>
       
@@ -242,6 +325,10 @@ const AppointmentModal = ({ isOpen, onClose }) => {
       <div className="appointment-summary">
         <h3 className="summary-title">Сводка записи</h3>
         <div className="summary-item">
+          <span className="summary-label">Категория:</span>
+          <span className="summary-value">{selectedCategory?.title}</span>
+        </div>
+        <div className="summary-item">
           <span className="summary-label">Услуга:</span>
           <span className="summary-value">{selectedService?.title}</span>
         </div>
@@ -261,19 +348,19 @@ const AppointmentModal = ({ isOpen, onClose }) => {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
+      <button className="modal-close" onClick={onClose}>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
 
         <div className="modal-header">
           <h1 className="modal-title">Записаться на снимок</h1>
           <div className="progress-bar">
-            <div className="progress-step active"></div>
-            <div className={`progress-step ${currentStep >= 2 ? 'active' : ''}`}></div>
+            <div className={`progress-step ${currentStep >= 1 ? (currentStep === 1 ? 'half-active' : 'active') : ''}`}></div>
             <div className={`progress-step ${currentStep >= 3 ? 'active' : ''}`}></div>
+            <div className={`progress-step ${currentStep >= 4 ? 'active' : ''}`}></div>
           </div>
         </div>
 
@@ -281,6 +368,7 @@ const AppointmentModal = ({ isOpen, onClose }) => {
           {currentStep === 1 && renderStep1()}
           {currentStep === 2 && renderStep2()}
           {currentStep === 3 && renderStep3()}
+          {currentStep === 4 && renderStep4()}
         </div>
 
         <div className="modal-footer">
@@ -296,14 +384,15 @@ const AppointmentModal = ({ isOpen, onClose }) => {
           <div className="btn-divider"></div>
           <button
             className="btn btn-primary"
-            onClick={currentStep === 3 ? handleSubmit : handleNext}
+            onClick={currentStep === 4 ? handleSubmit : handleNext}
             disabled={
-              (currentStep === 1 && !selectedService) ||
-              (currentStep === 2 && (!selectedBranch || !selectedDate || !selectedTime)) ||
-              (currentStep === 3 && (!formData.name || !formData.phone))
+              (currentStep === 1 && !selectedCategory) ||
+              (currentStep === 2 && !selectedService) ||
+              (currentStep === 3 && (!selectedBranch || !selectedDate || !selectedTime)) ||
+              (currentStep === 4 && (!formData.name || !formData.phone))
             }
           >
-            {currentStep === 3 ? 'Записаться' : 'Далее'}
+            {currentStep === 4 ? 'Записаться' : 'Далее'}
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
               <path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
