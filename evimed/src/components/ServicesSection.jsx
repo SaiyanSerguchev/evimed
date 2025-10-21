@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import AppointmentModal from './AppointmentModal';
 import './ServicesSection.css';
 
 const ServicesSection = () => {
@@ -10,6 +11,10 @@ const ServicesSection = () => {
   // Data state
   const [categories, setCategories] = useState([]);
   const [services, setServices] = useState([]);
+  
+  // Modal state
+  const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
+  const [selectedServiceForAppointment, setSelectedServiceForAppointment] = useState(null);
   
   const API_BASE = 'http://localhost:5000/api';
 
@@ -130,6 +135,17 @@ const ServicesSection = () => {
     }
   }, []);
 
+  // Обработчики для модального окна записи
+  const handleOpenAppointmentModal = (service = null) => {
+    setSelectedServiceForAppointment(service);
+    setIsAppointmentModalOpen(true);
+  };
+
+  const handleCloseAppointmentModal = () => {
+    setIsAppointmentModalOpen(false);
+    setSelectedServiceForAppointment(null);
+  };
+
   return (
     <section className="services-section" id="services">
       <div className="services-container">
@@ -142,7 +158,11 @@ const ServicesSection = () => {
               Глубокое обследование и персональное лечение
             </h2>
             <div className="services-title-line"></div>
-            <button className="choose-service-btn" type="button">
+            <button 
+              className="choose-service-btn" 
+              type="button"
+              onClick={() => handleOpenAppointmentModal()}
+            >
               <span>Выбрать услугу</span>
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M0.75 6.00311C0.75 5.5889 1.08579 5.25311 1.5 5.25311H10.5C10.9142 5.25311 11.25 5.5889 11.25 6.00311C11.25 6.41733 10.9142 6.75311 10.5 6.75311H1.5C1.08579 6.75311 0.75 6.41733 0.75 6.00311Z" fill="#14488C" fill-opacity="0.92"/>
@@ -240,7 +260,12 @@ const ServicesSection = () => {
                   <path d="M3.9375 1.59375C3.9375 2.21507 3.43382 2.71875 2.8125 2.71875C2.19118 2.71875 1.6875 2.21507 1.6875 1.59375C1.6875 0.97243 2.19118 0.46875 2.8125 0.46875C3.43382 0.46875 3.9375 0.97243 3.9375 1.59375Z" fill="#14488C"/>
                   </svg>
                   </button>
-                  <button className="ct-icon-btn outline" type="button" aria-label="Записаться">
+                  <button 
+                    className="ct-icon-btn outline" 
+                    type="button" 
+                    aria-label="Записаться"
+                    onClick={() => handleOpenAppointmentModal(service)}
+                  >
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M0.75 6.00311C0.75 5.5889 1.08579 5.25311 1.5 5.25311H10.5C10.9142 5.25311 11.25 5.5889 11.25 6.00311C11.25 6.41733 10.9142 6.75311 10.5 6.75311H1.5C1.08579 6.75311 0.75 6.41733 0.75 6.00311Z" fill="#14488C" fill-opacity="0.92"/>
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M5.46967 0.96967C5.76256 0.676777 6.23744 0.676777 6.53033 0.96967L11.0303 5.46967C11.3232 5.76256 11.3232 6.23744 11.0303 6.53033L6.53033 11.0303C6.23744 11.3232 5.76256 11.3232 5.46967 11.0303C5.17678 10.7374 5.17678 10.2626 5.46967 9.96967L9.43934 6L5.46967 2.03033C5.17678 1.73744 5.17678 1.26256 5.46967 0.96967Z" fill="#14488C" fill-opacity="0.92"/>
@@ -252,6 +277,13 @@ const ServicesSection = () => {
           ))}
         </div>
       </div>
+
+      {/* Модальное окно записи */}
+      <AppointmentModal
+        isOpen={isAppointmentModalOpen}
+        onClose={handleCloseAppointmentModal}
+        preselectedService={selectedServiceForAppointment}
+      />
     </section>
   );
 };

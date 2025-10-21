@@ -471,6 +471,192 @@
   background: rgba(22, 35, 61, 0.17);
 }
 
+/* Loading States */
+.loading-skeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 12px;
+  height: 120px;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Step 3 - Clinics and Doctors */
+.step3-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-2xl);
+}
+
+.clinics-section,
+.doctors-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.clinics-list,
+.doctors-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.clinic-card,
+.doctor-card {
+  border: 2px solid var(--color-grey-200);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.clinic-card:hover,
+.doctor-card:hover {
+  border-color: var(--color-primary-300);
+}
+
+.clinic-card.selected,
+.doctor-card.selected {
+  border-color: var(--color-primary-700);
+  background: var(--color-primary-50);
+}
+
+.clinic-name,
+.doctor-name {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-grey-900);
+  margin-bottom: var(--spacing-xs);
+}
+
+.clinic-address,
+.doctor-specialty {
+  font-size: var(--font-size-sm);
+  color: var(--color-grey-600);
+}
+
+/* Step 4 - Date and Time */
+.step4-content {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--spacing-2xl);
+}
+
+.date-section,
+.time-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* Form Styles */
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.form-group label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-grey-700);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  padding: var(--spacing-md);
+  border: 2px solid var(--color-grey-200);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-base);
+  color: var(--color-grey-900);
+  background: var(--color-white);
+  transition: var(--transition-fast);
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--color-primary-700);
+}
+
+.form-group input.error,
+.form-group textarea.error,
+.form-group select.error {
+  border-color: #DC2626;
+  background: rgba(220, 38, 38, 0.05);
+}
+
+.error-message {
+  color: #DC2626;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Service Price */
+.service-price {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-700);
+  margin-top: var(--spacing-sm);
+}
+
+/* Success Modal */
+.success-modal {
+  max-width: 600px;
+}
+
+/* Spinner */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .modal-overlay {
@@ -504,6 +690,21 @@
   .step2-content {
     grid-template-columns: 1fr;
     gap: 24px;
+  }
+  
+  .step3-content {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .step4-content {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
   
   .time-slots {

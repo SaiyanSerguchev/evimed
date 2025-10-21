@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import HeaderSection from './components/HeaderSection';
 import HeroBanner from './components/HeroBanner';
 import ServicesSection from './components/ServicesSection';
@@ -42,6 +44,20 @@ function App() {
       <AppointmentModal 
         isOpen={showAppointmentModal} 
         onClose={() => setShowAppointmentModal(false)} 
+      />
+      
+      {/* Toast уведомления */}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
       />
     </div>
   );

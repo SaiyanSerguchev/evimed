@@ -1,0 +1,269 @@
+/* Timer Styles */
+.timer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.timer-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6B7280;
+  flex-shrink: 0;
+}
+
+.timer-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.timer-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1A232E;
+  line-height: 1.2;
+}
+
+.timer-progress {
+  width: 100%;
+  height: 4px;
+  background: #E5E7EB;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.timer-progress-bar {
+  height: 100%;
+  background: #10B981;
+  border-radius: 2px;
+  transition: width 1s linear, background-color 0.3s ease;
+}
+
+.timer-expired-message {
+  font-size: 14px;
+  color: #DC2626;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+/* Состояния таймера */
+.timer--warning {
+  background: #FEF3C7;
+  border-color: #F59E0B;
+}
+
+.timer--warning .timer-icon {
+  color: #F59E0B;
+}
+
+.timer--warning .timer-text {
+  color: #92400E;
+}
+
+.timer--danger {
+  background: #FEE2E2;
+  border-color: #DC2626;
+}
+
+.timer--danger .timer-icon {
+  color: #DC2626;
+}
+
+.timer--danger .timer-text {
+  color: #991B1B;
+}
+
+.timer--expired {
+  background: #F3F4F6;
+  border-color: #9CA3AF;
+}
+
+.timer--expired .timer-icon {
+  color: #9CA3AF;
+}
+
+.timer--expired .timer-text {
+  color: #6B7280;
+}
+
+/* Анимации */
+.timer {
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.timer-progress-bar {
+  animation: progressAnimation 1s ease;
+}
+
+@keyframes progressAnimation {
+  from {
+    width: 100%;
+  }
+  to {
+    width: var(--progress-width);
+  }
+}
+
+.timer--warning .timer-progress-bar {
+  animation: pulse 2s infinite;
+}
+
+.timer--danger .timer-progress-bar {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .timer {
+    padding: 10px 12px;
+    gap: 6px;
+  }
+  
+  .timer-text {
+    font-size: 14px;
+  }
+  
+  .timer-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .timer-expired-message {
+    font-size: 12px;
+  }
+}
+
+/* Компактная версия */
+.timer--compact {
+  padding: 8px 12px;
+  gap: 6px;
+}
+
+.timer--compact .timer-text {
+  font-size: 14px;
+}
+
+.timer--compact .timer-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.timer--compact .timer-progress {
+  height: 3px;
+}
+
+/* Версия только с текстом */
+.timer--text-only {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.timer--text-only .timer-text {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Версия с большим текстом */
+.timer--large .timer-text {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.timer--large .timer-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Accessibility */
+.timer:focus-within {
+  outline: 2px solid #14488C;
+  outline-offset: 2px;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .timer {
+    background: #1F2937;
+    border-color: #374151;
+  }
+  
+  .timer-text {
+    color: #F9FAFB;
+  }
+  
+  .timer-icon {
+    color: #9CA3AF;
+  }
+  
+  .timer-progress {
+    background: #374151;
+  }
+  
+  .timer--warning {
+    background: #451A03;
+    border-color: #D97706;
+  }
+  
+  .timer--warning .timer-icon {
+    color: #D97706;
+  }
+  
+  .timer--warning .timer-text {
+    color: #FCD34D;
+  }
+  
+  .timer--danger {
+    background: #450A0A;
+    border-color: #DC2626;
+  }
+  
+  .timer--danger .timer-icon {
+    color: #DC2626;
+  }
+  
+  .timer--danger .timer-text {
+    color: #FCA5A5;
+  }
+  
+  .timer--expired {
+    background: #111827;
+    border-color: #374151;
+  }
+  
+  .timer--expired .timer-text {
+    color: #6B7280;
+  }
+  
+  .timer-expired-message {
+    color: #F87171;
+  }
+}
