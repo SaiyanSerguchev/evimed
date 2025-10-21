@@ -7,6 +7,9 @@ require('dotenv').config();
 // Initialize Prisma
 const prisma = require('./lib/prisma');
 
+// Initialize Renovatio sync job
+const renovatioSyncJob = require('./jobs/renovatioSync');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -33,6 +36,12 @@ app.use('/api/admin/banners', require('./routes/admin-banners'));
 app.use('/api/admin/advantages', require('./routes/admin-advantages'));
 app.use('/api/admin/branches', require('./routes/admin-branches'));
 
+// Renovatio integration routes
+app.use('/api/renovatio', require('./routes/renovatio'));
+
+// Email verification routes
+app.use('/api/verification', require('./routes/verification'));
+
 // Health check
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
@@ -55,12 +64,14 @@ app.use('*', (req, res) => {
 // Graceful shutdown
 process.on('SIGINT', async () => {
   console.log('Shutting down gracefully...');
+  renovatioSyncJob.stop();
   await prisma.$disconnect();
   process.exit(0);
 });
 
 process.on('SIGTERM', async () => {
   console.log('Shutting down gracefully...');
+  renovatioSyncJob.stop();
   await prisma.$disconnect();
   process.exit(0);
 });
@@ -69,4 +80,8 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`Database: ${process.env.DATABASE_URL ? 'Connected' : 'Not configured'}`);
+  console.log(`Renovatio API: ${process.env.RENOVATIO_API_KEY ? 'Configured' : 'Not configured'}`);
+  
+  // Start Renovatio sync job if enabled
+  renovatioSyncJob.start();
 });

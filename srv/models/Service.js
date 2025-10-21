@@ -120,4 +120,84 @@ class Service {
   }
 }
 
-module.exports = Service;
+  static async upsertByRenovatioId(renovatioId, data) {
+    return await prisma.service.upsert({
+      where: { renovatioId },
+      update: data,
+      create: { ...data, renovatioId },
+      include: { category: true }
+    });
+  }
+
+  static async findByRenovatioId(renovatioId) {
+    return await prisma.service.findFirst({
+      where: { renovatioId },
+      include: { category: true }
+    });
+  }
+
+  static async getAllRenovatioServices() {
+    return await prisma.service.findMany({
+      where: { 
+        renovatioId: { not: null },
+        isActive: true 
+      },
+      include: { category: true },
+      orderBy: { order: 'asc' }
+    });
+  }
+
+  static async syncFromRenovatio(renovatioServices) {
+    const results = {
+      created: 0,
+      updated: 0,
+      errors: []
+    };
+
+    for (const service of renovatioServices) {
+      try {
+        const serviceData = {
+          name: service.title,
+          description: service.full_desc || service.short_desc,
+          price: parseFloat(service.price) || 0,
+          duration: service.duration ? `${service.duration} мин` : null,
+          preparation: service.preparation,
+          renovatioCode: service.code,
+          order: 0
+        };
+
+        // Найти категорию по renovatioId
+        const category = await prisma.serviceCategory.findFirst({
+          where: { renovatioId: service.category_id }
+        });
+
+        if (category) {
+          serviceData.categoryId = category.id;
+        }
+
+        const existingService = await prisma.service.findFirst({
+          where: { renovatioId: service.service_id }
+        });
+
+        if (existingService) {
+          await prisma.service.update({
+            where: { id: existingService.id },
+            data: serviceData
+          });
+          results.updated++;
+        } else {
+          await prisma.service.create({
+            data: { ...serviceData, renovatioId: service.service_id }
+          });
+          results.created++;
+        }
+      } catch (error) {
+        results.errors.push({
+          renovatioId: service.service_id,
+          error: error.message
+        });
+      }
+    }
+
+    return results;
+  }

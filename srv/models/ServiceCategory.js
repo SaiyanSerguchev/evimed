@@ -84,6 +84,70 @@ class ServiceCategory {
       empty: total - withServices
     };
   }
-}
 
-module.exports = ServiceCategory;
+  static async upsertByRenovatioId(renovatioId, data) {
+    return await prisma.serviceCategory.upsert({
+      where: { renovatioId },
+      update: data,
+      create: { ...data, renovatioId }
+    });
+  }
+
+  static async findByRenovatioId(renovatioId) {
+    return await prisma.serviceCategory.findFirst({
+      where: { renovatioId }
+    });
+  }
+
+  static async getAllRenovatioCategories() {
+    return await prisma.serviceCategory.findMany({
+      where: { 
+        renovatioId: { not: null },
+        isActive: true 
+      },
+      orderBy: { order: 'asc' }
+    });
+  }
+
+  static async syncFromRenovatio(renovatioCategories) {
+    const results = {
+      created: 0,
+      updated: 0,
+      errors: []
+    };
+
+    for (const category of renovatioCategories) {
+      try {
+        const categoryData = {
+          name: category.title,
+          description: null,
+          order: 0
+        };
+
+        const existingCategory = await prisma.serviceCategory.findFirst({
+          where: { renovatioId: category.id }
+        });
+
+        if (existingCategory) {
+          await prisma.serviceCategory.update({
+            where: { id: existingCategory.id },
+            data: categoryData
+          });
+          results.updated++;
+        } else {
+          await prisma.serviceCategory.create({
+            data: { ...categoryData, renovatioId: category.id }
+          });
+          results.created++;
+        }
+      } catch (error) {
+        results.errors.push({
+          renovatioId: category.id,
+          error: error.message
+        });
+      }
+    }
+
+    return results;
+  }
+}

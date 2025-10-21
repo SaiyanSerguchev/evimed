@@ -241,4 +241,126 @@ class Appointment {
   }
 }
 
-module.exports = Appointment;
+  static async createWithRenovatio(data) {
+    const { 
+      userId, 
+      serviceId, 
+      appointmentDate, 
+      appointmentTime, 
+      notes,
+      renovatioId,
+      renovatioStatus,
+      doctorId,
+      clinicId
+    } = data;
+    
+    return await prisma.appointment.create({
+      data: {
+        userId: parseInt(userId),
+        serviceId: parseInt(serviceId),
+        appointmentDate: new Date(appointmentDate),
+        appointmentTime: appointmentTime,
+        notes,
+        renovatioId,
+        renovatioStatus,
+        doctorId: doctorId ? parseInt(doctorId) : null,
+        clinicId: clinicId ? parseInt(clinicId) : null
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true
+          }
+        },
+        service: {
+          select: {
+            id: true,
+            name: true,
+            price: true
+          }
+        }
+      }
+    });
+  }
+
+  static async updateRenovatioStatus(id, status) {
+    return await prisma.appointment.update({
+      where: { id: parseInt(id) },
+      data: { 
+        renovatioStatus: status,
+        updatedAt: new Date()
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true
+          }
+        },
+        service: {
+          select: {
+            id: true,
+            name: true,
+            price: true
+          }
+        }
+      }
+    });
+  }
+
+  static async findByRenovatioId(renovatioId) {
+    return await prisma.appointment.findFirst({
+      where: { renovatioId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true
+          }
+        },
+        service: {
+          select: {
+            id: true,
+            name: true,
+            price: true
+          }
+        }
+      }
+    });
+  }
+
+  static async getAllRenovatioAppointments() {
+    return await prisma.appointment.findMany({
+      where: { 
+        renovatioId: { not: null }
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true
+          }
+        },
+        service: {
+          select: {
+            id: true,
+            name: true,
+            price: true
+          }
+        }
+      },
+      orderBy: [
+        { appointmentDate: 'desc' },
+        { appointmentTime: 'desc' }
+      ]
+    });
+  }

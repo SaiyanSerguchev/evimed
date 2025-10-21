@@ -27,12 +27,59 @@ model User {
   @@map("users")
 }
 
+model VerificationCode {
+  id          Int      @id @default(autoincrement())
+  email       String   
+  code        String
+  attempts    Int      @default(0)
+  isVerified  Boolean  @default(false) @map("is_verified")
+  isUsed      Boolean  @default(false) @map("is_used")
+  expiresAt   DateTime @map("expires_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  
+  @@index([email, isVerified])
+  @@map("verification_codes")
+}
+
+model AppointmentRequest {
+  id             Int      @id @default(autoincrement())
+  email          String
+  phone          String
+  firstName      String   @map("first_name")
+  lastName       String   @map("last_name")
+  thirdName      String?  @map("third_name")
+  birthDate      String?  @map("birth_date")
+  gender         Int?
+  doctorId       Int      @map("doctor_id")
+  clinicId       Int      @map("clinic_id")
+  timeStart      String   @map("time_start")
+  timeEnd        String   @map("time_end")
+  serviceId      Int?     @map("service_id")
+  comment        String?
+  channel        String?
+  source         String?
+  type           String?
+  isOutside      Boolean  @default(false) @map("is_outside")
+  isTelemedicine Boolean  @default(false) @map("is_telemedicine")
+  isVerified     Boolean  @default(false) @map("is_verified")
+  verificationId Int?     @map("verification_id")
+  createdAt      DateTime @default(now()) @map("created_at")
+  expiresAt      DateTime @map("expires_at")
+  
+  @@index([email, isVerified])
+  @@map("appointment_requests")
+}
+
 model ServiceCategory {
   id          Int      @id @default(autoincrement())
   name        String   @unique
   description String?
   order       Int      @default(0)
   isActive    Boolean  @default(true) @map("is_active")
+  
+  // Renovatio integration fields
+  renovatioId Int?     @unique @map("renovatio_id")
+  
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
@@ -52,6 +99,11 @@ model Service {
   categoryId  Int      @map("category_id")
   order       Int      @default(0)
   isActive    Boolean  @default(true) @map("is_active")
+  
+  // Renovatio integration fields
+  renovatioId Int?     @unique @map("renovatio_id")
+  renovatioCode String? @map("renovatio_code")
+  
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
@@ -70,6 +122,13 @@ model Appointment {
   appointmentTime DateTime @map("appointment_time") @db.Time
   notes          String?
   status         String   @default("scheduled")
+  
+  // Renovatio integration fields
+  renovatioId    Int?     @unique @map("renovatio_id")
+  renovatioStatus String? @map("renovatio_status")
+  doctorId       Int?     @map("doctor_id")
+  clinicId       Int?     @map("clinic_id")
+  
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 
