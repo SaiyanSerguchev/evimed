@@ -118,7 +118,6 @@ class Service {
       byCategory: categoryStats
     };
   }
-}
 
   static async upsertByRenovatioId(renovatioId, data) {
     return await prisma.service.upsert({
@@ -201,3 +200,6 @@ class Service {
 
     return results;
   }
+}
+
+module.exports = Service;

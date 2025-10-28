@@ -151,3 +151,5 @@ class ServiceCategory {
     return results;
   }
 }
+
+module.exports = ServiceCategory;

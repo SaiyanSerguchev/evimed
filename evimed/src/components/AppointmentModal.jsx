@@ -49,10 +49,11 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
   // Состояние ошибок
   const [errors, setErrors] = useState({});
 
-  // Загрузка данных при открытии модального окна
+  // Загрузка врачей при открытии модального окна
   useEffect(() => {
     if (isOpen) {
       loadInitialData();
+      loadDoctors(); // Загружаем врачей сразу при открытии
       // Если есть предвыбранная услуга, переходим к шагу 3
       if (preselectedService) {
         setCurrentStep(3);
@@ -67,13 +68,6 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
       loadServicesForCategory(selectedCategory.id);
     }
   }, [selectedCategory]);
-
-  // Загрузка врачей при выборе клиники
-  useEffect(() => {
-    if (selectedClinic) {
-      loadDoctors(selectedClinic.id);
-    }
-  }, [selectedClinic]);
 
   // Загрузка расписания при выборе врача и даты
   useEffect(() => {
@@ -115,12 +109,23 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
     }
   };
 
-  // Загрузка врачей для клиники
-  const loadDoctors = async (clinicId) => {
+  // Загрузка врачей
+  const loadDoctors = async () => {
     try {
       setIsLoading(true);
-      const doctorsData = await renovatioApi.getDoctors(clinicId);
-      setDoctors(doctorsData);
+      const doctorsData = await renovatioApi.getDoctors();
+      
+      // Преобразуем врачей в формат клиник, так как каждый врач = отдельная клиника
+      const doctorsAsClinics = doctorsData.map(doctor => ({
+        id: doctor.id,
+        name: doctor.name, // Адрес клиники
+        address: doctor.name,
+        default_clinic: doctor.default_clinic,
+        profession: doctor.profession_titles,
+        doctor_info: doctor
+      }));
+      
+      setDoctors(doctorsAsClinics);
     } catch (error) {
       console.error('Ошибка загрузки врачей:', error);
       toast.error('Не удалось загрузить врачей.');
@@ -131,22 +136,77 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
 
   // Загрузка расписания
   const loadSchedule = async () => {
-    if (!selectedDoctor || !selectedDate) return;
+    if (!selectedDoctor || !selectedDate || !selectedClinic) return;
 
     try {
       setIsLoading(true);
+      
+      // Извлекаем длительность из услуги (если есть)
+      let step = 30; // По умолчанию 30 минут
+      if (selectedService?.duration) {
+        // Парсим длительность из формата "15 мин", "15–30 мин", "1-2 часа" и т.д.
+        const durationStr = selectedService.duration.toString();
+        const minutesMatch = durationStr.match(/(\d+)\s*м?и?н/);
+        const hoursMatch = durationStr.match(/(\d+)\s*ч?ас/);
+        
+        if (minutesMatch) {
+          const mins = parseInt(minutesMatch[1]);
+          // Используем минимальное значение из диапазона, если есть дефис
+          if (durationStr.includes('–')) {
+            step = mins;
+          } else {
+            step = mins;
+          }
+        } else if (hoursMatch) {
+          const hours = parseInt(hoursMatch[1]);
+          step = hours * 60;
+        }
+        
+        // Ограничиваем значения разумными пределами
+        if (step < 15) step = 15;
+        if (step > 120) step = 30; // Максимум 2 часа
+      }
+      
+      // Параметры запроса расписания логируются на бэкенде
+
       const scheduleData = await renovatioApi.getSchedule({
-        clinic_id: selectedClinic.id,
+        clinic_id: selectedDoctor.default_clinic, // Используем default_clinic из данных врача
         user_id: selectedDoctor.id,
         service_id: selectedService?.id,
-        time_start: `${selectedDate} 00:00:00`,
-        time_end: `${selectedDate} 23:59:59`
+        time_start: selectedDate, // Отправляем только дату в формате YYYY-MM-DD
+        time_end: selectedDate,   // Для одного дня используем ту же дату
+        step: step                 // Используем длительность услуги
       });
       
-      setAvailableSlots(scheduleData);
+      // Обрабатываем разные форматы ответа от API
+      let slots = [];
+      if (Array.isArray(scheduleData)) {
+        slots = scheduleData;
+      } else if (scheduleData && Array.isArray(scheduleData.data)) {
+        slots = scheduleData.data;
+      } else if (scheduleData && scheduleData.slots && Array.isArray(scheduleData.slots)) {
+        slots = scheduleData.slots;
+      } else {
+        console.warn('Неожиданный формат данных расписания:', scheduleData);
+        slots = [];
+      }
+      
+      setAvailableSlots(slots);
     } catch (error) {
       console.error('Ошибка загрузки расписания:', error);
-      toast.error('Не удалось загрузить расписание.');
+      
+      // Более детальная обработка ошибок
+      if (error.response?.status === 500) {
+        toast.error('Ошибка сервера при загрузке расписания. Проверьте настройки Renovatio API.');
+      } else if (error.response?.status === 400) {
+        toast.error('Неверные параметры запроса расписания.');
+      } else if (error.code === 'NETWORK_ERROR') {
+        toast.error('Ошибка сети. Проверьте подключение к интернету.');
+      } else {
+        toast.error('Не удалось загрузить расписание. Попробуйте позже.');
+      }
+      
+      setAvailableSlots([]);
     } finally {
       setIsLoading(false);
     }
@@ -179,6 +239,7 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
 
   const handleDoctorSelect = (doctor) => {
     setSelectedDoctor(doctor);
+    setSelectedClinic(doctor); // Устанавливаем клинику как выбранного врача
     setSelectedTime(null);
     setAvailableSlots([]);
     setErrors({});
@@ -202,6 +263,40 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
   const handleTimeSelect = (time) => {
     setSelectedTime(time);
     setErrors({});
+  };
+
+  // Функция для форматирования времени
+  const formatTime = (timeString) => {
+    console.log('formatTime получил:', timeString, typeof timeString);
+    
+    try {
+      // Если время уже в формате HH:MM, возвращаем как есть
+      if (typeof timeString === 'string' && timeString.match(/^\d{2}:\d{2}$/)) {
+        console.log('Возвращаем как есть:', timeString);
+        return timeString;
+      }
+      
+      // Если это ISO строка, парсим как дату
+      if (typeof timeString === 'string' && timeString.includes('T')) {
+        const date = new Date(timeString);
+        if (!isNaN(date.getTime())) {
+          const formatted = date.toLocaleTimeString('ru-RU', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          });
+          console.log('Отформатировано из ISO:', formatted);
+          return formatted;
+        }
+      }
+      
+      // Если это уже отформатированное время, возвращаем как есть
+      console.log('Возвращаем исходное значение:', timeString);
+      return timeString;
+    } catch (error) {
+      console.error('Error formatting time:', timeString, error);
+      return timeString || '--:--';
+    }
   };
 
   // Обработчик изменения полей формы
@@ -240,13 +335,37 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
     try {
       setIsLoading(true);
       
+      // Вычисляем длительность услуги
+      let durationMinutes = 30; // По умолчанию
+      if (selectedService?.duration) {
+        const durationStr = selectedService.duration.toString();
+        const minutesMatch = durationStr.match(/(\d+)\s*м?и?н/);
+        const hoursMatch = durationStr.match(/(\d+)\s*ч?ас/);
+        
+        if (minutesMatch) {
+          durationMinutes = parseInt(minutesMatch[1]);
+        } else if (hoursMatch) {
+          durationMinutes = parseInt(hoursMatch[1]) * 60;
+        }
+        
+        // Ограничиваем значения
+        if (durationMinutes < 15) durationMinutes = 15;
+        if (durationMinutes > 120) durationMinutes = 30;
+      }
+      
+      // Вычисляем время окончания
+      const [hours, minutes] = selectedTime.split(':').map(Number);
+      const endTime = new Date(`${selectedDate}T${selectedTime}:00`);
+      endTime.setMinutes(endTime.getMinutes() + durationMinutes);
+      const endTimeStr = endTime.toTimeString().substring(0, 5);
+      
       // Форматируем данные для отправки
       const appointmentData = formatAppointmentData(formData, {
         doctorId: selectedDoctor.id,
         clinicId: selectedClinic.id,
         serviceId: selectedService?.id,
         timeStart: `${selectedDate} ${selectedTime}:00`,
-        timeEnd: `${selectedDate} ${selectedTime}:30` // Предполагаем 30 минут
+        timeEnd: `${selectedDate} ${endTimeStr}:00`
       });
 
       // Отправляем код верификации
@@ -270,7 +389,17 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
   // Обработчик успешной верификации
   const handleVerificationSuccess = (result) => {
     setShowVerificationModal(false);
-    setAppointmentResult(result);
+    
+    // Добавляем информацию для отображения в SuccessStep
+    const appointmentDataWithDisplay = {
+      ...result,
+      serviceName: selectedService?.name,
+      clinicName: selectedDoctor?.name || selectedClinic?.name || selectedClinic?.title,
+      appointmentDate: selectedDate,
+      appointmentTime: formatTime(selectedTime)
+    };
+    
+    setAppointmentResult(appointmentDataWithDisplay);
     setShowSuccessStep(true);
     toast.success('Запись успешно создана!');
   };
@@ -392,11 +521,11 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
   // Рендер шага 3 - Выбор клиники и врача
   const renderStep3 = () => (
     <div className="appointment-step">
-      <h2 className="appointment-title">Выберите клинику и врача</h2>
+      <h2 className="appointment-title">Выберите клинику</h2>
       
       <div className="step3-content">
         <div className="clinics-section">
-          <h3 className="section-title">Клиника</h3>
+          <h3 className="section-title">Доступные клиники</h3>
           {isLoading ? (
             <div className="loading-skeleton">
               {[...Array(2)].map((_, i) => (
@@ -405,43 +534,16 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
             </div>
           ) : (
             <div className="clinics-list">
-              {clinics.map(clinic => (
-                <div
-                  key={clinic.id}
-                  className={`clinic-card ${selectedClinic?.id === clinic.id ? 'selected' : ''}`}
-                  onClick={() => handleClinicSelect(clinic)}
-                >
-                  <div className="clinic-info">
-                    <h4 className="clinic-name">{clinic.title}</h4>
-                    <p className="clinic-address">{clinic.address}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="doctors-section">
-          <h3 className="section-title">Врач</h3>
-          {isLoading ? (
-            <div className="loading-skeleton">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="doctor-card skeleton" />
-              ))}
-            </div>
-          ) : (
-            <div className="doctors-list">
               {doctors.map(doctor => (
                 <div
                   key={doctor.id}
-                  className={`doctor-card ${selectedDoctor?.id === doctor.id ? 'selected' : ''}`}
+                  className={`clinic-card ${selectedDoctor?.id === doctor.id ? 'selected' : ''}`}
                   onClick={() => handleDoctorSelect(doctor)}
                 >
-                  <div className="doctor-info">
-                    <h4 className="doctor-name">
-                      {doctor.last_name} {doctor.first_name} {doctor.third_name}
-                    </h4>
-                    <p className="doctor-specialty">{doctor.profession}</p>
+                  <div className="clinic-info">
+                    <h4 className="clinic-name">{doctor.name}</h4>
+                    <p className="clinic-address">{doctor.profession}</p>
+                    <p className="clinic-details">Врач-рентгенолог</p>
                   </div>
                 </div>
               ))}
@@ -481,16 +583,24 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
             </div>
           ) : (
             <div className="time-slots">
-              {availableSlots.map(slot => (
-                <button
-                  key={slot.time}
-                  className={`time-slot ${selectedTime === slot.time ? 'selected' : ''}`}
-                  onClick={() => handleTimeSelect(slot.time)}
-                  disabled={!slot.available}
-                >
-                  {slot.time}
-                </button>
-              ))}
+              {Array.isArray(availableSlots) && availableSlots.length > 0 ? (
+                availableSlots.map(slot => (
+                  <button
+                    key={slot.time || slot.id}
+                    className={`time-slot ${selectedTime === slot.time ? 'selected' : ''} ${!slot.available ? 'unavailable' : ''}`}
+                    onClick={() => slot.available && handleTimeSelect(slot.time)}
+                    disabled={!slot.available}
+                    title={!slot.available ? 'Время занято' : 'Выбрать время'}
+                  >
+                    {formatTime(slot.time)}
+                  </button>
+                ))
+              ) : (
+                <div className="no-slots-message">
+                  <p>Нет доступных временных слотов на выбранную дату</p>
+                  <small>Попробуйте выбрать другую дату</small>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -630,17 +740,13 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
         </div>
         <div className="summary-item">
           <span className="summary-label">Клиника:</span>
-          <span className="summary-value">{selectedClinic?.title}</span>
-        </div>
-        <div className="summary-item">
-          <span className="summary-label">Врач:</span>
-          <span className="summary-value">
-            {selectedDoctor ? `${selectedDoctor.last_name} ${selectedDoctor.first_name}` : ''}
-          </span>
+          <span className="summary-value">{selectedDoctor?.name || selectedClinic?.name || selectedClinic?.title}</span>
         </div>
         <div className="summary-item">
           <span className="summary-label">Дата и время:</span>
-          <span className="summary-value">{selectedDate} в {selectedTime}</span>
+          <span className="summary-value">
+            {selectedDate} в {formatTime(selectedTime)}
+          </span>
         </div>
       </div>
     </div>
@@ -724,21 +830,44 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
         isOpen={showVerificationModal}
         onClose={() => setShowVerificationModal(false)}
         email={formData.email}
-        appointmentData={{
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          thirdName: formData.thirdName,
-          email: formData.email,
-          phone: formData.phone,
-          birthDate: formData.birthDate,
-          gender: formData.gender,
-          doctorId: selectedDoctor?.id,
-          clinicId: selectedClinic?.id,
-          serviceId: selectedService?.id,
-          timeStart: `${selectedDate} ${selectedTime}:00`,
-          timeEnd: `${selectedDate} ${selectedTime}:30`,
-          comment: formData.comment
-        }}
+        appointmentData={(() => {
+          // Вычисляем длительность и время окончания
+          let durationMinutes = 30;
+          if (selectedService?.duration) {
+            const durationStr = selectedService.duration.toString();
+            const minutesMatch = durationStr.match(/(\d+)\s*м?и?н/);
+            const hoursMatch = durationStr.match(/(\d+)\s*ч?ас/);
+            
+            if (minutesMatch) {
+              durationMinutes = parseInt(minutesMatch[1]);
+            } else if (hoursMatch) {
+              durationMinutes = parseInt(hoursMatch[1]) * 60;
+            }
+            
+            if (durationMinutes < 15) durationMinutes = 15;
+            if (durationMinutes > 120) durationMinutes = 30;
+          }
+          
+          const endTime = new Date(`${selectedDate}T${selectedTime}:00`);
+          endTime.setMinutes(endTime.getMinutes() + durationMinutes);
+          const endTimeStr = endTime.toTimeString().substring(0, 5);
+          
+          return {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            thirdName: formData.thirdName,
+            email: formData.email,
+            phone: formData.phone,
+            birthDate: formData.birthDate,
+            gender: formData.gender,
+            doctorId: selectedDoctor?.id,
+            clinicId: selectedClinic?.id,
+            serviceId: selectedService?.id,
+            timeStart: `${selectedDate} ${selectedTime}:00`,
+            timeEnd: `${selectedDate} ${endTimeStr}:00`,
+            comment: formData.comment
+          };
+        })()}
         onSuccess={handleVerificationSuccess}
       />
 

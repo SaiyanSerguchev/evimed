@@ -1,24 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import './AdminPanel.css';
 
-// Import admin components
-import AdminDashboard from '../components/admin/AdminDashboard';
-import AdminServicesTree from '../components/admin/AdminServicesTree';
-import AdminAppointments from '../components/admin/AdminAppointments';
-import AdminUsers from '../components/admin/AdminUsers';
-import AdminBanners from '../components/admin/AdminBanners';
-import AdminAdvantages from '../components/admin/AdminAdvantages';
-import AdminBranches from '../components/admin/AdminBranches';
-
 const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [token, setToken] = useState(localStorage.getItem('adminToken'));
-  const [loginData, setLoginData] = useState({ login: '', password: '' });
+  const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [dashboardData, setDashboardData] = useState(null);
+  const [services, setServices] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [users, setUsers] = useState([]);
-  const [banners, setBanners] = useState([]);
-  const [advantages, setAdvantages] = useState([]);
+  const [newService, setNewService] = useState({
+    name: '',
+    description: '',
+    price: '',
+    duration: '',
+    category: ''
+  });
 
   const API_BASE = 'http://localhost:5000/api';
 
@@ -62,6 +59,17 @@ const AdminPanel = () => {
     }
   };
 
+  const loadServices = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/admin/services`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      setServices(data);
+    } catch (error) {
+      console.error('Ошибка загрузки услуг:', error);
+    }
+  };
 
   const loadAppointments = async () => {
     try {
@@ -87,69 +95,49 @@ const AdminPanel = () => {
     }
   };
 
-  const loadBanners = async () => {
+  const addService = async (e) => {
+    e.preventDefault();
     try {
-      const response = await fetch(`${API_BASE}/admin/banners`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+      const response = await fetch(`${API_BASE}/admin/services`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(newService)
       });
-      const data = await response.json();
       
-      // Проверяем формат данных и фильтруем дубликаты
-      let bannersData = data;
-      
-      // Если данные в объекте с массивом banners
-      if (data && typeof data === 'object' && data.banners) {
-        bannersData = data.banners;
+      if (response.ok) {
+        setNewService({ name: '', description: '', price: '', duration: '', category: '' });
+        loadServices();
+        alert('Услуга добавлена успешно');
+      } else {
+        const data = await response.json();
+        alert('Ошибка: ' + data.error);
       }
-      
-      // Если это не массив, преобразуем в массив
-      if (!Array.isArray(bannersData)) {
-        bannersData = [];
-      }
-      
-      // Фильтруем дубликаты по ID
-      const uniqueBanners = bannersData.filter((banner, index, self) => 
-        index === self.findIndex(b => b.id === banner.id)
-      );
-      
-      console.log('Загружены баннеры:', uniqueBanners);
-      setBanners(uniqueBanners);
     } catch (error) {
-      console.error('Ошибка загрузки баннеров:', error);
-      setBanners([]);
+      alert('Ошибка подключения к серверу');
     }
   };
 
-  const loadAdvantages = async () => {
+  const updateAppointmentStatus = async (id, status) => {
     try {
-      const response = await fetch(`${API_BASE}/admin/advantages`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+      const response = await fetch(`${API_BASE}/admin/appointments/${id}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ status })
       });
-      const data = await response.json();
       
-      // Проверяем формат данных и фильтруем дубликаты
-      let advantagesData = data;
-      
-      // Если данные в объекте с массивом advantages
-      if (data && typeof data === 'object' && data.advantages) {
-        advantagesData = data.advantages;
+      if (response.ok) {
+        loadAppointments();
+      } else {
+        alert('Ошибка обновления статуса');
       }
-      
-      // Если это не массив, преобразуем в массив
-      if (!Array.isArray(advantagesData)) {
-        advantagesData = [];
-      }
-      
-      // Фильтруем дубликаты по ID
-      const uniqueAdvantages = advantagesData.filter((advantage, index, self) => 
-        index === self.findIndex(a => a.id === advantage.id)
-      );
-      
-      console.log('Загружены преимущества:', uniqueAdvantages);
-      setAdvantages(uniqueAdvantages);
     } catch (error) {
-      console.error('Ошибка загрузки преимуществ:', error);
-      setAdvantages([]);
+      alert('Ошибка подключения к серверу');
     }
   };
 
@@ -165,10 +153,10 @@ const AdminPanel = () => {
           <h2>Вход в админ панель</h2>
           <form onSubmit={login}>
             <input
-              type="text"
-              placeholder="Логин"
-              value={loginData.login}
-              onChange={(e) => setLoginData({...loginData, login: e.target.value})}
+              type="email"
+              placeholder="Email"
+              value={loginData.email}
+              onChange={(e) => setLoginData({...loginData, email: e.target.value})}
               required
             />
             <input
@@ -180,7 +168,7 @@ const AdminPanel = () => {
             />
             <button type="submit">Войти</button>
           </form>
-          <p>Тестовый админ: admin / admin123</p>
+          <p>Тестовый админ: admin@evimed.ru / admin123</p>
         </div>
       </div>
     );
@@ -194,7 +182,6 @@ const AdminPanel = () => {
       </header>
 
       <nav className="admin-nav">
-        
         <button 
           className={activeTab === 'dashboard' ? 'active' : ''}
           onClick={() => setActiveTab('dashboard')}
@@ -202,20 +189,8 @@ const AdminPanel = () => {
           Дашборд
         </button>
         <button 
-          className={activeTab === 'banners' ? 'active' : ''}
-          onClick={() => { setActiveTab('banners'); loadBanners(); }}
-        >
-          Баннеры
-        </button>
-        <button
-          className={activeTab === 'advantages' ? 'active' : ''}
-          onClick={() => { setActiveTab('advantages'); loadAdvantages(); }}
-        >
-          Преимущества
-        </button>
-        <button
-          className={activeTab === 'services-tree' ? 'active' : ''}
-          onClick={() => setActiveTab('services-tree')}
+          className={activeTab === 'services' ? 'active' : ''}
+          onClick={() => { setActiveTab('services'); loadServices(); }}
         >
           Услуги
         </button>
@@ -224,12 +199,6 @@ const AdminPanel = () => {
           onClick={() => { setActiveTab('appointments'); loadAppointments(); }}
         >
           Записи
-        </button>
-        <button
-          className={activeTab === 'branches' ? 'active' : ''}
-          onClick={() => setActiveTab('branches')}
-        >
-          Филиалы
         </button>
         <button 
           className={activeTab === 'users' ? 'active' : ''}
@@ -240,54 +209,187 @@ const AdminPanel = () => {
       </nav>
 
       <main className="admin-content">
-        {activeTab === 'dashboard' && (
-          <AdminDashboard dashboardData={dashboardData} />
+        {activeTab === 'dashboard' && dashboardData && (
+          <div className="dashboard">
+            <div className="stats-grid">
+              <div className="stat-card">
+                <h3>Всего пользователей</h3>
+                <p className="stat-number">{dashboardData.stats.totalUsers}</p>
+              </div>
+              <div className="stat-card">
+                <h3>Услуг</h3>
+                <p className="stat-number">{dashboardData.stats.totalServices}</p>
+              </div>
+              <div className="stat-card">
+                <h3>Всего записей</h3>
+                <p className="stat-number">{dashboardData.stats.totalAppointments}</p>
+              </div>
+              <div className="stat-card">
+                <h3>Записей сегодня</h3>
+                <p className="stat-number">{dashboardData.stats.todayAppointments}</p>
+              </div>
+            </div>
+
+            <div className="recent-appointments">
+              <h3>Последние записи</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Пациент</th>
+                    <th>Услуга</th>
+                    <th>Дата</th>
+                    <th>Время</th>
+                    <th>Статус</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dashboardData.recentAppointments.map(appointment => (
+                    <tr key={appointment.id}>
+                      <td>{appointment.user_name}</td>
+                      <td>{appointment.service_name}</td>
+                      <td>{new Date(appointment.appointment_date).toLocaleDateString()}</td>
+                      <td>{appointment.appointment_time}</td>
+                      <td>{appointment.status}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         )}
 
-                {activeTab === 'services-tree' && (
-                  <AdminServicesTree
-                    token={token}
-                    API_BASE={API_BASE}
-                  />
-                )}
+        {activeTab === 'services' && (
+          <div className="services-management">
+            <div className="add-service-form">
+              <h3>Добавить услугу</h3>
+              <form onSubmit={addService}>
+                <input
+                  type="text"
+                  placeholder="Название услуги"
+                  value={newService.name}
+                  onChange={(e) => setNewService({...newService, name: e.target.value})}
+                  required
+                />
+                <textarea
+                  placeholder="Описание"
+                  value={newService.description}
+                  onChange={(e) => setNewService({...newService, description: e.target.value})}
+                />
+                <input
+                  type="number"
+                  placeholder="Цена"
+                  value={newService.price}
+                  onChange={(e) => setNewService({...newService, price: e.target.value})}
+                  required
+                />
+                <input
+                  type="number"
+                  placeholder="Длительность (мин)"
+                  value={newService.duration}
+                  onChange={(e) => setNewService({...newService, duration: e.target.value})}
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Категория"
+                  value={newService.category}
+                  onChange={(e) => setNewService({...newService, category: e.target.value})}
+                />
+                <button type="submit">Добавить услугу</button>
+              </form>
+            </div>
+
+            <div className="services-list">
+              <h3>Список услуг</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Название</th>
+                    <th>Цена</th>
+                    <th>Длительность</th>
+                    <th>Категория</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {services.map(service => (
+                    <tr key={service.id}>
+                      <td>{service.name}</td>
+                      <td>{service.price} ₽</td>
+                      <td>{service.duration} мин</td>
+                      <td>{service.category}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
 
         {activeTab === 'appointments' && (
-          <AdminAppointments 
-            appointments={appointments}
-            onUpdateAppointmentStatus={loadAppointments}
-            token={token}
-            API_BASE={API_BASE}
-          />
+          <div className="appointments-management">
+            <h3>Управление записями</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Пациент</th>
+                  <th>Услуга</th>
+                  <th>Дата</th>
+                  <th>Время</th>
+                  <th>Статус</th>
+                  <th>Действия</th>
+                </tr>
+              </thead>
+              <tbody>
+                {appointments.map(appointment => (
+                  <tr key={appointment.id}>
+                    <td>{appointment.user_name}</td>
+                    <td>{appointment.service_name}</td>
+                    <td>{new Date(appointment.appointment_date).toLocaleDateString()}</td>
+                    <td>{appointment.appointment_time}</td>
+                    <td>{appointment.status}</td>
+                    <td>
+                      <select 
+                        value={appointment.status}
+                        onChange={(e) => updateAppointmentStatus(appointment.id, e.target.value)}
+                      >
+                        <option value="scheduled">Запланировано</option>
+                        <option value="confirmed">Подтверждено</option>
+                        <option value="completed">Завершено</option>
+                        <option value="cancelled">Отменено</option>
+                      </select>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
 
         {activeTab === 'users' && (
-          <AdminUsers users={users} />
+          <div className="users-management">
+            <h3>Пользователи</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Имя</th>
+                  <th>Email</th>
+                  <th>Телефон</th>
+                  <th>Дата регистрации</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map(user => (
+                  <tr key={user.id}>
+                    <td>{user.name}</td>
+                    <td>{user.email}</td>
+                    <td>{user.phone}</td>
+                    <td>{new Date(user.created_at).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
-
-        {activeTab === 'banners' && (
-          <AdminBanners 
-            banners={banners}
-            onLoadBanners={loadBanners}
-            token={token}
-            API_BASE={API_BASE}
-          />
-        )}
-
-                {activeTab === 'advantages' && (
-                  <AdminAdvantages
-                    advantages={advantages}
-                    onLoadAdvantages={loadAdvantages}
-                    token={token}
-                    API_BASE={API_BASE}
-                  />
-                )}
-
-                {activeTab === 'branches' && (
-                  <AdminBranches
-                    token={token}
-                    API_BASE={API_BASE}
-                  />
-                )}
       </main>
     </div>
   );

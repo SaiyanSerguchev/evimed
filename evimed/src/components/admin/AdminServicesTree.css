@@ -20,7 +20,7 @@
 .tree-header h2 {
   margin: 0;
   color: #1a1a1a;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
 }
 
@@ -31,7 +31,7 @@
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 500;
 }
 
@@ -63,7 +63,7 @@
 .add-service-form h3 {
   margin: 0 0 15px 0;
   color: #1a1a1a;
-  font-size: 20px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -82,7 +82,7 @@
   padding: 8px 12px;
   border: 2px solid #e0e0e0;
   border-radius: 6px;
-  font-size: 16px;
+  font-size: 12px;
   background: #ffffff;
   color: #1a1a1a;
   transition: border-color 0.3s;
@@ -111,7 +111,7 @@
   padding: 10px 16px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 12px;
   margin-top: 10px;
   font-weight: 500;
 }
@@ -169,7 +169,7 @@
 
 .category-name {
   font-weight: 600;
-  font-size: 18px;
+  font-size: 14px;
   color: #1a1a1a;
 }
 
@@ -180,7 +180,7 @@
 
 .category-meta {
   color: #666666;
-  font-size: 16px;
+  font-size: 12px;
 }
 
 .category-actions {
@@ -188,22 +188,15 @@
   gap: 8px;
 }
 
-.category-actions .edit-btn {
-  min-width: 140px;
-  white-space: nowrap;
-}
-
 .edit-btn {
   background: #404040;
   color: #ffffff;
   border: none;
-  padding: 6px 12px;
+  padding: 4px 8px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 500;
-  min-width: 120px;
-  white-space: nowrap;
 }
 
 .edit-btn:hover {
@@ -217,7 +210,7 @@
   padding: 4px 8px;
   border-radius: 3px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 12px;
 }
 
 .delete-btn:hover {
@@ -243,7 +236,7 @@
   padding: 8px 12px;
   border: 2px solid #e0e0e0;
   border-radius: 6px;
-  font-size: 16px;
+  font-size: 12px;
   background: #ffffff;
   color: #1a1a1a;
   transition: border-color 0.3s;
@@ -276,7 +269,7 @@
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 500;
 }
 
@@ -291,7 +284,7 @@
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 500;
 }
 
@@ -304,6 +297,17 @@
   background: white;
 }
 
+.tree-service {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.tree-service:last-child {
+  border-bottom: none;
+}
 
 .service-info {
   flex: 1;
@@ -315,7 +319,7 @@
 .service-name {
   font-weight: 500;
   color: #1a1a1a;
-  font-size: 16px;
+  font-size: 12px;
 }
 
 .service-name.inactive {
@@ -326,12 +330,12 @@
 .service-price {
   color: #1a1a1a;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 12px;
 }
 
 .service-duration {
   color: #666666;
-  font-size: 14px;
+  font-size: 11px;
 }
 
 .service-actions {
@@ -339,85 +343,17 @@
   gap: 6px;
 }
 
+.service-actions .edit-btn,
 .service-actions .delete-btn {
   padding: 3px 6px;
-  font-size: 12px;
-}
-
-.service-actions .edit-btn {
-  padding: 6px 12px;
-  font-size: 12px;
-  min-width: 120px;
-  white-space: nowrap;
+  font-size: 9px;
 }
 
 .admin-services-tree-loading {
   text-align: center;
   padding: 40px;
   color: #666666;
-  font-size: 18px;
-}
-
-/* Стили для редактирования услуг */
-.service-container {
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.service-container:last-child {
-  border-bottom: none;
-}
-
-.tree-service {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 20px;
-}
-
-.service-edit-form {
-  padding: 20px;
-  background: #f8f9fa;
-  border-top: 1px solid #e0e0e0;
-  margin: 0 20px;
-}
-
-.service-edit-form form {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  align-items: start;
-}
-
-.service-edit-form input,
-.service-edit-form textarea,
-.service-edit-form select {
-  padding: 8px 12px;
-  border: 2px solid #e0e0e0;
-  border-radius: 6px;
-  font-size: 16px;
-  background: #ffffff;
-  color: #1a1a1a;
-  transition: border-color 0.3s;
-}
-
-.service-edit-form input:focus,
-.service-edit-form textarea:focus,
-.service-edit-form select:focus {
-  outline: none;
-  border-color: #404040;
-}
-
-.service-edit-form textarea {
-  grid-column: 1 / -1;
-  min-height: 60px;
-  resize: vertical;
-}
-
-.service-edit-form .edit-actions {
-  grid-column: 1 / -1;
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
+  font-size: 14px;
 }
 
 /* Адаптивность */
@@ -451,8 +387,7 @@
     align-self: flex-end;
   }
   
-  .edit-form form,
-  .service-edit-form form {
+  .edit-form form {
     grid-template-columns: 1fr;
   }
 }

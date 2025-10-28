@@ -217,3 +217,5 @@ router.get('/renovatio/all', async (req, res) => {
     res.status(500).json({ error: 'Failed to get appointments' });
   }
 });
+
+module.exports = router;

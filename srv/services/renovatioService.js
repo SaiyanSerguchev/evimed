@@ -60,11 +60,15 @@ class RenovatioService {
 
   // 4. Получение расписания
   async getSchedule(params) {
+    const defaultParams = {
+      show_busy: 1,  // Показывать занятые слоты тоже (чтобы видеть is_busy)
+      show_past: 0,  // Не показывать прошедшие
+      step: 30       // значение по умолчанию
+    };
+    
     return await this.makeRequest('getSchedule', {
-      show_busy: 0,
-      show_past: 0,
-      step: 30,
-      ...params
+      ...defaultParams,
+      ...params   // переопределяет параметры по умолчанию
     });
   }
 

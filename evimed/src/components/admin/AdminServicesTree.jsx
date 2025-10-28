@@ -277,6 +277,29 @@ const AdminServicesTree = ({ token, API_BASE }) => {
     return services.filter(service => service.categoryId === categoryId);
   };
 
+  const syncWithRenovatio = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/renovatio/sync/services`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        alert(`Синхронизация завершена!\n\nКатегории: создано ${result.categories.created}, обновлено ${result.categories.updated}\nУслуги: создано ${result.services.created}, обновлено ${result.services.updated}\nОшибок: ${result.errors.length}`);
+        loadData(); // Перезагружаем данные после синхронизации
+      } else {
+        const error = await response.json();
+        alert('Ошибка синхронизации: ' + error.error);
+      }
+    } catch (error) {
+      alert('Ошибка подключения к серверу: ' + error.message);
+    }
+  };
+
   if (loading) {
     return <div className="admin-services-tree-loading">Загрузка...</div>;
   }
@@ -285,7 +308,12 @@ const AdminServicesTree = ({ token, API_BASE }) => {
     <div className="admin-services-tree">
       <div className="tree-header">
         <h2>Древовидная структура услуг</h2>
-        <button onClick={loadData} className="refresh-btn">Обновить</button>
+        <div className="header-actions">
+          <button onClick={syncWithRenovatio} className="sync-btn">
+            Синхронизировать с Renovatio
+          </button>
+          <button onClick={loadData} className="refresh-btn">Обновить</button>
+        </div>
       </div>
 
       {/* Формы добавления */}

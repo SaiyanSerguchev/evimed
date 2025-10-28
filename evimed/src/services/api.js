@@ -3,7 +3,17 @@ import axios from 'axios';
 // Базовый API клиент
 class ApiClient {
   constructor() {
-    this.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+    // Определяем базовый URL API
+    const getApiUrl = () => {
+      // Проверяем есть ли переменная окружения
+      if (typeof process !== 'undefined' && process.env && process.env.REACT_APP_API_URL) {
+        return process.env.REACT_APP_API_URL;
+      }
+      // Fallback на localhost
+      return 'http://localhost:5000/api';
+    };
+    
+    this.baseURL = getApiUrl();
     
     this.client = axios.create({
       baseURL: this.baseURL,

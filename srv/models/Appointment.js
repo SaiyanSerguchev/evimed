@@ -239,7 +239,6 @@ class Appointment {
       byService: byServiceWithNames
     };
   }
-}
 
   static async createWithRenovatio(data) {
     const { 
@@ -364,3 +363,4 @@ class Appointment {
       ]
     });
   }
+}

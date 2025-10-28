@@ -32,7 +32,8 @@ const ServicesSection = () => {
     try {
       const response = await fetch(`${API_BASE}/service-categories`);
       const data = await response.json();
-      setCategories(data);
+      // Ensure data is an array before setting
+      setCategories(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Ошибка загрузки категорий:', error);
       // Fallback к статичным данным
@@ -53,7 +54,8 @@ const ServicesSection = () => {
     try {
       const response = await fetch(`${API_BASE}/services/category/${categoryId}`);
       const data = await response.json();
-      setServices(data);
+      // Ensure data is an array before setting
+      setServices(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Ошибка загрузки услуг:', error);
       // Fallback к статичным данным для КЛКТ

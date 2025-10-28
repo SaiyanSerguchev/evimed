@@ -85,32 +85,155 @@ router.get('/sync/status', adminAuth, async (req, res) => {
 // 4. Получение расписания (public)
 router.get('/schedule', async (req, res) => {
   try {
-    const { clinic_id, user_id, service_id, time_start, time_end } = req.query;
+    const { clinic_id, user_id, service_id, time_start, time_end, step } = req.query;
+    
+    console.log('Schedule request params:', { clinic_id, user_id, service_id, time_start, time_end, step });
+    console.log('Using step:', step || 30, 'minutes');
     
     if (!clinic_id || !user_id) {
+      console.log('Missing required parameters: clinic_id or user_id');
       return res.status(400).json({ 
-        error: 'clinic_id and user_id are required' 
+        error: 'clinic_id and user_id are required',
+        received: { clinic_id, user_id, service_id, time_start, time_end }
       });
     }
 
-    const schedule = await renovatioService.getSchedule({
-      clinic_id,
-      user_id,
-      service_id,
-      time_start: time_start || new Date().toISOString().split('T')[0],
-      time_end: time_end || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      step: 30,
-      show_busy: 0,
-      show_past: 0
-    });
+    // Преобразуем даты в правильный формат для Renovatio API: dd.mm.yyyy hh:mm
+    // Определяем часы работы в зависимости от дня недели:
+    // Пн-Пт (1-5): 9:00 - 20:00
+    // Сб-Вс (0, 6): 10:00 - 15:00
+    const getWorkHours = (date) => {
+      const dayOfWeek = date.getDay(); // 0 = воскресенье, 6 = суббота
+      // 1-5 = Пн-Пт, 0 и 6 = Вс и Сб
+      if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+        return { start: { hour: 9, minute: 0 }, end: { hour: 20, minute: 0 } };
+      } else {
+        return { start: { hour: 10, minute: 0 }, end: { hour: 15, minute: 0 } };
+      }
+    };
 
-    res.json(schedule);
+    const formatDateForRenovatio = (dateStr, isStart = true) => {
+      if (!dateStr) return null;
+      
+      try {
+        // Парсим дату в любой формате
+        const date = new Date(dateStr);
+        
+        // Определяем часы работы для этого дня
+        const workHours = getWorkHours(date);
+        const timeToUse = isStart ? workHours.start : workHours.end;
+        
+        // Форматируем в dd.mm.yyyy hh:mm
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        const hours = String(timeToUse.hour).padStart(2, '0');
+        const minutes = String(timeToUse.minute).padStart(2, '0');
+        
+        return `${day}.${month}.${year} ${hours}:${minutes}`;
+      } catch (error) {
+        console.error('Error parsing date:', dateStr, error);
+        const now = new Date();
+        const workHours = getWorkHours(now);
+        const timeToUse = isStart ? workHours.start : workHours.end;
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = now.getFullYear();
+        return `${day}.${month}.${year} ${String(timeToUse.hour).padStart(2, '0')}:${String(timeToUse.minute).padStart(2, '0')}`;
+      }
+    };
+
+    const scheduleParams = {
+      clinic_id: parseInt(clinic_id),
+      user_id: parseInt(user_id),
+      service_id: service_id ? parseInt(service_id) : undefined,
+      time_start: formatDateForRenovatio(time_start, true) || formatDateForRenovatio(new Date().toISOString(), true),
+      time_end: formatDateForRenovatio(time_end, false) || formatDateForRenovatio(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), false),
+      step: step ? parseInt(step) : 30, // Используем переданный step или 30 по умолчанию
+      show_busy: 1, // Показывать и занятые слоты (чтобы видеть is_busy)
+      show_past: 0
+    };
+
+    console.log('Calling Renovatio API with params:', scheduleParams);
+    console.log('Step will be used for scheduling intervals:', scheduleParams.step, 'minutes');
+    
+    const schedule = await renovatioService.getSchedule(scheduleParams);
+    console.log('Renovatio API response:', schedule);
+    
+    // Логируем первые слоты для отладки
+    if (schedule && typeof schedule === 'object' && Object.keys(schedule).length > 0) {
+      const firstUserKey = Object.keys(schedule)[0];
+      const firstSlots = schedule[firstUserKey];
+      console.log('First user slots sample:', firstSlots?.slice(0, 3));
+      if (firstSlots?.[0]) {
+        console.log('Sample slot data:', {
+          time: firstSlots[0].time,
+          time_start_short: firstSlots[0].time_start_short,
+          is_busy: firstSlots[0].is_busy,
+          available: !firstSlots[0].is_busy
+        });
+      }
+    }
+    
+    // Преобразуем ответ Renovatio (объект с user_id ключами) в плоский массив слотов
+    let slots = [];
+    if (schedule && typeof schedule === 'object') {
+      // Если это объект с ключами-идентификаторами пользователей, извлекаем все слоты
+      Object.values(schedule).forEach(userSlots => {
+        if (Array.isArray(userSlots)) {
+          slots = slots.concat(userSlots);
+        }
+      });
+    } else if (Array.isArray(schedule)) {
+      slots = schedule;
+    }
+    
+    // Трансформируем поля для фронтенда
+    // Renovatio возвращает is_busy (true/false), мы конвертируем в available
+    // Также используем time_start_short для времени начала слота
+    slots = slots.map(slot => ({
+      ...slot,
+      available: slot.is_busy === false || slot.is_busy === 0 || !slot.is_busy,
+      time: slot.time_start_short || slot.time || slot.time_start?.split(' ')[1]?.substring(0, 5) || '--:--'
+    }));
+    
+    console.log('Transformed schedule slots count:', slots.length);
+    const busySlots = slots.filter(s => s.is_busy);
+    const availableSlots = slots.filter(s => !s.is_busy);
+    console.log(`Slots breakdown: ${availableSlots.length} available, ${busySlots.length} busy out of ${slots.length} total`);
+    
+    // Логируем примеры занятых слотов
+    if (busySlots.length > 0) {
+      console.log('Sample busy slots:', busySlots.slice(0, 3).map(s => ({ time: s.time, is_busy: s.is_busy, available: s.available })));
+    }
+    
+    res.json(slots);
   } catch (error) {
     console.error('Get schedule error:', error);
-    res.status(500).json({ 
-      error: 'Failed to get schedule',
-      message: error.message 
-    });
+    
+    // Более детальная обработка ошибок
+    if (error.message.includes('RENOVATIO_API_KEY')) {
+      res.status(503).json({ 
+        error: 'Renovatio API not configured',
+        message: 'API key is missing or invalid'
+      });
+    } else if (error.response?.status === 401) {
+      res.status(401).json({ 
+        error: 'Renovatio API authentication failed',
+        message: 'Invalid API key'
+      });
+    } else if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
+      res.status(503).json({ 
+        error: 'Renovatio API unavailable',
+        message: 'Cannot connect to Renovatio service'
+      });
+    } else {
+      res.status(500).json({ 
+        error: 'Failed to get schedule',
+        message: error.message,
+        type: error.constructor.name
+      });
+    }
   }
 });
 
@@ -118,7 +241,7 @@ router.get('/schedule', async (req, res) => {
 router.get('/doctors', async (req, res) => {
   try {
     const { clinic_id, profession_id, role } = req.query;
-    
+
     const doctors = await renovatioService.getUsers({
       clinic_id,
       profession_id,
@@ -318,3 +441,5 @@ router.get('/sync/job-status', adminAuth, async (req, res) => {
     res.status(500).json({ error: 'Failed to get sync job status' });
   }
 });
+
+module.exports = router;

@@ -7,7 +7,6 @@ const SuccessStep = ({
 }) => {
   const {
     serviceName,
-    doctorName,
     clinicName,
     appointmentDate,
     appointmentTime,
@@ -33,11 +32,6 @@ const SuccessStep = ({
           <div className="detail-item">
             <div className="detail-label">Услуга</div>
             <div className="detail-value">{serviceName || 'Не указана'}</div>
-          </div>
-
-          <div className="detail-item">
-            <div className="detail-label">Врач</div>
-            <div className="detail-value">{doctorName || 'Не указан'}</div>
           </div>
 
           <div className="detail-item">

@@ -1,7 +1,31 @@
 import React from 'react';
 import './AdminDashboard.css';
 
-const AdminDashboard = ({ dashboardData }) => {
+const AdminDashboard = ({ dashboardData, token, API_BASE }) => {
+  const syncWithRenovatio = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/renovatio/sync/services`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        alert(`Синхронизация завершена!\n\nКатегории: создано ${result.categories.created}, обновлено ${result.categories.updated}\nУслуги: создано ${result.services.created}, обновлено ${result.services.updated}\nОшибок: ${result.errors.length}`);
+        // Можно добавить обновление страницы или перезагрузку данных
+        window.location.reload();
+      } else {
+        const error = await response.json();
+        alert('Ошибка синхронизации: ' + error.error);
+      }
+    } catch (error) {
+      alert('Ошибка подключения к серверу: ' + error.message);
+    }
+  };
+
   if (!dashboardData) {
     return (
       <div className="dashboard">
@@ -26,6 +50,13 @@ const AdminDashboard = ({ dashboardData }) => {
 
   return (
     <div className="dashboard">
+      <div className="dashboard-header">
+        <h2>Панель администратора</h2>
+        <button onClick={syncWithRenovatio} className="sync-btn">
+          Синхронизировать с Renovatio
+        </button>
+      </div>
+      
       <div className="stats-grid">
         <div className="stat-card">
           <h3>Всего пользователей</h3>
