@@ -356,38 +356,4 @@
   font-size: 14px;
 }
 
-/* Адаптивность */
-@media (max-width: 768px) {
-  .add-forms {
-    grid-template-columns: 1fr;
-  }
-  
-  .category-header {
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  
-  .category-actions {
-    flex-wrap: wrap;
-  }
-  
-  .tree-service {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-  
-  .service-info {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 5px;
-  }
-  
-  .service-actions {
-    align-self: flex-end;
-  }
-  
-  .edit-form form {
-    grid-template-columns: 1fr;
-  }
-}
+/* (all media queries removed) */

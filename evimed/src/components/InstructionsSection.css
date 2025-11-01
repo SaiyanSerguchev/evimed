@@ -195,18 +195,3 @@
   z-index: 0;
   
 }
-
-/* Responsive */
-@media (max-width: 1200px) {
-  .instr-container { grid-template-columns: 1fr; gap: 32px; }
-}
-
-@media (max-width: 768px) {
-  .instr-section { padding: 72px 0; }
-  .instr-container { padding: 0 16px; }
-  .instr-title { font-size: 34px; }
-  .instr-title-row { grid-template-columns: 1fr auto; }
-  .instr-title-divider { display: none; }
-  .instr-item-text { font-size: 18px; line-height: 24px; }
-  .instr-item::before { left: 24px; top: 56px; }
-}

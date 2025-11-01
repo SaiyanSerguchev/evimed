@@ -269,28 +269,4 @@ select {
   cursor: pointer;
 }
 
-@media (max-width: 768px) {
-  .admin-content {
-    padding: 1rem;
-  }
-  
-  .services-management {
-    grid-template-columns: 1fr;
-  }
-  
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .admin-nav {
-    flex-wrap: wrap;
-  }
-  
-  table {
-    font-size: 0.9rem;
-  }
-  
-  th, td {
-    padding: 0.5rem;
-  }
-}
+/* (all media queries removed) */

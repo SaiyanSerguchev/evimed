@@ -243,26 +243,4 @@
   background: #404040;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .banners-management {
-    grid-template-columns: 1fr;
-  }
-  
-  .banners-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .banner-actions {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .edit-btn,
-  .delete-btn {
-    flex: none;
-    width: 100%;
-    padding: 0.6rem 1rem;
-    font-size: 0.8rem;
-  }
-}
+/* (all media queries removed) */

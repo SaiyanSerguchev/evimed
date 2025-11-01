@@ -168,25 +168,4 @@
   background: #1a1a1a;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .admin-advantage-card {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-  
-  .admin-advantage-preview {
-    margin-right: 0;
-  }
-  
-  .admin-advantage-actions {
-    width: 100%;
-    justify-content: flex-end;
-  }
-  
-  .edit-btn {
-    padding: 0.6rem 1rem;
-    font-size: 0.8rem;
-  }
-}
+ 

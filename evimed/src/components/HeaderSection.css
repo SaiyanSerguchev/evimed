@@ -298,82 +298,8 @@
 }
 
 /* Responsive Design */
-@media (max-width: 1200px) {
-  .header-content {
-    padding: 0 24px;
-  }
-  
-  .header-left {
-    gap: 48px;
-  }
-  
-  .header-right {
-    gap: 24px;
-  }
-}
-
-@media (max-width: 1024px) {
-  .header-left {
-    gap: 32px;
-  }
-  
-  .header-right {
-    gap: 16px;
-  }
-  
-  .phone-number {
-    font-size: 20px;
-  }
-}
-
-@media (max-width: 768px) {
-  .header-section {
-    padding: 16px 0;
-  }
-  
-  .header-content {
-    flex-direction: column;
-    height: auto;
-    gap: 16px;
-    padding: 0 var(--spacing-lg);
-  }
-  
-  .header-left {
-    flex-direction: column;
-    gap: 16px;
-    width: 100%;
-  }
-  
-  .navigation {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 4px;
-  }
-  
-  .nav-button {
-    padding: 6px 12px;
-    font-size: var(--font-size-small-button);
-  }
-  
-  .header-right {
-    flex-direction: column;
-    gap: 16px;
-    width: 100%;
-  }
-  
-  .phone-section {
-    align-items: center;
-    text-align: center;
-  }
-  
-  .phone-underline {
-    width: 100%;
-  }
-  
-  .consultation-button {
-    width: 100%;
-    max-width: 200px;
-  }
+.consultation-button:hover .arrow-icon {
+  transform: translateX(2px);
 }
 
 /* Mobile Menu Button */
@@ -518,67 +444,24 @@
 }
 
 /* Responsive Styles */
-@media (max-width: 768px) {
-  .header-section {
-    padding: 16px 0;
-  }
-  
-  .header-content {
-    height: auto;
-  }
-  
-  .navigation {
-    display: none;
-  }
-  
-  .mobile-menu-button {
-    display: block;
-  }
-  
-
-  
-  .consultation-button {
-    display: none;
-  }
-  
-  .mobile-menu-overlay {
-    display: block;
-  }
-  
-  .logo {
-    gap: 8px;
-  }
-  
-  .logo-symbol {
-    width: 28px;
-    height: 28px;
-  }
-  
-  .logo-symbol img {
-    width: 28px;
-    height: 28px;
-  }
-  
-  .logo-text {
-    height: 16px;
-  }
-  
-  .logo-text img {
-    height: 16px;
-    width: auto;
-  }
-}
+/* (all non-480px media queries removed) */
 
 @media (max-width: 480px) {
   .container  {
     padding: 0 !important;
   }
-
+  .navigation {
+    display: none;
+  }
   .header-content {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     padding: 0;
+  }
+
+  .header-section{
+    padding: 16px;
   }
 
   .header-left{
@@ -595,6 +478,10 @@
     width: auto;
     flex-direction:row;
 
+  }
+
+  .consultation-button {
+    display: none;
   }
   
   .mobile-menu-button {

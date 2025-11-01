@@ -44,13 +44,4 @@ tr:hover {
   background: #f8f9fa;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  table {
-    font-size: 0.8rem;
-  }
-  
-  th, td {
-    padding: 0.5rem;
-  }
-}
+/* (all media queries removed) */
