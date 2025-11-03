@@ -354,3 +354,110 @@
   grid-template-columns: repeat(auto-fit, minmax(436px, 1fr));
   gap: 32px;
 }
+
+/* Mobile — iPhone SE and similar (Figma width up to 414, we use 480) */
+@media (max-width: 480px) {
+  .services-section {
+    padding: 56px 0 64px 0;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+  }
+
+  .services-container {
+    padding: 0 16px;
+  }
+
+  .services-top {
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .services-subhead {
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.12em;
+  }
+
+  .services-toprow {
+    gap: 12px;
+  }
+
+  .services-main-title {
+    font-size: 24px;
+    line-height: 30px;
+  }
+
+  .services-title-line {
+    height: 2px;
+    margin: 0 8px;
+  }
+
+  .choose-service-btn {
+    padding: 8px 16px;
+    min-height: 32px;
+    font: 500 16px/20px var(--font-family, 'Montserrat');
+  }
+
+  .services-lead {
+    font-size: 14px;
+    line-height: 20px;
+    margin-top: 4px;
+  }
+
+  .services-tabs {
+    gap: 12px;
+    margin: 20px 0 24px 0;
+    padding-bottom: 4px;
+  }
+
+  .services-tab {
+    padding: 8px 16px;
+    min-height: 32px;
+    font: 400 14px/18px var(--font-family, 'Montserrat');
+    border-radius: 16px;
+  }
+
+  .promo-banner {
+    gap: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+  }
+
+  .promo-icon { width: 28px; height: 28px; }
+  .promo-text { font-size: 14px; line-height: 20px; }
+
+  .ct-grid {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    scroll-snap-type: x mandatory;
+    padding: 0 16px 8px 16px; /* keep inside viewport */
+    width: 100%;
+  }
+  .ct-grid::-webkit-scrollbar { display: none; }
+
+  .ct-card {
+    border-radius: 32px;
+    padding: 24px;
+    max-height: none;
+    gap: 12px;
+    min-width: 280px;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  .ct-title-line { font-size: 18px; line-height: 24px; }
+  .ct-desc { font-size: 14px; line-height: 20px; }
+
+  .ct-meta { gap: 16px; }
+  .ct-meta-item { font: 400 14px/20px var(--font-family, 'Montserrat'); }
+
+  .ct-footer { gap: 12px; }
+  .ct-price-value { font-size: 18px; }
+  .ct-price-currency { font-size: 14px; }
+
+  .ct-icon-btn { min-width: 32px; min-height: 32px; }
+}
