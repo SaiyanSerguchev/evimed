@@ -495,6 +495,50 @@
   }
 }
 
+/* Restored overrides after accidental discard */
+.time-slot:hover:not(:disabled) {
+  border-color: var(--color-primary-700);
+  background: var(--color-primary-50);
+  color: var(--color-primary-700);
+}
+
+.time-slot.selected {
+  border-color: var(--color-primary-700);
+  background: var(--color-primary-700);
+  color: #ffffff;
+}
+
+.time-section {
+  min-height: 300px;
+}
+
+.no-slots-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  color: #666666;
+  min-height: 300px;
+  width: 100%;
+  flex: 1;
+}
+
+.service-card.skeleton {
+  height: 292px;
+  border-radius: 44px;
+  background: linear-gradient(90deg, #EBEDF2 25%, #E0E3E9 50%, #EBEDF2 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  box-shadow:
+    inset 0 -4px 8px rgba(13, 34, 61, 0.04),
+    inset 0 6px 4px rgba(255, 255, 255, 0.32),
+    inset 0 1px 1px rgba(13, 34, 61, 0.04),
+    0 1px 1px rgba(13, 34, 61, 0.16),
+    0 4px 8px rgba(13, 34, 61, 0.08);
+}
+
 /* Step 3 - Clinics and Doctors */
 .step3-content {
   display: flex;

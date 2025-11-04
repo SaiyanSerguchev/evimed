@@ -63,7 +63,7 @@ class RenovatioService {
     const defaultParams = {
       show_busy: 1,  // Показывать занятые слоты тоже (чтобы видеть is_busy)
       show_past: 0,  // Не показывать прошедшие
-      step: 30       // значение по умолчанию
+      step: 15       // фиксированное значение 15 минут
     };
     
     return await this.makeRequest('getSchedule', {
@@ -150,6 +150,34 @@ class RenovatioService {
   // Создание пациента
   async createPatient(patientData) {
     return await this.makeRequest('createPatient', patientData);
+  }
+
+  // Создание задачи
+  async createTask(taskData) {
+    const params = {};
+    
+    // Обязательные и опциональные поля
+    if (taskData.title) params.title = taskData.title;
+    if (taskData.desc) params.desc = taskData.desc;
+    if (taskData.patient_id) params.patient_id = taskData.patient_id;
+    if (taskData.priority !== undefined) params.priority = taskData.priority; // 10, 20, 30
+    if (taskData.user_id) params.user_id = taskData.user_id; // может быть строка с несколькими ID через запятую
+    if (taskData.role_id) params.role_id = taskData.role_id; // может быть строка с несколькими ID через запятую
+    if (taskData.to_all !== undefined) params.to_all = taskData.to_all; // 0 или 1
+    if (taskData.clinic_id) params.clinic_id = taskData.clinic_id; // может быть строка с несколькими ID через запятую
+    if (taskData.responsible_id) params.responsible_id = taskData.responsible_id;
+    if (taskData.type !== undefined) params.type = taskData.type; // 1 - задание, 2 - звонок
+    if (taskData.due_date) params.due_date = taskData.due_date; // dd.mm.yyyy
+    if (taskData.due_time) params.due_time = taskData.due_time; // hh:mm
+    if (taskData.send_notifications !== undefined) params.send_notifications = taskData.send_notifications; // 1 или 2
+    if (taskData.source) params.source = taskData.source;
+
+    return await this.makeRequest('createTask', params);
+  }
+
+  // Получение задач
+  async getTasks(params = {}) {
+    return await this.makeRequest('getTasks', params);
   }
 }
 

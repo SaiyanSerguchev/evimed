@@ -141,31 +141,8 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
     try {
       setIsLoading(true);
       
-      // Извлекаем длительность из услуги (если есть)
-      let step = 30; // По умолчанию 30 минут
-      if (selectedService?.duration) {
-        // Парсим длительность из формата "15 мин", "15–30 мин", "1-2 часа" и т.д.
-        const durationStr = selectedService.duration.toString();
-        const minutesMatch = durationStr.match(/(\d+)\s*м?и?н/);
-        const hoursMatch = durationStr.match(/(\d+)\s*ч?ас/);
-        
-        if (minutesMatch) {
-          const mins = parseInt(minutesMatch[1]);
-          // Используем минимальное значение из диапазона, если есть дефис
-          if (durationStr.includes('–')) {
-            step = mins;
-          } else {
-            step = mins;
-          }
-        } else if (hoursMatch) {
-          const hours = parseInt(hoursMatch[1]);
-          step = hours * 60;
-        }
-        
-        // Ограничиваем значения разумными пределами
-        if (step < 15) step = 15;
-        if (step > 120) step = 30; // Максимум 2 часа
-      }
+      // Используем фиксированный step = 15 минут
+      const step = 15;
       
       // Параметры запроса расписания логируются на бэкенде
 
@@ -175,7 +152,7 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
         service_id: selectedService?.id,
         time_start: selectedDate, // Отправляем только дату в формате YYYY-MM-DD
         time_end: selectedDate,   // Для одного дня используем ту же дату
-        step: step                 // Используем длительность услуги
+        step: step                 // Фиксированное значение 15 минут
       });
       
       // Обрабатываем разные форматы ответа от API
@@ -456,7 +433,7 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
     <div className="appointment-step">
       <h2 className="appointment-title">Выберите категорию услуги</h2>
       {isLoading ? (
-        <div className="loading-skeleton">
+        <div className="services-grid">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="service-card skeleton" />
           ))}
@@ -490,7 +467,7 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
       <div className="appointment-step">
         <h2 className="appointment-title">Выберите конкретную услугу</h2>
         {isLoading ? (
-          <div className="loading-skeleton">
+          <div className="services-grid">
             {[...Array(3)].map((_, i) => (
               <div key={i} className="service-card skeleton" />
             ))}
@@ -575,32 +552,34 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
 
         <div className="time-section">
           <h3 className="section-title">Время</h3>
-          {isLoading ? (
+          {!selectedDate ? (
+            <div className="no-slots-message">
+              <p>Выберите дату, чтобы увидеть доступное время</p>
+            </div>
+          ) : isLoading ? (
             <div className="loading-skeleton">
               {[...Array(6)].map((_, i) => (
                 <div key={i} className="time-slot skeleton" />
               ))}
             </div>
-          ) : (
+          ) : Array.isArray(availableSlots) && availableSlots.length > 0 ? (
             <div className="time-slots">
-              {Array.isArray(availableSlots) && availableSlots.length > 0 ? (
-                availableSlots.map(slot => (
-                  <button
-                    key={slot.time || slot.id}
-                    className={`time-slot ${selectedTime === slot.time ? 'selected' : ''} ${!slot.available ? 'unavailable' : ''}`}
-                    onClick={() => slot.available && handleTimeSelect(slot.time)}
-                    disabled={!slot.available}
-                    title={!slot.available ? 'Время занято' : 'Выбрать время'}
-                  >
-                    {formatTime(slot.time)}
-                  </button>
-                ))
-              ) : (
-                <div className="no-slots-message">
-                  <p>Нет доступных временных слотов на выбранную дату</p>
-                  <small>Попробуйте выбрать другую дату</small>
-                </div>
-              )}
+              {availableSlots.map(slot => (
+                <button
+                  key={slot.time || slot.id}
+                  className={`time-slot ${selectedTime === slot.time ? 'selected' : ''} ${!slot.available ? 'unavailable' : ''}`}
+                  onClick={() => slot.available && handleTimeSelect(slot.time)}
+                  disabled={!slot.available}
+                  title={!slot.available ? 'Время занято' : 'Выбрать время'}
+                >
+                  {formatTime(slot.time)}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="no-slots-message">
+              <p>Нет доступных временных слотов на выбранную дату</p>
+              <small>Попробуйте выбрать другую дату</small>
             </div>
           )}
         </div>

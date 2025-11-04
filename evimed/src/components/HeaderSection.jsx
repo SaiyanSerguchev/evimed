@@ -3,6 +3,7 @@ import './HeaderSection.css';
 import SymbolLogo from '../assets/images/icons/Symbol_Logo.svg';
 import EvimedLogo from '../assets/images/icons/Evimed.svg';
 import HamburgerIcon from '../assets/images/icons/hamburger.svg';
+import ConsultationModal from './ConsultationModal';
 
 const HeaderSection = () => {
   const handleLogoClick = () => {
@@ -19,12 +20,13 @@ const HeaderSection = () => {
     }
   };
 
-  const handleConsultationClick = () => {
-    console.log('Consultation button clicked');
-  };
-
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false);
+
+  const handleConsultationClick = () => {
+    setIsConsultationModalOpen(true);
+  };
   const dropdownRef = useRef(null);
   const mobileMenuRef = useRef(null);
 
@@ -188,6 +190,12 @@ const HeaderSection = () => {
           </button>
         </div>
       </div>
+
+      {/* Consultation Modal */}
+      <ConsultationModal 
+        isOpen={isConsultationModalOpen}
+        onClose={() => setIsConsultationModalOpen(false)}
+      />
     </header>
   );
 };

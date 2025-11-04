@@ -62,7 +62,7 @@ router.put('/:id', adminAuth, async (req, res) => {
   }
 });
 
-// Delete a service (soft delete)
+// Delete a service (hard delete)
 router.delete('/:id', adminAuth, async (req, res) => {
   try {
     await Service.delete(req.params.id);

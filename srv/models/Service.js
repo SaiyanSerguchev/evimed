@@ -72,10 +72,9 @@ class Service {
   }
 
   static async delete(id) {
-    return await prisma.service.update({
-      where: { id: parseInt(id) },
-      data: { isActive: false },
-      select: { id: true }
+    // Hard delete - удаляем из БД
+    return await prisma.service.delete({
+      where: { id: parseInt(id) }
     });
   }
 

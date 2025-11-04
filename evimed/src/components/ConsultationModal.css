@@ -1,0 +1,15 @@
+/* Consultation Modal Specific Styles */
+/* Most styles are inherited from AppointmentModal.css */
+
+.consultation-subtitle {
+  font-size: 15px;
+  color: #6B7280;
+  line-height: 1.5;
+  margin: 0;
+  text-align: center;
+}
+
+.required {
+  color: #EF4444;
+}
+

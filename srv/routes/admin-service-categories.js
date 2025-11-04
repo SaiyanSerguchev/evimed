@@ -50,7 +50,7 @@ router.put('/:id', adminAuth, async (req, res) => {
   }
 });
 
-// Delete a service category (soft delete)
+// Delete a service category (hard delete)
 router.delete('/:id', adminAuth, async (req, res) => {
   try {
     await ServiceCategory.delete(req.params.id);

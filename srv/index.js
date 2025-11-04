@@ -42,6 +42,9 @@ app.use('/api/renovatio', require('./routes/renovatio'));
 // Email verification routes
 app.use('/api/verification', require('./routes/verification'));
 
+// Consultation requests
+app.use('/api/consultation-requests', require('./routes/consultation-requests'));
+
 // Health check
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });

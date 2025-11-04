@@ -149,7 +149,7 @@ router.get('/schedule', async (req, res) => {
       service_id: service_id ? parseInt(service_id) : undefined,
       time_start: formatDateForRenovatio(time_start, true) || formatDateForRenovatio(new Date().toISOString(), true),
       time_end: formatDateForRenovatio(time_end, false) || formatDateForRenovatio(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), false),
-      step: step ? parseInt(step) : 30, // Используем переданный step или 30 по умолчанию
+      step: 15, // Фиксированное значение 15 минут
       show_busy: 1, // Показывать и занятые слоты (чтобы видеть is_busy)
       show_past: 0
     };
