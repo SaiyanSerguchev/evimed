@@ -56,8 +56,16 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
       loadDoctors(); // Загружаем врачей сразу при открытии
       // Если есть предвыбранная услуга, переходим к шагу 3
       if (preselectedService) {
+        // Устанавливаем выбранную услугу
+        setSelectedService(preselectedService);
+        // Устанавливаем категорию, если она есть в объекте услуги
+        if (preselectedService.category) {
+          setSelectedCategory(preselectedService.category);
+        }
         setCurrentStep(3);
-        loadServicesForCategory(preselectedService.categoryId);
+        if (preselectedService.categoryId) {
+          loadServicesForCategory(preselectedService.categoryId);
+        }
       }
     }
   }, [isOpen, preselectedService]);
@@ -387,7 +395,7 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
     
     setCurrentStep(1);
     setSelectedCategory(null);
-    setSelectedService(preselectedService);
+    setSelectedService(null); // Сбрасываем услугу при закрытии
     setSelectedDoctor(null);
     setSelectedClinic(null);
     setSelectedDate(null);
@@ -418,13 +426,27 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
   // Отключение скролла при открытии модального окна
   useEffect(() => {
     if (isOpen) {
+      // Сохраняем текущую позицию скролла
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
       document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = 'unset';
+      // Восстанавливаем позицию скролла
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
     }
 
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
     };
   }, [isOpen]);
 
@@ -748,7 +770,7 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
               {[1, 2, 3, 4, 5].map(step => (
                 <div
                   key={step}
-                  className={`progress-step ${currentStep >= step ? (currentStep === step ? 'half-active' : 'active') : ''}`}
+                  className={`progress-step ${step < currentStep ? 'active' : ''}`}
                 />
               ))}
             </div>

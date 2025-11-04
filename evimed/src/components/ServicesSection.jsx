@@ -139,7 +139,18 @@ const ServicesSection = () => {
 
   // Обработчики для модального окна записи
   const handleOpenAppointmentModal = (service = null) => {
-    setSelectedServiceForAppointment(service);
+    // Если есть услуга, добавляем к ней информацию о категории
+    if (service) {
+      const currentCategory = categories[activeTab];
+      const enrichedService = {
+        ...service,
+        categoryId: currentCategory?.id,
+        category: currentCategory // Полный объект категории
+      };
+      setSelectedServiceForAppointment(enrichedService);
+    } else {
+      setSelectedServiceForAppointment(null);
+    }
     setIsAppointmentModalOpen(true);
   };
 
