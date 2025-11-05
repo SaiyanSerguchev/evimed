@@ -169,9 +169,17 @@ class Service {
           where: { renovatioId: service.category_id }
         });
 
-        if (category) {
-          serviceData.categoryId = category.id;
+        if (!category) {
+          // Пропускаем услуги без категории
+          results.errors.push({
+            renovatioId: service.service_id,
+            name: service.title,
+            error: `Category with renovatioId ${service.category_id} not found. Sync categories first.`
+          });
+          continue;
         }
+
+        serviceData.categoryId = category.id;
 
         const existingService = await prisma.service.findFirst({
           where: { renovatioId: service.service_id }

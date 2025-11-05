@@ -77,8 +77,14 @@ model ServiceCategory {
   order       Int      @default(0)
   isActive    Boolean  @default(true) @map("is_active")
   
+  // Hierarchy fields
+  parentId    Int?     @map("parent_id")
+  parent      ServiceCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children    ServiceCategory[] @relation("CategoryHierarchy")
+  
   // Renovatio integration fields
-  renovatioId Int?     @unique @map("renovatio_id")
+  renovatioId       Int?     @unique @map("renovatio_id")
+  renovatioParentId Int?     @map("renovatio_parent_id")
   
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")

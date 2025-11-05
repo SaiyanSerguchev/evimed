@@ -13,8 +13,9 @@ router.post('/sync/services', adminAuth, async (req, res) => {
     console.log('Starting services synchronization...');
     
     // Получаем данные из Renovatio
+    // Используем рекурсивный метод для получения ВСЕХ категорий (включая подкатегории)
     const [renovatioCategories, renovatioServices] = await Promise.all([
-      renovatioService.getServiceCategories(),
+      renovatioService.getAllServiceCategoriesRecursive(),
       renovatioService.getServices()
     ]);
 
@@ -28,7 +29,7 @@ router.post('/sync/services', adminAuth, async (req, res) => {
     const serviceResults = await Service.syncFromRenovatio(renovatioServices);
     console.log('Services sync results:', serviceResults);
 
-    res.json({
+    const response = {
       message: 'Services synchronized successfully',
       categories: {
         total: renovatioCategories.length,
@@ -43,7 +44,14 @@ router.post('/sync/services', adminAuth, async (req, res) => {
         errors: serviceResults.errors.length
       },
       errors: [...categoryResults.errors, ...serviceResults.errors]
-    });
+    };
+
+    // Логируем первые несколько ошибок для отладки
+    if (response.errors.length > 0) {
+      console.log('Sample errors (first 5):', response.errors.slice(0, 5));
+    }
+
+    res.json(response);
   } catch (error) {
     console.error('Sync services error:', error);
     res.status(500).json({ 

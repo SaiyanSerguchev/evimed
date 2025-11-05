@@ -24,6 +24,12 @@
   font-weight: 600;
 }
 
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.sync-btn,
 .refresh-btn {
   background: #404040;
   color: #ffffff;
@@ -33,6 +39,14 @@
   cursor: pointer;
   font-size: 12px;
   font-weight: 500;
+}
+
+.sync-btn {
+  background: #28a745;
+}
+
+.sync-btn:hover {
+  background: #218838;
 }
 
 .refresh-btn:hover {
@@ -131,10 +145,16 @@
 
 .tree-category {
   border-bottom: 1px solid #e0e0e0;
+  transition: all 0.2s ease;
 }
 
 .tree-category:last-child {
   border-bottom: none;
+}
+
+/* Отступ для дочерних категорий */
+.tree-category[style*="margin-left"] .category-header {
+  background: linear-gradient(to right, #f0f0f0 0%, #f8f9fa 100%);
 }
 
 .category-header {
@@ -292,9 +312,18 @@
   background: #404040;
 }
 
+.category-content {
+  background: white;
+}
+
 .category-services {
   padding-left: 40px;
   background: white;
+}
+
+.child-categories {
+  border-left: 2px solid #e0e0e0;
+  margin-left: 30px;
 }
 
 .tree-service {

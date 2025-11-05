@@ -11,7 +11,8 @@ const AdminServicesTree = ({ token, API_BASE }) => {
   const [newCategory, setNewCategory] = useState({
     name: '',
     description: '',
-    order: 0
+    order: 0,
+    parentId: ''
   });
   const [newService, setNewService] = useState({
     name: '',
@@ -86,7 +87,7 @@ const AdminServicesTree = ({ token, API_BASE }) => {
       });
 
       if (response.ok) {
-        setNewCategory({ name: '', description: '', order: 0 });
+        setNewCategory({ name: '', description: '', order: 0, parentId: '' });
         loadData();
         alert('Категория добавлена успешно');
       } else {
@@ -128,7 +129,8 @@ const AdminServicesTree = ({ token, API_BASE }) => {
     setEditCategoryData({
       name: category.name,
       description: category.description || '',
-      order: category.order
+      order: category.order,
+      parentId: category.parentId || ''
     });
   };
 
@@ -277,6 +279,16 @@ const AdminServicesTree = ({ token, API_BASE }) => {
     return services.filter(service => service.categoryId === categoryId);
   };
 
+  // Получить только корневые категории (без родителя)
+  const getRootCategories = () => {
+    return categories.filter(cat => !cat.parentId);
+  };
+
+  // Получить дочерние категории
+  const getChildCategories = (parentId) => {
+    return categories.filter(cat => cat.parentId === parentId);
+  };
+
   const syncWithRenovatio = async () => {
     try {
       const response = await fetch(`${API_BASE}/renovatio/sync/services`, {
@@ -298,6 +310,198 @@ const AdminServicesTree = ({ token, API_BASE }) => {
     } catch (error) {
       alert('Ошибка подключения к серверу: ' + error.message);
     }
+  };
+
+  // Рекурсивный рендер категории и её детей
+  const renderCategoryNode = (category, level = 0) => {
+    const categoryServices = getServicesForCategory(category.id);
+    const childCategories = getChildCategories(category.id);
+    const isExpanded = expandedCategories.has(category.id);
+    
+    return (
+      <div key={category.id} className="tree-category" style={{ marginLeft: `${level * 20}px` }}>
+        <div className="category-header">
+          <button
+            className="expand-btn"
+            onClick={() => toggleCategory(category.id)}
+          >
+            {isExpanded ? '▼' : '▶'}
+          </button>
+          <div className="category-info">
+            <span className={`category-name ${!category.isActive ? 'inactive' : ''}`}>
+              {category.name}
+            </span>
+            <span className="category-meta">
+              ({categoryServices.length} услуг{childCategories.length > 0 ? `, ${childCategories.length} подкатегорий` : ''})
+            </span>
+          </div>
+          <div className="category-actions">
+            <button
+              className="edit-btn"
+              onClick={() => editCategory(category)}
+            >
+              Редактировать
+            </button>
+            <button
+              className="delete-btn"
+              onClick={() => deleteCategory(category.id)}
+            >
+              Удалить
+            </button>
+          </div>
+        </div>
+
+        {/* Редактирование категории */}
+        {editingCategory === category.id && (
+          <div className="edit-form">
+            <form onSubmit={saveCategoryEdit}>
+              <input
+                type="text"
+                placeholder="Название категории"
+                value={editCategoryData.name}
+                onChange={(e) => setEditCategoryData({...editCategoryData, name: e.target.value})}
+                required
+              />
+              <textarea
+                placeholder="Описание категории"
+                value={editCategoryData.description}
+                onChange={(e) => setEditCategoryData({...editCategoryData, description: e.target.value})}
+              />
+              <input
+                type="number"
+                placeholder="Порядок"
+                value={editCategoryData.order}
+                onChange={(e) => setEditCategoryData({...editCategoryData, order: parseInt(e.target.value)})}
+                min="0"
+              />
+              <select
+                value={editCategoryData.parentId}
+                onChange={(e) => setEditCategoryData({...editCategoryData, parentId: e.target.value})}
+              >
+                <option value="">Корневая категория</option>
+                {categories
+                  .filter(cat => cat.id !== editingCategory)
+                  .map(cat => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.parent ? `↳ ${cat.name}` : cat.name}
+                    </option>
+                  ))}
+              </select>
+              <div className="edit-actions">
+                <button type="submit" className="save-btn">Сохранить</button>
+                <button type="button" onClick={() => setEditingCategory(null)} className="cancel-btn">Отмена</button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {/* Услуги и подкатегории */}
+        {isExpanded && (
+          <div className="category-content">
+            {/* Услуги категории */}
+            {categoryServices.length > 0 && (
+              <div className="category-services">
+                {categoryServices.map(service => (
+                  <div key={service.id} className="service-container">
+                    <div className="tree-service">
+                      <div className="service-info">
+                        <span className={`service-name ${!service.isActive ? 'inactive' : ''}`}>
+                          {service.name}
+                        </span>
+                        <span className="service-price">{service.price} ₽</span>
+                        <span className="service-duration">{service.duration}</span>
+                      </div>
+                      <div className="service-actions">
+                        <button
+                          className="edit-btn"
+                          onClick={() => editService(service)}
+                        >
+                          Редактировать
+                        </button>
+                        <button
+                          className="delete-btn"
+                          onClick={() => deleteService(service.id)}
+                        >
+                          Удалить
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Редактирование услуги */}
+                    {editingService === service.id && (
+                      <div className="service-edit-form">
+                        <form onSubmit={saveServiceEdit}>
+                          <input
+                            type="text"
+                            placeholder="Название услуги"
+                            value={editServiceData.name}
+                            onChange={(e) => setEditServiceData({...editServiceData, name: e.target.value})}
+                            required
+                          />
+                          <textarea
+                            placeholder="Описание"
+                            value={editServiceData.description}
+                            onChange={(e) => setEditServiceData({...editServiceData, description: e.target.value})}
+                          />
+                          <input
+                            type="number"
+                            placeholder="Цена"
+                            value={editServiceData.price}
+                            onChange={(e) => setEditServiceData({...editServiceData, price: e.target.value})}
+                            required
+                          />
+                          <input
+                            type="text"
+                            placeholder="Длительность"
+                            value={editServiceData.duration}
+                            onChange={(e) => setEditServiceData({...editServiceData, duration: e.target.value})}
+                          />
+                          <input
+                            type="text"
+                            placeholder="Подготовка"
+                            value={editServiceData.preparation}
+                            onChange={(e) => setEditServiceData({...editServiceData, preparation: e.target.value})}
+                          />
+                          <select
+                            value={editServiceData.categoryId}
+                            onChange={(e) => setEditServiceData({...editServiceData, categoryId: e.target.value})}
+                            required
+                          >
+                            {categories.map(cat => (
+                              <option key={cat.id} value={cat.id}>
+                                {cat.name}
+                              </option>
+                            ))}
+                          </select>
+                          <input
+                            type="number"
+                            placeholder="Порядок"
+                            value={editServiceData.order}
+                            onChange={(e) => setEditServiceData({...editServiceData, order: parseInt(e.target.value)})}
+                            min="0"
+                          />
+                          <div className="edit-actions">
+                            <button type="submit" className="save-btn">Сохранить</button>
+                            <button type="button" onClick={() => setEditingService(null)} className="cancel-btn">Отмена</button>
+                          </div>
+                        </form>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Рекурсивный рендер дочерних категорий */}
+            {childCategories.length > 0 && (
+              <div className="child-categories">
+                {childCategories.map(childCat => renderCategoryNode(childCat, level + 1))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
   };
 
   if (loading) {
@@ -340,6 +544,17 @@ const AdminServicesTree = ({ token, API_BASE }) => {
               onChange={(e) => setNewCategory({...newCategory, order: parseInt(e.target.value)})}
               min="0"
             />
+            <select
+              value={newCategory.parentId}
+              onChange={(e) => setNewCategory({...newCategory, parentId: e.target.value})}
+            >
+              <option value="">Корневая категория</option>
+              {categories.map(category => (
+                <option key={category.id} value={category.id}>
+                  {category.parent ? `↳ ${category.name}` : category.name}
+                </option>
+              ))}
+            </select>
             <button type="submit">Добавить категорию</button>
           </form>
         </div>
@@ -402,172 +617,9 @@ const AdminServicesTree = ({ token, API_BASE }) => {
         </div>
       </div>
 
-      {/* Древовидная структура */}
+      {/* Древовидная структура - рекурсивный рендеринг */}
       <div className="services-tree">
-        {categories.map(category => {
-          const categoryServices = getServicesForCategory(category.id);
-          const isExpanded = expandedCategories.has(category.id);
-          
-          return (
-            <div key={category.id} className="tree-category">
-              <div className="category-header">
-                <button
-                  className="expand-btn"
-                  onClick={() => toggleCategory(category.id)}
-                >
-                  {isExpanded ? '▼' : '▶'}
-                </button>
-                <div className="category-info">
-                  <span className={`category-name ${!category.isActive ? 'inactive' : ''}`}>
-                    {category.name}
-                  </span>
-                  <span className="category-meta">
-                    ({categoryServices.length} услуг)
-                  </span>
-                </div>
-                <div className="category-actions">
-                  <button
-                    className="edit-btn"
-                    onClick={() => editCategory(category)}
-                  >
-                    Редактировать
-                  </button>
-                  <button
-                    className="delete-btn"
-                    onClick={() => deleteCategory(category.id)}
-                  >
-                    Удалить
-                  </button>
-                </div>
-              </div>
-
-              {/* Редактирование категории */}
-              {editingCategory === category.id && (
-                <div className="edit-form">
-                  <form onSubmit={saveCategoryEdit}>
-                    <input
-                      type="text"
-                      placeholder="Название категории"
-                      value={editCategoryData.name}
-                      onChange={(e) => setEditCategoryData({...editCategoryData, name: e.target.value})}
-                      required
-                    />
-                    <textarea
-                      placeholder="Описание категории"
-                      value={editCategoryData.description}
-                      onChange={(e) => setEditCategoryData({...editCategoryData, description: e.target.value})}
-                    />
-                    <input
-                      type="number"
-                      placeholder="Порядок"
-                      value={editCategoryData.order}
-                      onChange={(e) => setEditCategoryData({...editCategoryData, order: parseInt(e.target.value)})}
-                      min="0"
-                    />
-                    <div className="edit-actions">
-                      <button type="submit" className="save-btn">Сохранить</button>
-                      <button type="button" onClick={() => setEditingCategory(null)} className="cancel-btn">Отмена</button>
-                    </div>
-                  </form>
-                </div>
-              )}
-
-              {/* Услуги категории */}
-              {isExpanded && (
-                <div className="category-services">
-                  {categoryServices.map(service => (
-                    <div key={service.id} className="service-container">
-                      <div className="tree-service">
-                        <div className="service-info">
-                          <span className={`service-name ${!service.isActive ? 'inactive' : ''}`}>
-                            {service.name}
-                          </span>
-                          <span className="service-price">{service.price} ₽</span>
-                          <span className="service-duration">{service.duration}</span>
-                        </div>
-                        <div className="service-actions">
-                          <button
-                            className="edit-btn"
-                            onClick={() => editService(service)}
-                          >
-                            Редактировать
-                          </button>
-                          <button
-                            className="delete-btn"
-                            onClick={() => deleteService(service.id)}
-                          >
-                            Удалить
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Редактирование услуги */}
-                      {editingService === service.id && (
-                        <div className="service-edit-form">
-                          <form onSubmit={saveServiceEdit}>
-                            <input
-                              type="text"
-                              placeholder="Название услуги"
-                              value={editServiceData.name}
-                              onChange={(e) => setEditServiceData({...editServiceData, name: e.target.value})}
-                              required
-                            />
-                            <textarea
-                              placeholder="Описание"
-                              value={editServiceData.description}
-                              onChange={(e) => setEditServiceData({...editServiceData, description: e.target.value})}
-                            />
-                            <input
-                              type="number"
-                              placeholder="Цена"
-                              value={editServiceData.price}
-                              onChange={(e) => setEditServiceData({...editServiceData, price: e.target.value})}
-                              required
-                            />
-                            <input
-                              type="text"
-                              placeholder="Длительность"
-                              value={editServiceData.duration}
-                              onChange={(e) => setEditServiceData({...editServiceData, duration: e.target.value})}
-                            />
-                            <input
-                              type="text"
-                              placeholder="Подготовка"
-                              value={editServiceData.preparation}
-                              onChange={(e) => setEditServiceData({...editServiceData, preparation: e.target.value})}
-                            />
-                            <select
-                              value={editServiceData.categoryId}
-                              onChange={(e) => setEditServiceData({...editServiceData, categoryId: e.target.value})}
-                              required
-                            >
-                              {categories.map(cat => (
-                                <option key={cat.id} value={cat.id}>
-                                  {cat.name}
-                                </option>
-                              ))}
-                            </select>
-                            <input
-                              type="number"
-                              placeholder="Порядок"
-                              value={editServiceData.order}
-                              onChange={(e) => setEditServiceData({...editServiceData, order: parseInt(e.target.value)})}
-                              min="0"
-                            />
-                            <div className="edit-actions">
-                              <button type="submit" className="save-btn">Сохранить</button>
-                              <button type="button" onClick={() => setEditingService(null)} className="cancel-btn">Отмена</button>
-                            </div>
-                          </form>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          );
-        })}
+        {getRootCategories().map(category => renderCategoryNode(category, 0))}
       </div>
     </div>
   );

@@ -4,7 +4,9 @@ import './ServicesSection.css';
 
 const ServicesSection = () => {
   // Tabs state
-  const [activeTab, setActiveTab] = useState(1); // Default to second tab (index 1)
+  const [activeTab, setActiveTab] = useState(0); // Default to first tab with services
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const tabsRef = useRef(null);
   
@@ -32,8 +34,11 @@ const ServicesSection = () => {
     try {
       const response = await fetch(`${API_BASE}/service-categories`);
       const data = await response.json();
-      // Ensure data is an array before setting
-      setCategories(Array.isArray(data) ? data : []);
+      // Фильтруем только категории с услугами
+      const categoriesWithServices = Array.isArray(data) 
+        ? data.filter(cat => cat.services && cat.services.length > 0)
+        : [];
+      setCategories(categoriesWithServices);
     } catch (error) {
       console.error('Ошибка загрузки категорий:', error);
       // Fallback к статичным данным
@@ -108,33 +113,108 @@ const ServicesSection = () => {
     }
   };
   
-  // Handle mouse down for drag scrolling
+  // Улучшенный drag scrolling
   const handleMouseDown = (e) => {
-    if (e.button !== 0) return; // Only left mouse button
+    if (e.button !== 0 || !tabsRef.current) return;
     setIsDragging(true);
+    setStartX(e.pageX - tabsRef.current.offsetLeft);
+    setScrollLeft(tabsRef.current.scrollLeft);
     tabsRef.current.style.cursor = 'grabbing';
+    tabsRef.current.style.userSelect = 'none';
   };
   
-  // Handle mouse move for drag scrolling
   const handleMouseMove = (e) => {
-    if (!isDragging) return;
+    if (!isDragging || !tabsRef.current) return;
     e.preventDefault();
-    tabsRef.current.scrollLeft -= e.movementX;
+    const x = e.pageX - tabsRef.current.offsetLeft;
+    const walk = (x - startX) * 1.5; // Множитель для скорости скролла
+    tabsRef.current.scrollLeft = scrollLeft - walk;
   };
   
-  // Handle mouse up/leave to stop dragging
   const handleMouseUp = () => {
     setIsDragging(false);
     if (tabsRef.current) {
       tabsRef.current.style.cursor = 'grab';
+      tabsRef.current.style.userSelect = '';
     }
   };
 
-  // Set cursor style on mount/update
-  useEffect(() => {
-    if (tabsRef.current) {
-      tabsRef.current.style.cursor = 'grab';
+  const handleTabClick = (idx) => {
+    // Предотвращаем клик если был drag
+    if (Math.abs(tabsRef.current.scrollLeft - scrollLeft) > 5) {
+      return;
     }
+    setActiveTab(idx);
+  };
+
+  // Set cursor style and wheel listener on mount
+  useEffect(() => {
+    const container = tabsRef.current;
+    if (!container) return;
+    
+    container.style.cursor = 'grab';
+    
+    let scrollAnimation = null;
+    let targetScrollLeft = container.scrollLeft;
+    
+    // Плавная анимация скролла
+    const smoothScrollTo = (target) => {
+      if (scrollAnimation) {
+        cancelAnimationFrame(scrollAnimation);
+      }
+      
+      const start = container.scrollLeft;
+      const distance = target - start;
+      const duration = 300; // мс
+      const startTime = performance.now();
+      
+      const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+      
+      const animate = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = easeOutCubic(progress);
+        
+        container.scrollLeft = start + distance * eased;
+        
+        if (progress < 1) {
+          scrollAnimation = requestAnimationFrame(animate);
+        }
+      };
+      
+      scrollAnimation = requestAnimationFrame(animate);
+    };
+    
+    // Нативный обработчик wheel с passive: false для preventDefault
+    const handleWheel = (e) => {
+      const isScrollable = container.scrollWidth > container.clientWidth;
+      
+      if (isScrollable && e.deltaY !== 0) {
+        e.preventDefault();
+        
+        // Накапливаем целевую позицию
+        targetScrollLeft = Math.max(
+          0,
+          Math.min(
+            container.scrollWidth - container.clientWidth,
+            targetScrollLeft + e.deltaY
+          )
+        );
+        
+        smoothScrollTo(targetScrollLeft);
+      }
+    };
+    
+    // Добавляем нативный слушатель с passive: false
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    
+    // Cleanup
+    return () => {
+      container.removeEventListener('wheel', handleWheel);
+      if (scrollAnimation) {
+        cancelAnimationFrame(scrollAnimation);
+      }
+    };
   }, []);
 
   // Обработчики для модального окна записи
@@ -206,7 +286,7 @@ const ServicesSection = () => {
               key={category.id}
               className={`services-tab ${activeTab === idx ? 'active' : ''}`}
               type="button"
-              onClick={() => setActiveTab(idx)}
+              onClick={() => handleTabClick(idx)}
             >
               {category.name}
             </button>

@@ -17,13 +17,13 @@ router.get('/', adminAuth, async (req, res) => {
 // Create a new service category
 router.post('/', adminAuth, async (req, res) => {
   try {
-    const { name, description, order } = req.body;
+    const { name, description, order, parentId } = req.body;
     
     if (!name) {
       return res.status(400).json({ error: 'Category name is required' });
     }
 
-    const category = await ServiceCategory.create({ name, description, order });
+    const category = await ServiceCategory.create({ name, description, order, parentId });
     res.status(201).json(category);
   } catch (error) {
     console.error('Create service category error:', error);
@@ -34,13 +34,14 @@ router.post('/', adminAuth, async (req, res) => {
 // Update a service category
 router.put('/:id', adminAuth, async (req, res) => {
   try {
-    const { name, description, order, isActive } = req.body;
+    const { name, description, order, isActive, parentId } = req.body;
     const updateData = {};
     
     if (name !== undefined) updateData.name = name;
     if (description !== undefined) updateData.description = description;
     if (order !== undefined) updateData.order = parseInt(order);
     if (isActive !== undefined) updateData.isActive = isActive;
+    if (parentId !== undefined) updateData.parentId = parentId === '' ? null : parseInt(parentId);
 
     const category = await ServiceCategory.update(req.params.id, updateData);
     res.json(category);

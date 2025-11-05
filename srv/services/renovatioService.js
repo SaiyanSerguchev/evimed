@@ -47,10 +47,57 @@ class RenovatioService {
   }
 
   async getServiceCategories(params = {}) {
+    // Получаем ВСЕ категории, включая подкатегории
+    // Если не указан category_id, API вернет все корневые + их детей
     return await this.makeRequest('getServiceCategories', {
       show_deleted: 0,
+      include_self: 1, // включить в результат родительскую категорию
       ...params
     });
+  }
+
+  // Получить ВСЕ категории рекурсивно (включая все уровни вложенности)
+  async getAllServiceCategoriesRecursive() {
+    const allCategories = [];
+    const processedIds = new Set();
+
+    // Получаем корневые категории (без родителя)
+    const rootCategories = await this.getServiceCategories();
+    
+    // Добавляем корневые
+    for (const cat of rootCategories) {
+      if (!processedIds.has(cat.id)) {
+        allCategories.push(cat);
+        processedIds.add(cat.id);
+      }
+    }
+
+    // Для каждой категории получаем дочерние
+    const toProcess = [...rootCategories];
+    while (toProcess.length > 0) {
+      const current = toProcess.shift();
+      
+      try {
+        // Получаем дочерние категории
+        const children = await this.getServiceCategories({ 
+          category_id: current.id,
+          include_self: 0 // не включаем саму категорию
+        });
+        
+        for (const child of children) {
+          if (!processedIds.has(child.id)) {
+            allCategories.push(child);
+            processedIds.add(child.id);
+            toProcess.push(child); // добавляем для дальнейшей обработки
+          }
+        }
+      } catch (error) {
+        console.error(`Error fetching children for category ${current.id}:`, error.message);
+      }
+    }
+
+    console.log(`Fetched ${allCategories.length} total categories (including all levels)`);
+    return allCategories;
   }
 
   // 2. Создание записи на прием

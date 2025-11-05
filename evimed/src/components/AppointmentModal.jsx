@@ -93,7 +93,12 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
         renovatioApi.getClinics()
       ]);
       
-      setCategories(categoriesData);
+      // Фильтруем только категории с услугами
+      const categoriesWithServices = Array.isArray(categoriesData) 
+        ? categoriesData.filter(cat => cat.services && cat.services.length > 0)
+        : [];
+      
+      setCategories(categoriesWithServices);
       setClinics(clinicsData);
     } catch (error) {
       console.error('Ошибка загрузки данных:', error);

@@ -9,6 +9,11 @@ class ServiceCategory {
         services: {
           where: { isActive: true },
           orderBy: { order: 'asc' }
+        },
+        parent: true,
+        children: {
+          where: { isActive: true },
+          orderBy: { order: 'asc' }
         }
       }
     });
@@ -19,6 +24,10 @@ class ServiceCategory {
       orderBy: { order: 'asc' },
       include: {
         services: {
+          orderBy: { order: 'asc' }
+        },
+        parent: true,
+        children: {
           orderBy: { order: 'asc' }
         }
       }
@@ -31,18 +40,23 @@ class ServiceCategory {
       include: {
         services: {
           orderBy: { order: 'asc' }
+        },
+        parent: true,
+        children: {
+          orderBy: { order: 'asc' }
         }
       }
     });
   }
 
   static async create(categoryData) {
-    const { name, description, order } = categoryData;
+    const { name, description, order, parentId } = categoryData;
     return await prisma.serviceCategory.create({
       data: {
         name,
         description,
-        order: parseInt(order) || 0
+        order: parseInt(order) || 0,
+        parentId: parentId ? parseInt(parentId) : null
       }
     });
   }
@@ -116,12 +130,14 @@ class ServiceCategory {
       errors: []
     };
 
+    // ПРОХОД 1: Создать/обновить все категории БЕЗ parentId
     for (const category of renovatioCategories) {
       try {
         const categoryData = {
           name: category.title,
           description: null,
-          order: 0
+          order: category.order || 0,
+          renovatioParentId: category.parent_id || null
         };
 
         const existingCategory = await prisma.serviceCategory.findFirst({
@@ -143,9 +159,46 @@ class ServiceCategory {
       } catch (error) {
         results.errors.push({
           renovatioId: category.id,
+          name: category.title,
           error: error.message
         });
       }
+    }
+
+    // ПРОХОД 2: Установить parentId на основе renovatioParentId
+    try {
+      // Получаем все категории с их renovatio ID
+      const allCategories = await prisma.serviceCategory.findMany({
+        where: { renovatioId: { not: null } },
+        select: { id: true, renovatioId: true, renovatioParentId: true }
+      });
+
+      // Создаем маппинг renovatioId -> localId
+      const renovatioToLocalMap = {};
+      allCategories.forEach(cat => {
+        renovatioToLocalMap[cat.renovatioId] = cat.id;
+      });
+
+      // Обновляем parentId для категорий с родителями
+      for (const cat of allCategories) {
+        if (cat.renovatioParentId && renovatioToLocalMap[cat.renovatioParentId]) {
+          await prisma.serviceCategory.update({
+            where: { id: cat.id },
+            data: { parentId: renovatioToLocalMap[cat.renovatioParentId] }
+          });
+        } else if (cat.renovatioParentId === null) {
+          // Очищаем parentId если нет родителя в Renovatio
+          await prisma.serviceCategory.update({
+            where: { id: cat.id },
+            data: { parentId: null }
+          });
+        }
+      }
+    } catch (error) {
+      results.errors.push({
+        phase: 'hierarchy_linking',
+        error: error.message
+      });
     }
 
     return results;
