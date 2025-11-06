@@ -233,21 +233,27 @@
     width: 100%;
     height: auto;
     min-height: 644px;
-    margin: 0 0 40px 0;
+    margin: 0;
     padding: 0;
     border-radius: 40px;
   }
   
   .hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     border-radius: 40px;
-    background-image: url('../assets/images/hero/mobile/bgherobannermobile.png');
+    background-image: url("../assets/images/hero/bgherobannermobile.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    z-index: 1;
   }
   
   .hero-content {
-    padding: 104px 32px 32px 32px;
+    padding: 80px 32px 32px 32px;
     gap: 32px;  /* Reduced from 24px to 16px for tighter spacing */
     justify-content: flex-start;  /* Changed from space-between to flex-start */
     text-align: left;
@@ -342,7 +348,7 @@
   
   .slider-dots {
     position: absolute;
-    bottom: 32px;
+    bottom: 64px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;

@@ -36,7 +36,8 @@
   display: flex;
   gap: 16px;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  width: 100%;
 }
 
 .services-main-title {
@@ -46,7 +47,8 @@
   font-size: 30px;
   line-height: 36px;
   margin: 0;
-  flex-shrink: 0;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .services-title-line {
@@ -379,23 +381,23 @@
   }
 
   .services-toprow {
-    gap: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
   }
 
   .services-main-title {
     font-size: 24px;
     line-height: 30px;
+    width: 100%;
   }
 
   .services-title-line {
-    height: 2px;
-    margin: 0 8px;
+    margin: 0;
+    width: 100%;
   }
 
   .choose-service-btn {
-    padding: 8px 16px;
-    min-height: 32px;
-    font: 500 16px/20px var(--font-family, 'Montserrat');
+    display:none;
   }
 
   .services-lead {
@@ -444,7 +446,7 @@
     padding: 24px;
     max-height: none;
     gap: 12px;
-    min-width: 280px;
+    max-width: 340px;
     flex: 0 0 auto;
     scroll-snap-align: start;
   }

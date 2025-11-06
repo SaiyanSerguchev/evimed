@@ -308,9 +308,9 @@
   background: none;
   border: none;
   padding: 8px;
-  margin-left: 12px;
   cursor: pointer;
-  z-index: 1001;
+  z-index: 998;
+  position: relative;
 }
 
 .mobile-menu-button img {
@@ -354,6 +354,7 @@
   flex-direction: column;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
+  pointer-events: auto;
 }
 
 .mobile-menu.active {
@@ -477,7 +478,7 @@
   .header-right {
     width: auto;
     flex-direction:row;
-
+    gap: 16px;
   }
 
   .consultation-button {
