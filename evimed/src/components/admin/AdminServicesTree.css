@@ -237,6 +237,38 @@
   gap: 8px;
 }
 
+.order-btn {
+  background: #6c757d;
+  color: #ffffff;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.order-btn:hover:not(:disabled) {
+  background: #5a6268;
+}
+
+.order-btn:disabled {
+  background: #e9ecef;
+  color: #adb5bd;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.order-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
 .edit-btn {
   background: #404040;
   color: #ffffff;

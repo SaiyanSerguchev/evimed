@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import './InstructionsSection.css';
-import ConsultationModal from './ConsultationModal';
+import AppointmentModal from './AppointmentModal';
 
 const InstructionsSection = () => {
-  const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false);
+  const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
 
-  const handleConsultationClick = () => {
-    setIsConsultationModalOpen(true);
+  const handleAppointmentClick = () => {
+    setIsAppointmentModalOpen(true);
   };
   // Steps content (our SVG icons per your instruction)
   const steps = [
@@ -73,7 +73,7 @@ const InstructionsSection = () => {
           </ul>
 
           <div className="instr-cta-wrap">
-            <button className="instr-cta" type="button" onClick={handleConsultationClick}>
+            <button className="instr-cta" type="button" onClick={handleAppointmentClick}>
               <span>Записаться на прием</span>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M11.9107 4.41082C12.2362 4.08539 12.7638 4.08539 13.0893 4.41083L18.0892 9.41083C18.4146 9.73626 18.4146 10.2639 18.0892 10.5893L13.0893 15.5893C12.7638 15.9148 12.2362 15.9148 11.9107 15.5893C11.5853 15.2639 11.5853 14.7363 11.9107 14.4108L15.4881 10.8334H2.49996C2.03972 10.8334 1.66663 10.4603 1.66663 10.0001C1.66663 9.53984 2.03972 9.16675 2.49996 9.16675H15.4881L11.9107 5.58933C11.5853 5.2639 11.5853 4.73626 11.9107 4.41082Z" fill="#14488C" fill-opacity="0.44"/>
@@ -83,10 +83,10 @@ const InstructionsSection = () => {
         </div>
       </div>
 
-      {/* Consultation Modal */}
-      <ConsultationModal 
-        isOpen={isConsultationModalOpen}
-        onClose={() => setIsConsultationModalOpen(false)}
+      {/* Appointment Modal */}
+      <AppointmentModal 
+        isOpen={isAppointmentModalOpen}
+        onClose={() => setIsAppointmentModalOpen(false)}
       />
     </section>
   );

@@ -4,8 +4,7 @@ import './AdminBanners.css';
 const AdminBanners = ({ banners, onLoadBanners, token, API_BASE }) => {
   const [newBanner, setNewBanner] = useState({
     title: '',
-    description: '',
-    order: 1
+    description: ''
   });
   const [editingBanner, setEditingBanner] = useState(null);
   const [editBannerData, setEditBannerData] = useState({
@@ -17,17 +16,23 @@ const AdminBanners = ({ banners, onLoadBanners, token, API_BASE }) => {
   const addBanner = async (e) => {
     e.preventDefault();
     try {
+      // Автоматически вычисляем следующий порядковый номер
+      const maxOrder = banners && banners.length > 0 
+        ? Math.max(...banners.map(b => b.order || 0))
+        : 0;
+      const nextOrder = maxOrder + 1;
+
       const response = await fetch(`${API_BASE}/admin/banners`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(newBanner)
+        body: JSON.stringify({ ...newBanner, order: nextOrder })
       });
       
       if (response.ok) {
-        setNewBanner({ title: '', description: '', order: 1 });
+        setNewBanner({ title: '', description: '' });
         onLoadBanners();
         alert('Баннер добавлен успешно');
       } else {
@@ -118,6 +123,8 @@ const AdminBanners = ({ banners, onLoadBanners, token, API_BASE }) => {
       });
       
       if (response.ok) {
+        // После удаления перенумеровываем оставшиеся баннеры
+        await reorderBannersAfterDelete(id);
         onLoadBanners();
         alert('Баннер удален успешно');
       } else {
@@ -125,6 +132,36 @@ const AdminBanners = ({ banners, onLoadBanners, token, API_BASE }) => {
       }
     } catch (error) {
       alert('Ошибка подключения к серверу');
+    }
+  };
+
+  const reorderBannersAfterDelete = async (deletedId) => {
+    try {
+      // Получаем все баннеры кроме удаленного, отсортированные по order
+      const remainingBanners = banners
+        .filter(b => b.id !== deletedId)
+        .sort((a, b) => (a.order || 0) - (b.order || 0));
+
+      // Перенумеровываем последовательно (1, 2, 3...)
+      const updatePromises = remainingBanners.map((banner, index) => {
+        const newOrder = index + 1;
+        // Обновляем только если порядок изменился
+        if (banner.order !== newOrder) {
+          return fetch(`${API_BASE}/admin/banners/${banner.id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ order: newOrder })
+          });
+        }
+        return Promise.resolve({ ok: true });
+      });
+
+      await Promise.all(updatePromises);
+    } catch (error) {
+      console.error('Ошибка перенумерации баннеров:', error);
     }
   };
 
@@ -144,14 +181,6 @@ const AdminBanners = ({ banners, onLoadBanners, token, API_BASE }) => {
             placeholder="Описание"
             value={newBanner.description}
             onChange={(e) => setNewBanner({...newBanner, description: e.target.value})}
-          />
-          <input
-            type="number"
-            placeholder="Порядковый номер"
-            value={newBanner.order}
-            onChange={(e) => setNewBanner({...newBanner, order: parseInt(e.target.value)})}
-            min="1"
-            required
           />
           <button type="submit">Добавить баннер</button>
         </form>

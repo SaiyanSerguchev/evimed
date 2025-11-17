@@ -46,9 +46,10 @@ const ServicesSection = () => {
     try {
       const response = await fetch(`${API_BASE}/service-categories`);
       const data = await response.json();
-      // Фильтруем только категории с услугами
+      // Фильтруем только корневые категории (без parentId) с услугами и сортируем по order
       const categoriesWithServices = Array.isArray(data) 
-        ? data.filter(cat => cat.services && cat.services.length > 0)
+        ? data.filter(cat => !cat.parentId && cat.services && cat.services.length > 0)
+            .sort((a, b) => (a.order || 0) - (b.order || 0))
         : [];
       setCategories(categoriesWithServices);
     } catch (error) {

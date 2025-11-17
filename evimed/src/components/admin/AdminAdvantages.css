@@ -156,16 +156,25 @@
   background: #404040;
   color: #ffffff;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 6px 8px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 0.8rem;
-  white-space: nowrap;
-  font-weight: 500;
+  font-size: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
 }
 
 .edit-btn:hover {
   background: #1a1a1a;
+}
+
+.edit-btn svg {
+  width: 16px;
+  height: 16px;
 }
 
  

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './AdminServicesTree.css';
 
 const AdminServicesTree = ({ token, API_BASE }) => {
@@ -6,6 +6,8 @@ const AdminServicesTree = ({ token, API_BASE }) => {
   const [services, setServices] = useState([]);
   const [expandedCategories, setExpandedCategories] = useState(new Set());
   const [loading, setLoading] = useState(true);
+  const [scrollToCategoryId, setScrollToCategoryId] = useState(null);
+  const servicesTreeRef = useRef(null);
 
   // Формы для добавления
   const [newCategory, setNewCategory] = useState({
@@ -39,6 +41,28 @@ const AdminServicesTree = ({ token, API_BASE }) => {
   useEffect(() => {
     loadData();
   }, []);
+
+  // Прокрутка к категории после изменения порядка
+  useEffect(() => {
+    if (scrollToCategoryId && !loading && servicesTreeRef.current) {
+      const categoryElement = servicesTreeRef.current.querySelector(`[data-category-id="${scrollToCategoryId}"]`);
+      if (categoryElement) {
+        setTimeout(() => {
+          categoryElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Подсветка на короткое время
+          categoryElement.style.transition = 'background-color 0.3s';
+          categoryElement.style.backgroundColor = '#fff3cd';
+          setTimeout(() => {
+            categoryElement.style.backgroundColor = '';
+            setTimeout(() => {
+              categoryElement.style.transition = '';
+            }, 300);
+          }, 1000);
+        }, 100);
+      }
+      setScrollToCategoryId(null);
+    }
+  }, [scrollToCategoryId, loading]);
 
   const loadData = async () => {
     setLoading(true);
@@ -339,6 +363,54 @@ const AdminServicesTree = ({ token, API_BASE }) => {
     }
   };
 
+  const moveCategoryOrder = async (categoryId, direction) => {
+    try {
+      const rootCategories = getRootCategories().sort((a, b) => (a.order || 0) - (b.order || 0));
+      const currentIndex = rootCategories.findIndex(cat => cat.id === categoryId);
+      
+      if (currentIndex === -1) return;
+      
+      const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+      if (newIndex < 0 || newIndex >= rootCategories.length) return;
+      
+      // Создаем новый массив с измененным порядком
+      const reorderedCategories = [...rootCategories];
+      const [movedCategory] = reorderedCategories.splice(currentIndex, 1);
+      reorderedCategories.splice(newIndex, 0, movedCategory);
+      
+      // Переназначаем порядок последовательно всем категориям
+      const updatePromises = reorderedCategories.map((cat, index) => {
+        const newOrder = index + 1;
+        const currentOrder = cat.order || 0;
+        // Обновляем только если порядок изменился
+        if (currentOrder !== newOrder) {
+          return fetch(`${API_BASE}/admin/service-categories/${cat.id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ order: newOrder })
+          });
+        }
+        return Promise.resolve({ ok: true });
+      });
+      
+      const results = await Promise.all(updatePromises);
+      const failed = results.some(res => res && !res.ok);
+      
+      if (failed) {
+        alert('Ошибка обновления порядка некоторых категорий');
+      } else {
+        // Сохраняем ID категории для прокрутки после загрузки
+        setScrollToCategoryId(categoryId);
+        loadData();
+      }
+    } catch (error) {
+      alert('Ошибка изменения порядка категории: ' + error.message);
+    }
+  };
+
   const getServicesForCategory = (categoryId) => {
     return services.filter(service => service.categoryId === categoryId);
   };
@@ -376,14 +448,33 @@ const AdminServicesTree = ({ token, API_BASE }) => {
     }
   };
 
+  // Получаем отсортированные корневые категории один раз
+  const getSortedRootCategories = () => {
+    return getRootCategories().sort((a, b) => (a.order || 0) - (b.order || 0));
+  };
+
   // Рекурсивный рендер категории и её детей
-  const renderCategoryNode = (category, level = 0) => {
+  const renderCategoryNode = (category, level = 0, sortedRootCategories = null) => {
     const categoryServices = getServicesForCategory(category.id);
     const childCategories = getChildCategories(category.id);
     const isExpanded = expandedCategories.has(category.id);
     
+    // Вычисляем индекс категории в отсортированном списке корневых категорий (только для корневых)
+    let categoryIndex = -1;
+    if (!category.parentId) {
+      if (!sortedRootCategories) {
+        sortedRootCategories = getSortedRootCategories();
+      }
+      categoryIndex = sortedRootCategories.findIndex(cat => cat.id === category.id);
+    }
+    
     return (
-      <div key={category.id} className="tree-category" style={{ marginLeft: `${level * 20}px` }}>
+      <div 
+        key={category.id} 
+        className="tree-category" 
+        style={{ marginLeft: `${level * 20}px` }}
+        data-category-id={category.id}
+      >
         <div className="category-header">
           <button
             className="expand-btn"
@@ -400,6 +491,31 @@ const AdminServicesTree = ({ token, API_BASE }) => {
             </span>
           </div>
           <div className="category-actions">
+            {/* Кнопки изменения порядка - только для корневых категорий */}
+            {!category.parentId && (
+              <>
+                <button
+                  className="order-btn"
+                  onClick={() => moveCategoryOrder(category.id, 'up')}
+                  title="Переместить вверх"
+                  disabled={categoryIndex === 0}
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+                <button
+                  className="order-btn"
+                  onClick={() => moveCategoryOrder(category.id, 'down')}
+                  title="Переместить вниз"
+                  disabled={categoryIndex === sortedRootCategories.length - 1}
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 4V12M8 12L4 8M8 12L12 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+              </>
+            )}
             <button
               className="edit-btn"
               onClick={() => editCategory(category)}
@@ -697,7 +813,7 @@ const AdminServicesTree = ({ token, API_BASE }) => {
             {/* Рекурсивный рендер дочерних категорий */}
             {childCategories.length > 0 && (
               <div className="child-categories">
-                {childCategories.map(childCat => renderCategoryNode(childCat, level + 1))}
+                {childCategories.map(childCat => renderCategoryNode(childCat, level + 1, sortedRootCategories))}
               </div>
             )}
           </div>
@@ -923,8 +1039,11 @@ const AdminServicesTree = ({ token, API_BASE }) => {
       </div>
 
       {/* Древовидная структура - рекурсивный рендеринг */}
-      <div className="services-tree">
-        {getRootCategories().map(category => renderCategoryNode(category, 0))}
+      <div className="services-tree" ref={servicesTreeRef}>
+        {(() => {
+          const sortedRoot = getSortedRootCategories();
+          return sortedRoot.map(category => renderCategoryNode(category, 0, sortedRoot));
+        })()}
       </div>
     </div>
   );
