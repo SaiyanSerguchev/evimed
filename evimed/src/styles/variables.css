@@ -157,6 +157,14 @@
   --hero-image-base-width: 100%;
   --hero-image-width: var(--hero-image-base-width);
 
+  /* Advantages Section Height - adaptive (758px at 1440px, scales to ~1011px at 1920px) */
+  --advantages-base-height: 758px;
+  --advantages-height: calc(var(--advantages-base-height) * var(--layout-scale));
+
+  /* Advantages Cards Height - adaptive (456px at 1440px, scales to ~608px at 1920px) */
+  --advantages-card-base-height: 456px;
+  --advantages-card-height: calc(var(--advantages-card-base-height) * var(--layout-scale));
+
   /* Typography - Zeplin specs (static sizes) */
   --font-xl-headline: 44px;
   --font-l-headline: 32px;

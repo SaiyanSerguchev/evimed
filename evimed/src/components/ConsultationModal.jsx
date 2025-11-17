@@ -17,6 +17,7 @@ const ConsultationModal = ({ isOpen, onClose, initialComment = '' }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isBirthDatePickerOpen, setIsBirthDatePickerOpen] = useState(false);
 
   // Отключение скролла при открытии модального окна
   useEffect(() => {
@@ -127,6 +128,92 @@ const ConsultationModal = ({ isOpen, onClose, initialComment = '' }) => {
 
   if (!isOpen) return null;
 
+  // Функция для форматирования даты в формат дд.мм.гггг
+  const formatBirthDate = (value) => {
+    // Удаляем все символы, кроме цифр
+    const numbers = value.replace(/\D/g, '');
+    
+    // Ограничиваем длину до 8 цифр
+    const limitedNumbers = numbers.slice(0, 8);
+    
+    // Форматируем в дд.мм.гггг
+    let formatted = '';
+    for (let i = 0; i < limitedNumbers.length; i++) {
+      if (i === 2 || i === 4) {
+        formatted += '.';
+      }
+      formatted += limitedNumbers[i];
+    }
+    
+    return formatted;
+  };
+
+  // Функция для валидации даты в формате дд.мм.гггг
+  const validateBirthDateFormat = (dateString) => {
+    if (!dateString) return { isValid: true, message: '' };
+    
+    // Проверяем формат дд.мм.гггг
+    const dateRegex = /^(\d{2})\.(\d{2})\.(\d{4})$/;
+    const match = dateString.match(dateRegex);
+    
+    if (!match) {
+      return { isValid: false, message: 'Дата должна быть в формате дд.мм.гггг' };
+    }
+    
+    const day = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10);
+    const year = parseInt(match[3], 10);
+    
+    // Проверяем диапазоны
+    if (day < 1 || day > 31) {
+      return { isValid: false, message: 'День должен быть от 01 до 31' };
+    }
+    
+    if (month < 1 || month > 12) {
+      return { isValid: false, message: 'Месяц должен быть от 01 до 12' };
+    }
+    
+    if (year < 1900 || year > new Date().getFullYear()) {
+      return { isValid: false, message: `Год должен быть от 1900 до ${new Date().getFullYear()}` };
+    }
+    
+    // Проверяем, что дата валидна (например, 31.02.2024 не существует)
+    const date = new Date(year, month - 1, day);
+    if (date.getDate() !== day || date.getMonth() !== month - 1 || date.getFullYear() !== year) {
+      return { isValid: false, message: 'Неверная дата' };
+    }
+    
+    // Проверяем, что дата не в будущем
+    if (date > new Date()) {
+      return { isValid: false, message: 'Дата рождения не может быть в будущем' };
+    }
+    
+    return { isValid: true, message: '' };
+  };
+
+  // Конвертация даты из формата дд.мм.гггг в YYYY-MM-DD
+  const convertBirthDateToISO = (dateString) => {
+    if (!dateString) return null;
+    
+    // Если уже в формате YYYY-MM-DD, возвращаем как есть
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+      return dateString;
+    }
+    
+    // Если в формате дд.мм.гггг, конвертируем
+    const dateRegex = /^(\d{2})\.(\d{2})\.(\d{4})$/;
+    const match = dateString.match(dateRegex);
+    
+    if (match) {
+      const day = match[1];
+      const month = match[2];
+      const year = match[3];
+      return `${year}-${month}-${day}`;
+    }
+    
+    return null;
+  };
+
   const validateForm = () => {
     const newErrors = {};
 
@@ -156,6 +243,14 @@ const ConsultationModal = ({ isOpen, onClose, initialComment = '' }) => {
       newErrors.phone = 'Неверный формат телефона';
     }
 
+    // Дата рождения (опциональное поле, но если заполнено - валидируем)
+    if (formData.birthDate) {
+      const birthDateValidation = validateBirthDateFormat(formData.birthDate);
+      if (!birthDateValidation.isValid) {
+        newErrors.birthDate = birthDateValidation.message;
+      }
+    }
+
     // Согласие на обработку данных
     if (!formData.privacyConsent) {
       newErrors.privacyConsent = 'Необходимо согласие на обработку данных';
@@ -167,16 +262,49 @@ const ConsultationModal = ({ isOpen, onClose, initialComment = '' }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-    // Очищаем ошибку при вводе
-    if (errors[name]) {
-      setErrors(prev => ({
+    
+    // Для поля birthDate применяем маску форматирования
+    if (name === 'birthDate' && type !== 'checkbox') {
+      const formatted = formatBirthDate(value);
+      setFormData(prev => ({
         ...prev,
-        [name]: ''
+        [name]: formatted
       }));
+      
+      // Валидируем формат в реальном времени
+      if (formatted.length === 10) {
+        const validation = validateBirthDateFormat(formatted);
+        if (!validation.isValid) {
+          setErrors(prev => ({
+            ...prev,
+            [name]: validation.message
+          }));
+        } else {
+          setErrors(prev => ({
+            ...prev,
+            [name]: ''
+          }));
+        }
+      } else {
+        // Очищаем ошибку, если формат еще не полный
+        setErrors(prev => ({
+          ...prev,
+          [name]: ''
+        }));
+      }
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value
+      }));
+      
+      // Очищаем ошибку при вводе
+      if (errors[name]) {
+        setErrors(prev => ({
+          ...prev,
+          [name]: ''
+        }));
+      }
     }
   };
 
@@ -191,13 +319,16 @@ const ConsultationModal = ({ isOpen, onClose, initialComment = '' }) => {
     setIsLoading(true);
 
     try {
+      // Конвертируем дату рождения из дд.мм.гггг в YYYY-MM-DD для API
+      const birthDateISO = formData.birthDate ? convertBirthDateToISO(formData.birthDate) : undefined;
+      
       // Создаем запрос на консультацию через backend
       await apiClient.post('/consultation-requests', {
         firstName: formData.firstName,
         lastName: formData.lastName,
         thirdName: formData.thirdName || undefined,
         phone: formData.phone,
-        birthDate: formData.birthDate || undefined,
+        birthDate: birthDateISO,
         comment: formData.comment || undefined
       });
 
@@ -332,17 +463,52 @@ const ConsultationModal = ({ isOpen, onClose, initialComment = '' }) => {
 
                 <div className="step5-form-group step5-date-group">
                   <input
-                    type="date"
+                    type="text"
                     id="birthDate"
                     name="birthDate"
                     value={formData.birthDate}
                     onChange={handleChange}
-                    className={`step5-input step5-date-input ${errors.birthDate ? 'error' : ''} ${!formData.birthDate ? 'empty' : ''}`}
+                    placeholder="Дата рождения"
+                    className={`step5-input ${errors.birthDate ? 'error' : ''}`}
                     disabled={isLoading}
+                    maxLength={10}
                   />
-                  {!formData.birthDate && (
-                    <span className="step5-date-placeholder">Дата рождения</span>
-                  )}
+                  <input
+                    type="date"
+                    id="birthDatePicker"
+                    className={`step5-date-picker-hidden ${isBirthDatePickerOpen ? 'active' : ''}`}
+                    value={formData.birthDate && /^\d{2}\.\d{2}\.\d{4}$/.test(formData.birthDate) 
+                      ? (() => {
+                          const [day, month, year] = formData.birthDate.split('.');
+                          return `${year}-${month}-${day}`;
+                        })()
+                      : formData.birthDate}
+                    onChange={(e) => {
+                      // Конвертируем из YYYY-MM-DD в дд.мм.гггг
+                      if (e.target.value) {
+                        const [year, month, day] = e.target.value.split('-');
+                        const formatted = `${day}.${month}.${year}`;
+                        handleChange({ target: { name: 'birthDate', value: formatted, type: 'text' } });
+                      } else {
+                        handleChange({ target: { name: 'birthDate', value: '', type: 'text' } });
+                      }
+                      setIsBirthDatePickerOpen(false);
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="step5-date-picker-button"
+                    onClick={() => {
+                      setIsBirthDatePickerOpen(true);
+                      document.getElementById('birthDatePicker')?.showPicker?.() || document.getElementById('birthDatePicker')?.click();
+                    }}
+                    tabIndex={-1}
+                    disabled={isLoading}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12.8 2.4H12V1.6C12 1.17565 11.6314 0.8 11.2 0.8C10.7686 0.8 10.4 1.17565 10.4 1.6V2.4H5.6V1.6C5.6 1.17565 5.23137 0.8 4.8 0.8C4.36863 0.8 4 1.17565 4 1.6V2.4H3.2C2.31634 2.4 1.6 3.11634 1.6 4V12.8C1.6 13.6837 2.31634 14.4 3.2 14.4H12.8C13.6837 14.4 14.4 13.6837 14.4 12.8V4C14.4 3.11634 13.6837 2.4 12.8 2.4ZM12.8 12.8H3.2V6.4H12.8V12.8ZM3.2 5.6V4H4V4.8C4 5.22435 4.36863 5.6 4.8 5.6C5.23137 5.6 5.6 5.22435 5.6 4.8V4H10.4V4.8C10.4 5.22435 10.7686 5.6 11.2 5.6C11.6314 5.6 12 5.22435 12 4.8V4H12.8V5.6H3.2Z" fill="rgba(24, 37, 61, 0.32)"/>
+                    </svg>
+                  </button>
                   {errors.birthDate && <span className="error-message">{errors.birthDate}</span>}
                 </div>
               </div>

@@ -68,22 +68,80 @@ export const validateFullName = (firstName, lastName, thirdName = '') => {
   };
 };
 
+// Конвертация даты из формата дд.мм.гггг в YYYY-MM-DD
+export const convertBirthDateToISO = (dateString) => {
+  if (!dateString) return null;
+  
+  // Если уже в формате YYYY-MM-DD, возвращаем как есть
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+    return dateString;
+  }
+  
+  // Если в формате дд.мм.гггг, конвертируем
+  const dateRegex = /^(\d{2})\.(\d{2})\.(\d{4})$/;
+  const match = dateString.match(dateRegex);
+  
+  if (match) {
+    const day = match[1];
+    const month = match[2];
+    const year = match[3];
+    return `${year}-${month}-${day}`;
+  }
+  
+  return null;
+};
+
 // Валидация даты рождения
 export const validateBirthDate = (birthDate) => {
   if (!birthDate) {
     return { isValid: true, message: '' }; // Дата рождения не обязательна
   }
   
-  const date = new Date(birthDate);
-  const today = new Date();
-  const age = today.getFullYear() - date.getFullYear();
+  // Проверяем формат дд.мм.гггг
+  const dateRegex = /^(\d{2})\.(\d{2})\.(\d{4})$/;
+  const match = birthDate.match(dateRegex);
   
-  if (isNaN(date.getTime())) {
-    return { isValid: false, message: 'Введите корректную дату' };
-  }
-  
-  if (age < 0 || age > 120) {
-    return { isValid: false, message: 'Возраст должен быть от 0 до 120 лет' };
+  if (!match) {
+    // Если не в формате дд.мм.гггг, пробуем распарсить как ISO
+    const date = new Date(birthDate);
+    if (isNaN(date.getTime())) {
+      return { isValid: false, message: 'Дата должна быть в формате дд.мм.гггг' };
+    }
+  } else {
+    const day = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10);
+    const year = parseInt(match[3], 10);
+    
+    // Проверяем диапазоны
+    if (day < 1 || day > 31) {
+      return { isValid: false, message: 'День должен быть от 01 до 31' };
+    }
+    
+    if (month < 1 || month > 12) {
+      return { isValid: false, message: 'Месяц должен быть от 01 до 12' };
+    }
+    
+    if (year < 1900 || year > new Date().getFullYear()) {
+      return { isValid: false, message: `Год должен быть от 1900 до ${new Date().getFullYear()}` };
+    }
+    
+    // Проверяем, что дата валидна
+    const date = new Date(year, month - 1, day);
+    if (date.getDate() !== day || date.getMonth() !== month - 1 || date.getFullYear() !== year) {
+      return { isValid: false, message: 'Неверная дата' };
+    }
+    
+    // Проверяем, что дата не в будущем
+    if (date > new Date()) {
+      return { isValid: false, message: 'Дата рождения не может быть в будущем' };
+    }
+    
+    // Проверяем возраст
+    const today = new Date();
+    const age = today.getFullYear() - year;
+    if (age < 0 || age > 120) {
+      return { isValid: false, message: 'Возраст должен быть от 0 до 120 лет' };
+    }
   }
   
   return { isValid: true, message: '' };
@@ -203,6 +261,9 @@ export const sanitizeFormData = (formData) => {
 export const formatAppointmentData = (formData, selectedData) => {
   const sanitizedData = sanitizeFormData(formData);
   
+  // Конвертируем дату рождения из дд.мм.гггг в YYYY-MM-DD
+  const birthDateISO = sanitizedData.birthDate ? convertBirthDateToISO(sanitizedData.birthDate) : null;
+  
   return {
     // Данные пациента
     first_name: sanitizedData.firstName,
@@ -210,7 +271,7 @@ export const formatAppointmentData = (formData, selectedData) => {
     third_name: sanitizedData.thirdName || null,
     email: sanitizedData.email,
     phone: sanitizedData.phone,
-    birth_date: sanitizedData.birthDate || null,
+    birth_date: birthDateISO,
     gender: sanitizedData.gender || null,
     
     // Данные записи
