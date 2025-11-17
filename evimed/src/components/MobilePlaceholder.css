@@ -1,0 +1,68 @@
+.mobile-placeholder {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #14488C 0%, #1a5fa0 100%);
+  padding: 2rem;
+  color: #ffffff;
+}
+
+.mobile-placeholder-content {
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+}
+
+.mobile-placeholder-icon {
+  margin: 0 auto 2rem;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: #ffffff;
+}
+
+.mobile-placeholder-icon svg {
+  width: 48px;
+  height: 48px;
+}
+
+.mobile-placeholder-content h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  color: #ffffff;
+  line-height: 1.3;
+}
+
+.mobile-placeholder-content > p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0 0 2rem 0;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.mobile-placeholder-info {
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.mobile-placeholder-info p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+@media (min-width: 769px) {
+  .mobile-placeholder {
+    display: none;
+  }
+}
+

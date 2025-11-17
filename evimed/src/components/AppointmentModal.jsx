@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import './AppointmentModal.css';
 import EmailVerificationModal from './EmailVerificationModal';
@@ -116,12 +116,12 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
     }
   }, [isOpen, preselectedService]);
 
-  // Загрузка услуг при выборе категории
+  // Загрузка услуг при выборе категории (только если мы не на шаге 1)
   useEffect(() => {
-    if (selectedCategory) {
+    if (selectedCategory && currentStep !== 1) {
       loadServicesForCategory(selectedCategory.id);
     }
-  }, [selectedCategory]);
+  }, [selectedCategory, currentStep]);
 
   // Загрузка расписания при выборе врача и даты
   useEffect(() => {
@@ -249,14 +249,11 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
       } else if (scheduleData && scheduleData.slots && Array.isArray(scheduleData.slots)) {
         slots = scheduleData.slots;
       } else {
-        console.warn('Неожиданный формат данных расписания:', scheduleData);
         slots = [];
       }
       
       setAvailableSlots(slots);
     } catch (error) {
-      console.error('Ошибка загрузки расписания:', error);
-      
       // Более детальная обработка ошибок
       if (error.response?.status === 500) {
         toast.error('Ошибка сервера при загрузке расписания. Проверьте настройки Renovatio API.');
@@ -415,12 +412,9 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
 
   // Функция для форматирования времени
   const formatTime = (timeString) => {
-    console.log('formatTime получил:', timeString, typeof timeString);
-    
     try {
       // Если время уже в формате HH:MM, возвращаем как есть
       if (typeof timeString === 'string' && timeString.match(/^\d{2}:\d{2}$/)) {
-        console.log('Возвращаем как есть:', timeString);
         return timeString;
       }
       
@@ -433,16 +427,13 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
             minute: '2-digit',
             hour12: false
           });
-          console.log('Отформатировано из ISO:', formatted);
           return formatted;
         }
       }
       
       // Если это уже отформатированное время, возвращаем как есть
-      console.log('Возвращаем исходное значение:', timeString);
       return timeString;
     } catch (error) {
-      console.error('Error formatting time:', timeString, error);
       return timeString || '--:--';
     }
   };
@@ -631,7 +622,6 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
     } catch (error) {
       const handledError = handleAppointmentError(error);
       toast.error(handledError.message);
-      console.error('Ошибка отправки кода:', error);
     } finally {
       setIsLoading(false);
     }
@@ -819,8 +809,8 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
     return null;
   };
 
-  // Рендер шага 1 - Выбор категории
-  const renderStep1 = () => {
+  // Мемоизация карточек для шага 1
+  const allCards = useMemo(() => {
     // Фильтруем категории исследований (исключаем "Дополнительные услуги" и "Пакетное предложение")
     const investigationCategories = categories.filter(cat => {
       const nameUpper = cat.name.toUpperCase();
@@ -832,7 +822,7 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
     });
 
     // Добавляем карточку консультации в конец
-    const allCards = [
+    return [
       ...investigationCategories.map(cat => ({
         id: cat.id,
         title: formatCategoryName(cat.name),
@@ -847,22 +837,32 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
         image: null
       }
     ];
+  }, [categories]);
 
-    const handleInitialCategorySelect = (card) => {
-      if (card.type === 'category') {
-        setIsConsultationSelected(false);
-        handleCategorySelect(card.categoryData);
-      } else if (card.type === 'consultation') {
-        // Выбираем карточку консультации (открытие модального окна произойдет при нажатии "Далее")
-        setSelectedCategory(null);
-        setIsConsultationSelected(true);
-      }
-    };
+  // Мемоизация обработчика выбора категории
+  const handleInitialCategorySelect = useCallback((card) => {
+    if (card.type === 'category') {
+      setIsConsultationSelected(false);
+      setSelectedCategory(card.categoryData);
+      setSelectedService(null);
+      setHasReferral(null);
+      setErrors({});
+    } else if (card.type === 'consultation') {
+      // Выбираем карточку консультации (открытие модального окна произойдет при нажатии "Далее")
+      setSelectedCategory(null);
+      setIsConsultationSelected(true);
+    }
+  }, []);
+
+  // Рендер шага 1 - Выбор категории
+  const renderStep1 = () => {
+    // Показываем скелетоны только при первой загрузке (когда categories пустой)
+    const showSkeletons = isLoading && categories.length === 0;
 
     return (
       <div className="appointment-step">
         <h2 className="appointment-title">Какой снимок вас интересует?</h2>
-        {isLoading ? (
+        {showSkeletons ? (
           <div className="initial-services-grid">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="initial-service-card skeleton" />
@@ -886,7 +886,7 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
                 </div>
                 {card.image && card.image !== null && card.image !== '' ? (
                   <div className={`initial-service-image ${card.image === modalImg2 ? 'no-filter' : ''}`}>
-                    <img src={card.image} alt={card.title} />
+                    <img src={card.image} alt={card.title} loading="lazy" />
                   </div>
                 ) : (
                   <div className="initial-service-arrow">

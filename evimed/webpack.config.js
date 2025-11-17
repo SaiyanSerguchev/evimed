@@ -58,7 +58,25 @@ module.exports = {
       index: '/index.html',
     },
     open: true,
+    client: {
+      logging: 'none',
+      overlay: {
+        errors: true,
+        warnings: false,
+      },
+      progress: false,
+    },
+    devMiddleware: {
+      stats: 'errors-warnings',
+    },
+    onListening: function(devServer) {
+      if (!devServer) {
+        throw new Error('webpack-dev-server is not defined');
+      }
+      // Подавляем вывод сообщений о запуске
+    },
   },
+  stats: 'errors-warnings',
   mode: 'development',
 };
 

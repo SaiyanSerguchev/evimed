@@ -161,7 +161,7 @@ const AdminBanners = ({ banners, onLoadBanners, token, API_BASE }) => {
 
       await Promise.all(updatePromises);
     } catch (error) {
-      console.error('Ошибка перенумерации баннеров:', error);
+      // Ошибка перенумерации баннеров
     }
   };
 

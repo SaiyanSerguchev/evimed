@@ -32,10 +32,8 @@ const AdvantagesSection = () => {
       // Сортируем по порядку
       const sortedAdvantages = advantagesData.sort((a, b) => a.order - b.order);
       
-      console.log('Загружены преимущества:', sortedAdvantages);
       setAdvantages(sortedAdvantages);
     } catch (error) {
-      console.error('Ошибка загрузки преимуществ:', error);
       // Используем данные по умолчанию при ошибке
       setAdvantages(getDefaultAdvantages());
     }

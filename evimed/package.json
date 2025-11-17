@@ -4,9 +4,9 @@
   "description": "Федеральная сеть независимых центров рентгенодиагностики",
   "main": "index.js",
   "scripts": {
-    "start": "webpack serve --mode development --open",
+    "start": "webpack serve --mode development --open --stats errors-warnings",
     "build": "webpack --mode production",
-    "dev": "webpack serve --mode development"
+    "dev": "webpack serve --mode development --stats errors-warnings"
   },
   "repository": {
     "type": "git",

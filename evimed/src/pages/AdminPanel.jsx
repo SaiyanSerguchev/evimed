@@ -60,7 +60,7 @@ const AdminPanel = () => {
       const data = await response.json();
       setDashboardData(data);
     } catch (error) {
-      console.error('Ошибка загрузки данных:', error);
+      // Ошибка загрузки данных
     }
   };
 
@@ -72,7 +72,7 @@ const AdminPanel = () => {
       const data = await response.json();
       setAppointments(data.appointments);
     } catch (error) {
-      console.error('Ошибка загрузки записей:', error);
+      // Ошибка загрузки записей
     }
   };
 
@@ -84,7 +84,7 @@ const AdminPanel = () => {
       const data = await response.json();
       setUsers(data.users);
     } catch (error) {
-      console.error('Ошибка загрузки пользователей:', error);
+      // Ошибка загрузки пользователей
     }
   };
 
@@ -96,7 +96,7 @@ const AdminPanel = () => {
       const data = await response.json();
       setBanners(data);
     } catch (error) {
-      console.error('Ошибка загрузки баннеров:', error);
+      // Ошибка загрузки баннеров
     }
   };
 
@@ -108,7 +108,7 @@ const AdminPanel = () => {
       const data = await response.json();
       setAdvantages(data);
     } catch (error) {
-      console.error('Ошибка загрузки преимуществ:', error);
+      // Ошибка загрузки преимуществ
     }
   };
 
