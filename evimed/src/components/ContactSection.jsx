@@ -86,7 +86,10 @@ const ContactSection = () => {
               </div>
             </div>
               <div className="contact-branches">
-                <h3 className="branches-title">Адреса</h3>
+                <div className="branches-title-row">
+                  <h3 className="branches-title">Адреса</h3>
+                  <div className="branches-title-divider" aria-hidden></div>
+                </div>
                 <ul ref={listRef} className="branches-list"   
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}

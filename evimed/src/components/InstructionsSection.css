@@ -11,7 +11,7 @@
   position: relative;
   width: 100%;
   margin: 0;
-  padding: 0 32px;
+  padding: 0 var(--layout-margin);
   display: grid;
   grid-template-columns: minmax(0, 900px) 1fr; /* left text width */
   grid-template-rows: auto auto 1fr; /* kicker, title-row, content */
@@ -25,7 +25,7 @@
   grid-column: 1 / -1; /* full width */
   font-family: var(--font-family, 'Montserrat');
   font-weight: 700;
-  font-size: 14px;
+  font-size: var(--font-4xs-headline);
   line-height: 1.5em; /* match Advantages */
   letter-spacing: 3px; /* match Advantages */
   text-transform: uppercase;
@@ -38,13 +38,13 @@
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 24px;
+  gap: var(--layout-gutter);
 }
 
 .instr-title {
   font-family: var(--font-family, 'Montserrat');
   font-weight: 500; /* match Advantages title weight */
-  font-size: 30px; /* exactly as Advantages */
+  font-size: var(--font-main-headline);
   line-height: 1.29em; /* match Advantages */
   letter-spacing: 0.54%; /* match Advantages */
   color: rgba(255,255,255,0.88); /* softened */
@@ -68,7 +68,7 @@
   border: 1px solid var(--color-primary-400);
   border-radius: 18px;
   color: #C8DEFA;
-  font: 500 18px/22px var(--font-family, 'Montserrat');
+  font: 500 var(--font-button)/22px var(--font-family, 'Montserrat');
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
@@ -81,7 +81,7 @@
 .instr-lead {
   font-family: var(--font-family, 'Montserrat');
   font-weight: 300; /* match Advantages description weight */
-  font-size: 16px;   /* match Advantages description size */
+  font-size: var(--font-small-button);   /* match Advantages description size */
   line-height: 1.57em; /* match Advantages description line-height */
   letter-spacing: 0.15%; /* match Advantages description letter-spacing */
   color: rgba(255, 255, 255, 0.72);
@@ -97,7 +97,7 @@
   width:720px;
   display: flex;
   flex-direction: column;
-  gap: 32px; /* larger gap like mock */
+  gap: var(--layout-margin); /* larger gap like mock */
 }
 
 .instr-item {
@@ -137,7 +137,7 @@
 .instr-item-text {
   font-family: var(--font-family, 'Montserrat');
   font-weight: 300; /* align with Advantages title weight */
-  font-size: 20px;  /* comfortable size for list */
+  font-size: var(--font-xs-headline);  /* comfortable size for list */
   line-height: 1.4em; /* match Advantages card title line-height */
   letter-spacing: 0.75%; /* match Advantages card title letter-spacing */
   color: rgba(255,255,255,0.88);
@@ -158,7 +158,7 @@
   color: var(--color-primary-700);
   border: none;
   border-radius: 26px;
-  font: 500 16px/1.5em var(--font-family);
+  font: 500 var(--font-small-button)/1.5em var(--font-family);
   letter-spacing: -0.94%;
   box-shadow: 0px 8px 16px rgba(20, 72, 140, 0.2);
   cursor: pointer;

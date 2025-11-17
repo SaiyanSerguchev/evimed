@@ -4,7 +4,7 @@
   padding: 120px 0;
   border-bottom-left-radius: 65px;
   border-bottom-right-radius: 65px;
-  overflow: hidden;
+  overflow: visible;
   width: 100%;
   margin: 0;
 }
@@ -12,7 +12,9 @@
 .services-container {
   width: 100%;
   margin: 0;
-  padding: 0 32px;
+  padding: 0 var(--layout-margin);
+  overflow: visible;
+  position: relative;
 }
 
 /* Header */
@@ -27,7 +29,7 @@
   color: #14488C;
   font-family: var(--font-family, 'Montserrat');
   font-weight: 700;
-  font-size: 14px;
+  font-size: var(--font-4xs-headline);
   line-height: 18px;
   text-transform: uppercase;
 }
@@ -44,7 +46,7 @@
   color: #1A232E;
   font-family: var(--font-family, 'Montserrat');
   font-weight: 500;
-  font-size: 30px;
+  font-size: var(--font-main-headline);
   line-height: 36px;
   margin: 0;
   white-space: normal;
@@ -69,7 +71,7 @@
   border: 1px solid rgba(20, 72, 140, 0.44);
   border-radius: 16px;
   color: rgba(20, 72, 140, 0.92);
-  font: 500 18px/20px var(--font-family, 'Montserrat');
+  font: 500 var(--font-button)/20px var(--font-family, 'Montserrat');
   flex-shrink: 0;
 }
 
@@ -82,7 +84,7 @@
   color: #485366;
   font-family: var(--font-family, 'Montserrat');
   font-weight: 400;
-  font-size: 18px;
+  font-size: var(--font-body);
   line-height: 22px;
   margin: 8px 0 0 0;
   max-width: 800px;
@@ -92,9 +94,10 @@
 .services-tabs {
   display: flex;
   gap: 16px;
-  margin: 32px 0 32px 0;
+  margin: 32px calc(var(--layout-margin) * -1) 32px calc(var(--layout-margin) * -1);
+  padding: 0 var(--layout-margin);
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: visible;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
   -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
@@ -122,7 +125,7 @@
   min-height: 36px;
   background: #E6EDF5;
   color: rgba(20, 72, 140, 0.92);
-  font: 400 16px/20px var(--font-family, 'Montserrat');
+  font: 400 var(--font-small-button)/20px var(--font-family, 'Montserrat');
   border: 0;
   border-radius: 18px;
   cursor: inherit; /* Наследуем cursor от родителя (grab/grabbing) */
@@ -258,7 +261,7 @@
 }
 
 .ct-title-line {
-  font-size: 20px;
+  font-size: var(--font-xs-headline);
   line-height: 26px;
   display: -webkit-box;
   -webkit-line-clamp: 3; /* Показываем до 3 строк */
@@ -274,7 +277,7 @@
 .ct-desc {
   color: #485366;
   font-family: var(--font-family, 'Montserrat');
-  font-size: 16px;
+  font-size: var(--font-small-button);
   line-height: 22px;
   margin: 0;
   display: -webkit-box;
@@ -295,7 +298,7 @@
   align-items: center;
   gap: 12px;
   color: #485366;
-  font: 400 16px/22px var(--font-family, 'Montserrat');
+  font: 400 var(--font-small-button)/22px var(--font-family, 'Montserrat');
 }
 
 /* Footer */
@@ -368,7 +371,7 @@
   border: 1px solid rgba(20, 72, 140, 0.44);
   border-radius: 22px;
   color: rgba(20, 72, 140, 0.92);
-  font: 500 16px/20px var(--font-family, 'Montserrat');
+  font: 500 var(--font-small-button)/20px var(--font-family, 'Montserrat');
   cursor: pointer;
   transition: all 0.3s ease;
 }

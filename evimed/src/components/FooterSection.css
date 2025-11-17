@@ -4,7 +4,7 @@
   box-shadow: 0px -1px 1px 0px rgba(13, 34, 61, 0.04), 0px -4px 8px 0px rgba(13, 34, 61, 0.02), 0px -12px 32px 0px rgba(13, 34, 61, 0.04);
   width: 100%;
   margin: 0;
-  padding: 52px 32px;
+  padding: 52px var(--layout-margin);
   border-top: 1px solid var(--color-grey-100);
 }
 
@@ -63,7 +63,7 @@
 .logo-text span {
   font-family: var(--font-family);
   font-weight: 600;
-  font-size: 16px;
+  font-size: var(--font-small-button);
   line-height: 1.25em;
   color: var(--color-primary-700);
 }
@@ -71,7 +71,7 @@
 .footer-description {
   font-family: 'Montserrat', sans-serif;
   font-weight: 400;
-  font-size: 14px;
+  font-size: var(--font-description);
   line-height: 1.5em;
   letter-spacing: 4.17%;
   color: #485366;
@@ -85,13 +85,13 @@
 .footer-addresses {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--layout-gutter);
 }
 
 .footer-title {
   font-family: var(--font-family);
   font-weight: 600;
-  font-size: 20px;
+  font-size: var(--font-xs-headline);
   line-height: 1.25em;
   color: var(--color-black);
   margin: 0;
@@ -101,7 +101,7 @@
 .footer-nav-column {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--layout-gutter);
   align-items: flex-start;
   white-space: nowrap;
 }
@@ -109,7 +109,7 @@
 .footer-nav-link {
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
-  font-size: 18px;
+  font-size: var(--font-body);
   line-height: 1.5em;
   color: #11171F;
   text-decoration: none;
@@ -128,7 +128,7 @@
   flex-direction: column;
   justify-content: flex-end;
   align-items: flex-end;
-  gap: 32px;
+  gap: var(--layout-margin);
   width: 100%;
 }
 
@@ -136,20 +136,20 @@
 .footer-contact {
   display: flex;
   flex-direction: row;
-  gap: 32px;
+  gap: var(--layout-margin);
 }
 
 .footer-contact-info {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--layout-gutter);
   position: relative;
 }
 
 .footer-contact-link {
   font-family: 'Montserrat', sans-serif;
   font-weight: 400;
-  font-size: 20px;
+  font-size: var(--font-xs-headline);
   line-height: 1.333em;
   color: #11171F;
   text-decoration: none;
@@ -196,7 +196,7 @@
 .address-item span {
   font-family: var(--font-family);
   font-weight: 400;
-  font-size: 18px;
+  font-size: var(--font-body);
   line-height: 1.5em;
   color: var(--color-grey-600);
 }
@@ -250,7 +250,7 @@
 .footer-copyright {
   font-family: 'Montserrat', sans-serif;
   font-weight: 400;
-  font-size: 16px;
+  font-size: var(--font-small-button);
   line-height: 1.571em;
   letter-spacing: 0.15%;
   color: #485366;
@@ -260,7 +260,7 @@
 .footer-privacy-link {
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
-  font-size: 16px;
+  font-size: var(--font-small-button);
   line-height: 1.714em;
   color: #11171F;
   opacity: 0.88;

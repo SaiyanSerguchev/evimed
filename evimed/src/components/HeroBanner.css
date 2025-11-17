@@ -1,11 +1,11 @@
 /* Hero Banner Container */
 .hero-banner {
   position: relative;
-  width: calc(100% - 64px);
-  height: 900px;
+  width: calc(100% - (var(--layout-margin) * 2));
+  height: var(--hero-height);
   margin-bottom: 72px; /* Заходим на область хедера, отступы по бокам */
-  margin-left:32px;
-  margin-right:32px;
+  margin-left: var(--layout-margin);
+  margin-right: var(--layout-margin);
   padding: 117px;
   overflow: visible;
   z-index: 1;
@@ -36,7 +36,7 @@
 .hero-title {
   font-family: var(--font-family);
   font-weight: 500;
-  font-size: 34px;
+  font-size: var(--font-l-headline);
   line-height: 1.25em;
   color: var(--color-black);
   opacity: 0.92;
@@ -46,7 +46,7 @@
 .hero-description {
   font-family: var(--font-family);
   font-weight: 400;
-  font-size: 20px;
+  font-size: var(--font-xs-headline);
   line-height: 1.44em;
   letter-spacing: 0.15%;
   color: var(--color-grey-600);
@@ -78,7 +78,7 @@
 .hero-button-text {
   font-family: var(--font-family);
   font-weight: 500;
-  font-size: 18px;
+  font-size: var(--font-button);
   line-height: 1.5em;
   letter-spacing: -0.94%;
   color: var(--color-greylight-700);
@@ -123,8 +123,8 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 974px;
+  width: var(--hero-image-width);
+  height: var(--hero-image-height);
   z-index: 0;
   display: flex;
   align-items: center;
@@ -132,8 +132,8 @@
   mask-image: url("../assets/images/hero/maskbanner.png");
   mask-position: center;
   mask-repeat: no-repeat;
-  mask-size: cover;
-  margin-top: -50px;
+  mask-size: 100% 100%;
+  margin-top: var(--hero-image-margin-top);
 }
 
 .equipment-image {
@@ -199,7 +199,7 @@
 
 .slider-dots {
   position: absolute;
-  bottom: 0;
+  bottom: 32px;
   left: 81%;
   transform: translateX(-50%);
   display: flex;
@@ -253,7 +253,7 @@
   }
   
   .hero-content {
-    padding: 80px 32px 32px 32px;
+    padding: 80px var(--layout-margin) var(--layout-margin) var(--layout-margin);
     gap: 32px;  /* Reduced from 24px to 16px for tighter spacing */
     justify-content: flex-start;  /* Changed from space-between to flex-start */
     text-align: left;

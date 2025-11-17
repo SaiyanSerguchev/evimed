@@ -9,21 +9,21 @@
   width: 100%;
   height: 100vh;
   margin: 0;
-  padding: 0 32px;
+  padding: 72px var(--layout-margin) 0 var(--layout-margin);
 }
 
 /* Header */
 .advantages-header {
-  margin-bottom: 80px;
+  margin-bottom: 32px;
 }
 
 
 .advantages-subtitle {
   font-family: var(--font-family);
   font-weight: 700;
-  font-size: 14px;
-  line-height: 1.5em;
-  letter-spacing: 16%;
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 1.92px;
   text-transform: uppercase;
   color: var(--color-primary-700);
   margin: 0 0 16px 0;
@@ -32,9 +32,9 @@
 .advantages-title {
   font-family: var(--font-family);
   font-weight: 500;
-  font-size: 30px;
-  line-height: 1.29em;
-  letter-spacing: 0.54%;
+  font-size: 28px;
+  line-height: 36px;
+  letter-spacing: 0.15px;
   color: var(--color-black);
   margin: 0 0 24px 0;
   white-space: nowrap;
@@ -60,9 +60,9 @@
 .advantages-description {
   font-family: var(--font-family);
   font-weight: 400;
-  font-size: 16px;
-  line-height: 1.57em;
-  letter-spacing: 0.15%;
+  font-size: 14px;
+  line-height: 22px;
+  letter-spacing: 0.021px;
   color: var(--color-grey-600);
   margin: 0;
   white-space: normal;
@@ -156,9 +156,9 @@
 .advantage-title {
   font-family: var(--font-family);
   font-weight: 500;
-  font-size: 22px;
-  line-height: 1.4em;
-  letter-spacing: 0.75%;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: 0.15px;
   color: var(--color-black);
   margin: 0;
   opacity: 0.88;
@@ -171,8 +171,9 @@
 .advantage-description {
   font-family: var(--font-family);
   font-weight: 400;
-  font-size: 16px;
-  line-height: 1.57em;
+  font-size: 14px;
+  line-height: 22px;
+  letter-spacing: 0.021px;
   color: var(--color-grey-600);
   margin: 0;
   white-space: normal;

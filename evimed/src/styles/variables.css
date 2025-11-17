@@ -133,4 +133,45 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* Layout Grid - Figma proportions (12 columns, margin 32px, gutter 32px at 1440px) */
+  --layout-base-width: 1440px;
+  --layout-base-margin: 32px;
+  --layout-base-gutter: 32px;
+  --layout-columns: 12;
+  --layout-scale: calc(100vw / var(--layout-base-width));
+  --layout-margin: calc(var(--layout-base-margin) * var(--layout-scale));
+  --layout-gutter: calc(var(--layout-base-gutter) * var(--layout-scale));
+  --layout-content-width: calc(100vw - (var(--layout-margin) * 2));
+  --layout-column-width: calc((var(--layout-content-width) - (11 * var(--layout-gutter))) / 12);
+
+  /* Header - static height always 100px */
+  --header-height: 100px;
+
+  /* Hero Banner Heights - adaptive (752px at 1440px, scales to 1080px at 1920px) */
+  --hero-base-height: 702px;
+  --hero-height: calc(var(--hero-base-height) * var(--layout-scale));
+  --hero-image-base-height: 728px;
+  --hero-image-height: calc(var(--hero-image-base-height) * var(--layout-scale));
+  --hero-image-margin-top: -50px;
+  --hero-image-base-width: 100%;
+  --hero-image-width: var(--hero-image-base-width);
+
+  /* Typography - Zeplin specs (static sizes) */
+  --font-xl-headline: 44px;
+  --font-l-headline: 32px;
+  --font-main-headline: 28px;
+  --font-s-headline: 22px;
+  --font-xs-headline: 20px;
+  --font-2xs-headline: 18px;
+  --font-3xs-headline: 16px;
+  --font-4xs-headline: 14px;
+  --font-description: 14px;
+  --font-body: 18px;
+  --font-body-14: 14px;
+  --font-body-12: 12px;
+  --font-button: 18px;
+  --font-small-button: 16px;
+  --font-caption-12: 12px;
+  --font-caption-10: 10px;
 }
