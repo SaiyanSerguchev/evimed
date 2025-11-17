@@ -18,6 +18,14 @@ const ServicesSection = () => {
   const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
   const [selectedServiceForAppointment, setSelectedServiceForAppointment] = useState(null);
   
+  // Show all state
+  const [showAllServices, setShowAllServices] = useState(false);
+  const [servicesPerRow, setServicesPerRow] = useState(3); // Динамически определяется
+  const [isMobile, setIsMobile] = useState(false);
+  const DEFAULT_ROWS = 2;
+  const MOBILE_BREAKPOINT = 480;
+  const gridRef = useRef(null);
+  
   const API_BASE = 'http://localhost:5000/api';
 
   useEffect(() => {
@@ -27,6 +35,7 @@ const ServicesSection = () => {
   useEffect(() => {
     if (categories.length > 0) {
       loadServicesForCategory(categories[activeTab]?.id);
+      setShowAllServices(false); // Сбрасываем при смене категории
     }
   }, [categories, activeTab]);
 
@@ -147,6 +156,33 @@ const ServicesSection = () => {
     setActiveTab(idx);
   };
 
+  // Отслеживание мобильной версии и количества колонок в grid
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+
+    const updateColumnsCount = () => {
+      const gridComputedStyle = window.getComputedStyle(grid);
+      const gridTemplateColumns = gridComputedStyle.getPropertyValue('grid-template-columns');
+      const columnsCount = gridTemplateColumns.split(' ').length;
+      setServicesPerRow(columnsCount);
+      
+      // Проверяем мобильную версию
+      setIsMobile(window.innerWidth <= MOBILE_BREAKPOINT);
+    };
+
+    // Начальный подсчет
+    updateColumnsCount();
+
+    // Отслеживаем изменения размера
+    const resizeObserver = new ResizeObserver(updateColumnsCount);
+    resizeObserver.observe(grid);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [services]);
+
   // Set cursor style and wheel listener on mount
   useEffect(() => {
     const container = tabsRef.current;
@@ -217,6 +253,12 @@ const ServicesSection = () => {
     };
   }, []);
 
+  // Проверка, является ли категория ЛОР исследованием
+  const isLorCategory = (categoryName) => {
+    if (!categoryName) return false;
+    return categoryName.toUpperCase().includes('ЛОР');
+  };
+
   // Обработчики для модального окна записи
   const handleOpenAppointmentModal = (service = null) => {
     // Если есть услуга, добавляем к ней информацию о категории
@@ -225,7 +267,8 @@ const ServicesSection = () => {
       const enrichedService = {
         ...service,
         categoryId: currentCategory?.id,
-        category: currentCategory // Полный объект категории
+        category: currentCategory, // Полный объект категории
+        isLorService: isLorCategory(currentCategory?.name) // Флаг для ЛОР услуги
       };
       setSelectedServiceForAppointment(enrichedService);
     } else {
@@ -238,6 +281,14 @@ const ServicesSection = () => {
     setIsAppointmentModalOpen(false);
     setSelectedServiceForAppointment(null);
   };
+
+  // Определяем какие услуги показывать (2 ряда на десктопе, все на мобильном)
+  const maxServicesDefault = servicesPerRow * DEFAULT_ROWS;
+  const displayedServices = (isMobile || showAllServices)
+    ? services 
+    : services.slice(0, maxServicesDefault);
+  
+  const hasMoreServices = !isMobile && services.length > maxServicesDefault;
 
   return (
     <section className="services-section" id="services">
@@ -316,8 +367,8 @@ const ServicesSection = () => {
         </div>
 
         {/* CT Cards */}
-        <div className="services-grid ct-grid">
-          {services.map((service, idx) => (
+        <div className="services-grid ct-grid" ref={gridRef}>
+          {displayedServices.map((service, idx) => (
             <div key={service.id || idx} className="ct-card">
               <div className="ct-head">
                 <div className="ct-title">
@@ -369,6 +420,40 @@ const ServicesSection = () => {
             </div>
           ))}
         </div>
+
+        {/* Кнопка "Показать все" */}
+        {hasMoreServices && (
+          <div className="show-all-container">
+            <button 
+              className="show-all-btn" 
+              type="button"
+              onClick={() => setShowAllServices(!showAllServices)}
+            >
+              <span>{showAllServices ? 'Свернуть' : 'Показать все'}</span>
+              <svg 
+                width="12" 
+                height="12" 
+                viewBox="0 0 12 12" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg"
+                className={showAllServices ? 'rotated' : ''}
+              >
+                <path 
+                  fillRule="evenodd" 
+                  clipRule="evenodd" 
+                  d="M0.75 6.00311C0.75 5.5889 1.08579 5.25311 1.5 5.25311H10.5C10.9142 5.25311 11.25 5.5889 11.25 6.00311C11.25 6.41733 10.9142 6.75311 10.5 6.75311H1.5C1.08579 6.75311 0.75 6.41733 0.75 6.00311Z" 
+                  fill="currentColor"
+                />
+                <path 
+                  fillRule="evenodd" 
+                  clipRule="evenodd" 
+                  d="M5.46967 0.96967C5.76256 0.676777 6.23744 0.676777 6.53033 0.96967L11.0303 5.46967C11.3232 5.76256 11.3232 6.23744 11.0303 6.53033L6.53033 11.0303C6.23744 11.3232 5.76256 11.3232 5.46967 11.0303C5.17678 10.7374 5.17678 10.2626 5.46967 9.96967L9.43934 6L5.46967 2.03033C5.17678 1.73744 5.17678 1.26256 5.46967 0.96967Z" 
+                  fill="currentColor"
+                />
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Модальное окно записи */}

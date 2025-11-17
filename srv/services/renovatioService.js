@@ -59,42 +59,30 @@ class RenovatioService {
   // Получить ВСЕ категории рекурсивно (включая все уровни вложенности)
   async getAllServiceCategoriesRecursive() {
     const allCategories = [];
-    const processedIds = new Set();
 
-    // Получаем корневые категории (без родителя)
+    // Получаем корневые категории (API уже возвращает children)
     const rootCategories = await this.getServiceCategories();
     
-    // Добавляем корневые
-    for (const cat of rootCategories) {
-      if (!processedIds.has(cat.id)) {
-        allCategories.push(cat);
-        processedIds.add(cat.id);
-      }
-    }
-
-    // Для каждой категории получаем дочерние
-    const toProcess = [...rootCategories];
-    while (toProcess.length > 0) {
-      const current = toProcess.shift();
+    // Рекурсивная функция для обработки категории и её детей
+    const processCategory = (category, parentId = null) => {
+      // Добавляем текущую категорию с информацией о родителе
+      allCategories.push({
+        ...category,
+        parent_id: parentId
+      });
       
-      try {
-        // Получаем дочерние категории
-        const children = await this.getServiceCategories({ 
-          category_id: current.id,
-          include_self: 0 // не включаем саму категорию
+      // Обрабатываем дочерние категории если они есть
+      if (category.children && Array.isArray(category.children) && category.children.length > 0) {
+        category.children.forEach(child => {
+          processCategory(child, category.id);
         });
-        
-        for (const child of children) {
-          if (!processedIds.has(child.id)) {
-            allCategories.push(child);
-            processedIds.add(child.id);
-            toProcess.push(child); // добавляем для дальнейшей обработки
-          }
-        }
-      } catch (error) {
-        console.error(`Error fetching children for category ${current.id}:`, error.message);
       }
-    }
+    };
+    
+    // Обрабатываем все корневые категории
+    rootCategories.forEach(rootCat => {
+      processCategory(rootCat, null);
+    });
 
     console.log(`Fetched ${allCategories.length} total categories (including all levels)`);
     return allCategories;
@@ -110,7 +98,7 @@ class RenovatioService {
     const defaultParams = {
       show_busy: 1,  // Показывать занятые слоты тоже (чтобы видеть is_busy)
       show_past: 0,  // Не показывать прошедшие
-      step: 15       // фиксированное значение 15 минут
+      step: 30       // фиксированное значение 30 минут
     };
     
     return await this.makeRequest('getSchedule', {

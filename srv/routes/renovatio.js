@@ -7,6 +7,165 @@ const ServiceCategory = require('../models/ServiceCategory');
 const Appointment = require('../models/Appointment');
 const adminAuth = require('../middleware/admin');
 
+/**
+ * Фильтрует и реорганизует категории из Renovatio:
+ * 1. Оставляет только подкатегории "ИССЛЕДОВАНИЯ" (делает их корневыми)
+ * 2. Объединяет все "ДОПОЛНИТЕЛЬНЫЕ УСЛУГИ" в одну категорию
+ * 3. Оставляет "ПАКЕТНОЕ ПРЕДЛОЖЕНИЕ" как есть
+ */
+function filterAndReorganizeCategories(renovatioCategories) {
+  const filteredCategories = [];
+  const categoryMapping = {}; // старый ID -> новый ID для переназначения услуг
+  
+  console.log('=== FILTERING CATEGORIES ===');
+  console.log('Total categories received:', renovatioCategories.length);
+  console.log('All categories:', renovatioCategories.map(c => ({ 
+    id: c.id, 
+    title: c.title, 
+    parent_id: c.parent_id 
+  })));
+  
+  // Ищем корневые категории по названиям (case-insensitive)
+  const issledovaniyaRoot = renovatioCategories.find(c => 
+    !c.parent_id && c.title.toUpperCase().includes('ИССЛЕДОВАНИЯ')
+  );
+  const dopUslugiRoot = renovatioCategories.find(c => 
+    !c.parent_id && c.title.toUpperCase().includes('ДОПОЛНИТЕЛЬНЫЕ УСЛУГИ')
+  );
+  const paketnoePredlozhenieRoot = renovatioCategories.find(c => 
+    !c.parent_id && c.title.toUpperCase().includes('ПАКЕТНОЕ ПРЕДЛОЖЕНИЕ')
+  );
+  
+  console.log('Found root categories:', {
+    issledovaniya: issledovaniyaRoot?.id,
+    issledovaniyaTitle: issledovaniyaRoot?.title,
+    dopUslugi: dopUslugiRoot?.id,
+    dopUslugiTitle: dopUslugiRoot?.title,
+    paketnoe: paketnoePredlozhenieRoot?.id,
+    paketnoeTitle: paketnoePredlozhenieRoot?.title
+  });
+  
+  // 1. Добавляем подкатегории ИССЛЕДОВАНИЯ как корневые (без parent_id)
+  if (issledovaniyaRoot) {
+    console.log('Processing ИССЛЕДОВАНИЯ root category:', issledovaniyaRoot.id);
+    
+    // Находим все категории где parent_id === issledovaniyaRoot.id
+    const issledovaniyaChildren = renovatioCategories.filter(c => 
+      c.parent_id === issledovaniyaRoot.id
+    );
+    
+    console.log('Found ИССЛЕДОВАНИЯ children:', issledovaniyaChildren.map(c => ({ 
+      id: c.id, 
+      title: c.title, 
+      parent_id: c.parent_id 
+    })));
+    
+    // Если есть подкатегории, первую используем для маппинга корневой категории
+    let firstChildId = null;
+    
+    issledovaniyaChildren.forEach((child, index) => {
+      filteredCategories.push({
+        ...child,
+        parent_id: null // делаем корневыми
+      });
+      categoryMapping[child.id] = child.id; // маппинг остается прежним
+      
+      if (index === 0) {
+        firstChildId = child.id;
+      }
+    });
+    
+    // Маппим саму корневую категорию на первую подкатегорию
+    // (на случай если есть услуги привязанные напрямую к "ИССЛЕДОВАНИЯ")
+    if (firstChildId) {
+      categoryMapping[issledovaniyaRoot.id] = firstChildId;
+    }
+    
+    console.log(`Added ${issledovaniyaChildren.length} ИССЛЕДОВАНИЯ subcategories as root`);
+  } else {
+    console.log('WARNING: ИССЛЕДОВАНИЯ root category not found!');
+  }
+  
+  // 2. Создаем единую категорию ДОПОЛНИТЕЛЬНЫЕ УСЛУГИ
+  if (dopUslugiRoot) {
+    console.log('Processing ДОПОЛНИТЕЛЬНЫЕ УСЛУГИ root category:', dopUslugiRoot.id);
+    
+    // Находим все категории где parent_id === dopUslugiRoot.id
+    const dopUslugiChildren = renovatioCategories.filter(c => 
+      c.parent_id === dopUslugiRoot.id
+    );
+    
+    console.log('Found ДОПОЛНИТЕЛЬНЫЕ УСЛУГИ children:', dopUslugiChildren.map(c => ({ 
+      id: c.id, 
+      title: c.title 
+    })));
+    
+    // Используем ID корневой категории для объединенной
+    filteredCategories.push({
+      id: dopUslugiRoot.id,
+      title: 'ДОПОЛНИТЕЛЬНЫЕ УСЛУГИ',
+      order: dopUslugiRoot.order || 100,
+      parent_id: null
+    });
+    
+    // Все подкатегории ДОПОЛНИТЕЛЬНЫХ УСЛУГ маппим на корневую
+    dopUslugiChildren.forEach(child => {
+      categoryMapping[child.id] = dopUslugiRoot.id;
+    });
+    
+    // Маппим саму корневую ДОПОЛНИТЕЛЬНЫЕ УСЛУГИ на себя
+    categoryMapping[dopUslugiRoot.id] = dopUslugiRoot.id;
+    
+    console.log(`Merged ${dopUslugiChildren.length} ДОПОЛНИТЕЛЬНЫЕ УСЛУГИ subcategories into one`);
+  } else {
+    console.log('WARNING: ДОПОЛНИТЕЛЬНЫЕ УСЛУГИ root category not found!');
+  }
+  
+  // 3. Оставляем ПАКЕТНОЕ ПРЕДЛОЖЕНИЕ как есть
+  if (paketnoePredlozhenieRoot) {
+    filteredCategories.push({
+      ...paketnoePredlozhenieRoot
+    });
+    categoryMapping[paketnoePredlozhenieRoot.id] = paketnoePredlozhenieRoot.id;
+    
+    console.log('Added ПАКЕТНОЕ ПРЕДЛОЖЕНИЕ as is');
+  }
+  
+  console.log('Category mapping:', categoryMapping);
+  console.log('Filtered categories count:', filteredCategories.length);
+  console.log('Filtered categories:', filteredCategories.map(c => ({ id: c.id, title: c.title, parent_id: c.parent_id })));
+  
+  return { filteredCategories, categoryMapping };
+}
+
+/**
+ * Переназначает услуги на новые категории согласно маппингу
+ */
+function remapServices(renovatioServices, categoryMapping) {
+  let remapped = 0;
+  let skipped = 0;
+  
+  const result = renovatioServices.map(service => {
+    const newCategoryId = categoryMapping[service.category_id];
+    
+    if (newCategoryId) {
+      remapped++;
+      return {
+        ...service,
+        category_id: newCategoryId
+      };
+    }
+    
+    // Если категория не в маппинге, пропускаем услугу (она будет отфильтрована)
+    skipped++;
+    return null;
+  }).filter(service => service !== null);
+  
+  console.log(`Service remapping summary: ${remapped} remapped, ${skipped} skipped`);
+  
+  return result;
+}
+
 // 1. Синхронизация услуг и категорий (admin only)
 router.post('/sync/services', adminAuth, async (req, res) => {
   try {
@@ -21,24 +180,34 @@ router.post('/sync/services', adminAuth, async (req, res) => {
 
     console.log(`Received ${renovatioCategories.length} categories and ${renovatioServices.length} services from Renovatio`);
 
+    // Фильтруем и реорганизуем категории
+    const { filteredCategories, categoryMapping } = filterAndReorganizeCategories(renovatioCategories);
+    console.log(`After filtering: ${filteredCategories.length} categories`);
+
     // Синхронизируем категории
-    const categoryResults = await ServiceCategory.syncFromRenovatio(renovatioCategories);
+    const categoryResults = await ServiceCategory.syncFromRenovatio(filteredCategories);
     console.log('Categories sync results:', categoryResults);
 
+    // Перемаппируем услуги на новые категории
+    const remappedServices = remapServices(renovatioServices, categoryMapping);
+    console.log(`Remapped ${remappedServices.length} services`);
+
     // Синхронизируем услуги
-    const serviceResults = await Service.syncFromRenovatio(renovatioServices);
+    const serviceResults = await Service.syncFromRenovatio(remappedServices);
     console.log('Services sync results:', serviceResults);
 
     const response = {
       message: 'Services synchronized successfully',
       categories: {
-        total: renovatioCategories.length,
+        total: filteredCategories.length,
+        original: renovatioCategories.length,
         created: categoryResults.created,
         updated: categoryResults.updated,
         errors: categoryResults.errors.length
       },
       services: {
-        total: renovatioServices.length,
+        total: remappedServices.length,
+        original: renovatioServices.length,
         created: serviceResults.created,
         updated: serviceResults.updated,
         errors: serviceResults.errors.length
@@ -157,7 +326,7 @@ router.get('/schedule', async (req, res) => {
       service_id: service_id ? parseInt(service_id) : undefined,
       time_start: formatDateForRenovatio(time_start, true) || formatDateForRenovatio(new Date().toISOString(), true),
       time_end: formatDateForRenovatio(time_end, false) || formatDateForRenovatio(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), false),
-      step: 15, // Фиксированное значение 15 минут
+      step: 30, // Фиксированное значение 30 минут
       show_busy: 1, // Показывать и занятые слоты (чтобы видеть is_busy)
       show_past: 0
     };

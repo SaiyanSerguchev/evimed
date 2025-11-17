@@ -8,38 +8,109 @@ const ConsultationModal = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
+    thirdName: '',
     phone: '',
-    email: '',
-    comment: ''
+    birthDate: '',
+    privacyConsent: false
   });
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [showSuccess, setShowSuccess] = useState(false);
 
   // Отключение скролла при открытии модального окна
   useEffect(() => {
     if (isOpen) {
-      // Сохраняем текущую позицию скролла
-      const scrollY = window.scrollY;
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-      document.body.style.overflow = 'hidden';
+      // Сохраняем текущую позицию скролла только если она еще не сохранена
+      const existingScrollY = document.body.getAttribute('data-scroll-y');
+      if (!existingScrollY) {
+        const scrollY = window.scrollY;
+        const scrollX = window.scrollX;
+        
+        // Блокируем скролл на html и body
+        document.documentElement.style.position = 'fixed';
+        document.documentElement.style.top = `-${scrollY}px`;
+        document.documentElement.style.left = `-${scrollX}px`;
+        document.documentElement.style.width = '100%';
+        document.documentElement.style.overflow = 'hidden';
+        
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${scrollY}px`;
+        document.body.style.left = `-${scrollX}px`;
+        document.body.style.width = '100%';
+        document.body.style.overflow = 'hidden';
+        
+        // Сохраняем позицию скролла в data-атрибуте для восстановления
+        document.body.setAttribute('data-scroll-y', scrollY.toString());
+        document.body.setAttribute('data-scroll-x', scrollX.toString());
+      }
     } else {
-      // Восстанавливаем позицию скролла
-      const scrollY = document.body.style.top;
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      document.body.style.overflow = '';
-      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      // Восстанавливаем позицию скролла только если это последнее модальное окно
+      // Проверяем, нет ли других открытых модальных окон (AppointmentModal)
+      const appointmentModal = document.querySelector('.appointment-step');
+      
+      if (!appointmentModal) {
+        const scrollY = document.body.getAttribute('data-scroll-y') || '0';
+        const scrollX = document.body.getAttribute('data-scroll-x') || '0';
+        
+        // Восстанавливаем стили
+        document.documentElement.style.position = '';
+        document.documentElement.style.top = '';
+        document.documentElement.style.left = '';
+        document.documentElement.style.width = '';
+        document.documentElement.style.overflow = '';
+        
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        
+        // Удаляем data-атрибуты
+        document.body.removeAttribute('data-scroll-y');
+        document.body.removeAttribute('data-scroll-x');
+        
+        // Восстанавливаем позицию скролла
+        window.scrollTo(parseInt(scrollX), parseInt(scrollY));
+      }
     }
 
     return () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      document.body.style.overflow = '';
+      // Очистка при размонтировании только если нет других модальных окон
+      const appointmentModal = document.querySelector('.appointment-step');
+      
+      if (!appointmentModal) {
+        document.documentElement.style.position = '';
+        document.documentElement.style.top = '';
+        document.documentElement.style.left = '';
+        document.documentElement.style.width = '';
+        document.documentElement.style.overflow = '';
+        
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        
+        document.body.removeAttribute('data-scroll-y');
+        document.body.removeAttribute('data-scroll-x');
+      }
     };
+  }, [isOpen]);
+
+  // Очистка формы при закрытии
+  useEffect(() => {
+    if (!isOpen) {
+      setFormData({
+        firstName: '',
+        lastName: '',
+        thirdName: '',
+        phone: '',
+        birthDate: '',
+        privacyConsent: false
+      });
+      setErrors({});
+      setShowSuccess(false);
+    }
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -73,12 +144,9 @@ const ConsultationModal = ({ isOpen, onClose }) => {
       newErrors.phone = 'Неверный формат телефона';
     }
 
-    // Email (опциональный)
-    if (formData.email && formData.email.trim()) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.email)) {
-        newErrors.email = 'Неверный формат email';
-      }
+    // Согласие на обработку данных
+    if (!formData.privacyConsent) {
+      newErrors.privacyConsent = 'Необходимо согласие на обработку данных';
     }
 
     setErrors(newErrors);
@@ -86,10 +154,10 @@ const ConsultationModal = ({ isOpen, onClose }) => {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
     // Очищаем ошибку при вводе
     if (errors[name]) {
@@ -115,24 +183,13 @@ const ConsultationModal = ({ isOpen, onClose }) => {
       await apiClient.post('/consultation-requests', {
         firstName: formData.firstName,
         lastName: formData.lastName,
+        thirdName: formData.thirdName || undefined,
         phone: formData.phone,
-        email: formData.email || undefined,
-        comment: formData.comment || undefined
+        birthDate: formData.birthDate || undefined
       });
 
-      toast.success('Спасибо! Мы свяжемся с вами в ближайшее время.');
-      
-      // Очищаем форму
-      setFormData({
-        firstName: '',
-        lastName: '',
-        phone: '',
-        email: '',
-        comment: ''
-      });
-      setErrors({});
-      
-      onClose();
+      // Показываем экран успеха
+      setShowSuccess(true);
     } catch (error) {
       console.error('Consultation request error:', error);
       
@@ -158,138 +215,185 @@ const ConsultationModal = ({ isOpen, onClose }) => {
           </svg>
         </button>
 
-        <div className="modal-header">
-          <h2 className="modal-title">Получить консультацию</h2>
-          <p className="consultation-subtitle">
-            Оставьте свои контактные данные, и мы свяжемся с вами в ближайшее время
-          </p>
-        </div>
+        {showSuccess ? (
+          <>
+            <div className="modal-header">
+              <h2 className="modal-title">Спасибо за заявку</h2>
+            </div>
 
-        <div className="modal-body">
-          <div className="form-section">
-            <div className="form-row">
-              <div className="form-group">
-                <label>
-                  Имя <span className="required">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="firstName"
-                  className={errors.firstName ? 'error' : ''}
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  placeholder="Введите имя"
-                  disabled={isLoading}
-                  autoComplete="given-name"
-                />
-                {errors.firstName && (
-                  <span className="error-message">{errors.firstName}</span>
-                )}
-              </div>
-
-              <div className="form-group">
-                <label>
-                  Фамилия <span className="required">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="lastName"
-                  className={errors.lastName ? 'error' : ''}
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  placeholder="Введите фамилию"
-                  disabled={isLoading}
-                  autoComplete="family-name"
-                />
-                {errors.lastName && (
-                  <span className="error-message">{errors.lastName}</span>
-                )}
+            <div className="modal-body">
+              <div className="appointment-step step5">
+                <div className="consultation-success-content">
+                  <h3 className="consultation-success-subtitle">Мы свяжемся с вами в ближайшее время</h3>
+                </div>
               </div>
             </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label>
-                  Телефон <span className="required">*</span>
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  className={errors.phone ? 'error' : ''}
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="+7 (999) 999-99-99"
-                  disabled={isLoading}
-                  autoComplete="tel"
-                />
-                {errors.phone && (
-                  <span className="error-message">{errors.phone}</span>
-                )}
-              </div>
-
-              <div className="form-group">
-                <label>Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  className={errors.email ? 'error' : ''}
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="example@mail.com"
-                  disabled={isLoading}
-                  autoComplete="email"
-                />
-                {errors.email && (
-                  <span className="error-message">{errors.email}</span>
-                )}
-              </div>
+            <div className="modal-footer">
+              <button
+                className="btn btn-primary"
+                onClick={onClose}
+                style={{ flex: 1, justifyContent: 'center', paddingLeft: 0, paddingRight: 0 }}
+              >
+                <div className="text-btn-wrapper" style={{ width: 'auto', justifyContent: 'center' }}>
+                  <span>Закрыть</span>
+                </div>
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="modal-header">
+              <h2 className="modal-title">Записаться на консультацию</h2>
             </div>
 
-            <div className="form-group">
-              <label>Комментарий</label>
-              <textarea
-                name="comment"
-                value={formData.comment}
-                onChange={handleChange}
-                placeholder="Укажите тему консультации или вопросы"
-                rows="3"
-                disabled={isLoading}
-              />
+            <div className="modal-body">
+          <div className="appointment-step step5">
+            <h2 className="appointment-title step5-title">Контактная информация</h2>
+            
+            <div className="step5-form">
+              <div className="step5-form-row">
+                <div className="step5-form-group">
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    placeholder="Введите Имя"
+                    className={`step5-input ${errors.firstName ? 'error' : ''}`}
+                    disabled={isLoading}
+                    required
+                  />
+                  {errors.firstName && <span className="error-message">{errors.firstName}</span>}
+                </div>
+
+                <div className="step5-form-group">
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    placeholder="Введите Фамилию"
+                    className={`step5-input ${errors.lastName ? 'error' : ''}`}
+                    disabled={isLoading}
+                    required
+                  />
+                  {errors.lastName && <span className="error-message">{errors.lastName}</span>}
+                </div>
+              </div>
+
+              <div className="step5-form-row">
+                <div className="step5-form-group">
+                  <input
+                    type="text"
+                    id="thirdName"
+                    name="thirdName"
+                    value={formData.thirdName}
+                    onChange={handleChange}
+                    placeholder="Введите Отчество"
+                    className={`step5-input ${errors.thirdName ? 'error' : ''}`}
+                    disabled={isLoading}
+                  />
+                  {errors.thirdName && <span className="error-message">{errors.thirdName}</span>}
+                </div>
+                <div className="step5-form-group"></div>
+              </div>
+
+              <div className="step5-form-row">
+                <div className="step5-form-group">
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="Ваш телефон"
+                    className={`step5-input ${errors.phone ? 'error' : ''}`}
+                    disabled={isLoading}
+                    required
+                  />
+                  {errors.phone && <span className="error-message">{errors.phone}</span>}
+                </div>
+
+                <div className="step5-form-group step5-date-group">
+                  <input
+                    type="date"
+                    id="birthDate"
+                    name="birthDate"
+                    value={formData.birthDate}
+                    onChange={handleChange}
+                    className={`step5-input step5-date-input ${errors.birthDate ? 'error' : ''} ${!formData.birthDate ? 'empty' : ''}`}
+                    disabled={isLoading}
+                  />
+                  {!formData.birthDate && (
+                    <span className="step5-date-placeholder">Дата рождения</span>
+                  )}
+                  {errors.birthDate && <span className="error-message">{errors.birthDate}</span>}
+                </div>
+              </div>
+
+              <div className="step5-divider"></div>
+
+              <div className="step5-checkbox-wrapper">
+                <input
+                  type="checkbox"
+                  id="privacyConsent"
+                  name="privacyConsent"
+                  checked={formData.privacyConsent}
+                  onChange={handleChange}
+                  className="step5-checkbox"
+                  disabled={isLoading}
+                  required
+                />
+                <label htmlFor="privacyConsent" className="step5-checkbox-label">
+                  Я согласен на обработку персональных данных согласно политике конфиденциальности
+                </label>
+              </div>
+              {errors.privacyConsent && <span className="error-message">{errors.privacyConsent}</span>}
             </div>
           </div>
         </div>
 
         <div className="modal-footer">
-          <button 
-            type="button"
+          <button
             className="btn btn-secondary"
             onClick={onClose}
             disabled={isLoading}
           >
-            Отмена
+            <div className="text-btn-wrapper">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M7.5 3L4.5 6L7.5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span>Назад</span>
+            </div>
           </button>
           <div className="btn-divider"></div>
-          <button 
-            type="submit"
-            onClick={handleSubmit}
+          <button
             className="btn btn-primary"
+            onClick={handleSubmit}
             disabled={isLoading}
           >
-            {isLoading ? (
-              <>
-                <span className="spinner"></span>
-                Отправка...
-              </>
-            ) : (
-              <>
-                Отправить заявку
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M3 8h10M13 8l-4-4M13 8l-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </>
-            )}
+            <div className="text-btn-wrapper">
+              {isLoading ? (
+                <>
+                  <div className="spinner" />
+                  <span>Загрузка...</span>
+                </>
+              ) : (
+                <>
+                  <span>Записаться на консультацию</span>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </>
+              )}
+            </div>
           </button>
         </div>
+          </>
+        )}
       </div>
     </div>
   );

@@ -3,11 +3,17 @@ import { toast } from 'react-toastify';
 import './AppointmentModal.css';
 import EmailVerificationModal from './EmailVerificationModal';
 import SuccessStep from './SuccessStep';
+import ConsultationModal from './ConsultationModal';
 import apiClient from '../services/api';
 import renovatioApi from '../services/renovatioApi';
 import verificationApi from '../services/verificationApi';
 import { validateAppointmentForm, formatAppointmentData } from '../utils/validators';
 import { handleApiError, handleAppointmentError } from '../utils/errorHandler';
+
+// Импорт изображений для карточек
+import modalImg1 from '../assets/images/modal/IMG-1.png';
+import modalImg2 from '../assets/images/modal/IMG-2.png';
+import modalImg3 from '../assets/images/modal/IMG-3.png';
 
 const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
   // Состояние шагов
@@ -21,6 +27,7 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
   const [selectedClinic, setSelectedClinic] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
+  const [hasReferral, setHasReferral] = useState(null); // Для ЛОР исследований
   
   // Состояние данных формы
   const [formData, setFormData] = useState({
@@ -46,15 +53,40 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
   const [showSuccessStep, setShowSuccessStep] = useState(false);
   const [appointmentResult, setAppointmentResult] = useState(null);
   
+  // Состояние модального окна консультации
+  const [showConsultationModal, setShowConsultationModal] = useState(false);
+  
   // Состояние ошибок
   const [errors, setErrors] = useState({});
+  
+  // Состояние открытия dropdown времени
+  const [isTimeDropdownOpen, setIsTimeDropdownOpen] = useState(false);
+
+  // Проверка, требует ли услуга клинику "Ленина 1"
+  const requiresLeninaClinic = (service) => {
+    if (!service || !service.name) return false;
+    const serviceName = service.name.toUpperCase();
+    return (
+      serviceName.includes('ПРИДАТОЧНЫХ ПАЗУХ НОСА') ||
+      serviceName.includes('ТРГ') ||
+      (serviceName.includes('ТЕЛЕРЕНТГЕНОГРАММА') && serviceName.includes('ЧЕРЕПА'))
+    );
+  };
+
+  // Поиск клиники "Ленина 1" по ключевому слову
+  const findLeninaClinic = () => {
+    return doctors.find(doctor => {
+      const name = doctor.name?.toUpperCase() || '';
+      return name.includes('ЛЕНИНА');
+    });
+  };
 
   // Загрузка врачей при открытии модального окна
   useEffect(() => {
     if (isOpen) {
       loadInitialData();
       loadDoctors(); // Загружаем врачей сразу при открытии
-      // Если есть предвыбранная услуга, переходим к шагу 3
+      // Если есть предвыбранная услуга
       if (preselectedService) {
         // Устанавливаем выбранную услугу
         setSelectedService(preselectedService);
@@ -62,7 +94,13 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
         if (preselectedService.category) {
           setSelectedCategory(preselectedService.category);
         }
-        setCurrentStep(3);
+        // Если это ЛОР услуга, начинаем с вопроса о направлении (шаг 1.5)
+        if (preselectedService.isLorService) {
+          setCurrentStep(1.5);
+        } else {
+          // Для остальных услуг переходим сразу к шагу 3 (выбор филиала)
+          setCurrentStep(3);
+        }
         if (preselectedService.categoryId) {
           loadServicesForCategory(preselectedService.categoryId);
         }
@@ -81,8 +119,36 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
   useEffect(() => {
     if (selectedDoctor && selectedDate) {
       loadSchedule();
+      setIsTimeDropdownOpen(false);
     }
   }, [selectedDoctor, selectedDate]);
+  
+  // Закрытие dropdown при клике вне его
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isTimeDropdownOpen && !event.target.closest('.custom-time-dropdown')) {
+        setIsTimeDropdownOpen(false);
+      }
+    };
+    
+    if (isTimeDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isTimeDropdownOpen]);
+
+  // Автоматический выбор клиники "Ленина 1" для определенных услуг
+  useEffect(() => {
+    if (selectedService && doctors.length > 0) {
+      if (requiresLeninaClinic(selectedService)) {
+        const leninaClinic = findLeninaClinic();
+        if (leninaClinic && selectedDoctor?.id !== leninaClinic.id) {
+          setSelectedDoctor(leninaClinic);
+          setSelectedClinic(leninaClinic);
+        }
+      }
+    }
+  }, [selectedService, doctors]);
 
   // Загрузка начальных данных
   const loadInitialData = async () => {
@@ -93,12 +159,10 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
         renovatioApi.getClinics()
       ]);
       
-      // Фильтруем только категории с услугами
-      const categoriesWithServices = Array.isArray(categoriesData) 
-        ? categoriesData.filter(cat => cat.services && cat.services.length > 0)
-        : [];
+      // Не фильтруем по услугам на первом шаге, чтобы показать все категории
+      const allCategories = Array.isArray(categoriesData) ? categoriesData : [];
       
-      setCategories(categoriesWithServices);
+      setCategories(allCategories);
       setClinics(clinicsData);
     } catch (error) {
       console.error('Ошибка загрузки данных:', error);
@@ -154,8 +218,8 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
     try {
       setIsLoading(true);
       
-      // Используем фиксированный step = 15 минут
-      const step = 15;
+      // Используем фиксированный step = 30 минут
+      const step = 30;
       
       // Параметры запроса расписания логируются на бэкенде
 
@@ -165,7 +229,7 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
         service_id: selectedService?.id,
         time_start: selectedDate, // Отправляем только дату в формате YYYY-MM-DD
         time_end: selectedDate,   // Для одного дня используем ту же дату
-        step: step                 // Фиксированное значение 15 минут
+        step: step                 // Фиксированное значение 30 минут
       });
       
       // Обрабатываем разные форматы ответа от API
@@ -204,27 +268,105 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
 
   // Обработчики навигации
   const handleNext = () => {
-    if (currentStep < 6) {
+    // Если на шаге 1 (выбор категории)
+    if (currentStep === 1) {
+      // Если выбрана ЛОР категория, переходим к шагу 1.5 (вопрос о направлении)
+      if (isLorCategory(selectedCategory)) {
+        setCurrentStep(1.5);
+      } else {
+        // Для остальных категорий сразу к шагу 2 (выбор услуги)
+        setCurrentStep(2);
+      }
+    }
+    // Если на шаге 1.5 (вопрос о направлении для ЛОР)
+    else if (currentStep === 1.5) {
+      // Если пользователь выбрал "Нет" (нет направления), открываем консультацию
+      if (hasReferral === false) {
+        setShowConsultationModal(true);
+        return;
+      }
+      // Если есть направление, продолжаем обычный процесс
+      // Если услуга уже выбрана (из ServicesSection), пропускаем шаг 2
+      if (selectedService) {
+        // Если услуга требует клинику "Ленина 1", пропускаем шаг 3 и переходим к шагу 4
+        if (requiresLeninaClinic(selectedService) && selectedDoctor) {
+          setCurrentStep(4);
+        } else {
+          setCurrentStep(3);
+        }
+      } else {
+        // Иначе идем к шагу 2 (выбор услуги)
+        setCurrentStep(2);
+      }
+    }
+    // Если на шаге 2 (выбор услуги)
+    else if (currentStep === 2) {
+      // Если услуга требует клинику "Ленина 1" и клиника уже выбрана, пропускаем шаг 3
+      if (requiresLeninaClinic(selectedService) && selectedDoctor) {
+        setCurrentStep(4);
+      } else {
+        setCurrentStep(3);
+      }
+    }
+    // Для остальных шагов просто увеличиваем номер
+    else if (currentStep < 5) {
       setCurrentStep(currentStep + 1);
     }
   };
 
   const handleBack = () => {
-    if (currentStep > 1) {
+    // Если на шаге 1.5 (вопрос о направлении для ЛОР), возвращаемся к шагу 1
+    if (currentStep === 1.5) {
+      setCurrentStep(1);
+    }
+    // Если на шаге 4 и услуга требует клинику "Ленина 1", возвращаемся к шагу 2 (пропускаем шаг 3)
+    else if (currentStep === 4 && requiresLeninaClinic(selectedService) && selectedDoctor) {
+      setCurrentStep(2);
+    }
+    // Если на шаге 3 и услуга уже была выбрана и это ЛОР категория
+    else if (currentStep === 3 && selectedService && isLorCategory(selectedCategory)) {
+      setCurrentStep(1.5);
+    }
+    // Если на шаге 3 и услуга требует клинику "Ленина 1", возвращаемся к шагу 2
+    else if (currentStep === 3 && requiresLeninaClinic(selectedService) && selectedDoctor) {
+      setCurrentStep(2);
+    }
+    // Если на шаге 2 и выбрана ЛОР категория, возвращаемся к шагу 1.5
+    else if (currentStep === 2 && isLorCategory(selectedCategory)) {
+      setCurrentStep(1.5);
+    }
+    // Для остальных случаев уменьшаем номер шага
+    else if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
+  };
+
+  // Проверка, является ли категория ЛОР исследованием
+  const isLorCategory = (category) => {
+    if (!category || !category.name) return false;
+    return category.name.toUpperCase().includes('ЛОР');
   };
 
   // Обработчики выбора
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
     setSelectedService(null);
+    setHasReferral(null);
     setErrors({});
   };
 
   const handleServiceSelect = (service) => {
     setSelectedService(service);
     setErrors({});
+    
+    // Если услуга требует клинику "Ленина 1", автоматически выбираем её
+    if (requiresLeninaClinic(service)) {
+      const leninaClinic = findLeninaClinic();
+      if (leninaClinic) {
+        setSelectedDoctor(leninaClinic);
+        setSelectedClinic(leninaClinic);
+      }
+    }
   };
 
   const handleDoctorSelect = (doctor) => {
@@ -349,13 +491,21 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
       endTime.setMinutes(endTime.getMinutes() + durationMinutes);
       const endTimeStr = endTime.toTimeString().substring(0, 5);
       
+      // Формируем комментарий с учетом направления для ЛОР исследований
+      let comment = formData.comment || '';
+      if (isLorCategory(selectedCategory) && hasReferral !== null) {
+        const referralText = hasReferral ? 'Пациент имеет направление от врача' : 'Пациент не имеет направления от врача';
+        comment = comment ? `${referralText}. ${comment}` : referralText;
+      }
+      
       // Форматируем данные для отправки
       const appointmentData = formatAppointmentData(formData, {
         doctorId: selectedDoctor.id,
         clinicId: selectedClinic.id,
         serviceId: selectedService?.id,
         timeStart: `${selectedDate} ${selectedTime}:00`,
-        timeEnd: `${selectedDate} ${endTimeStr}:00`
+        timeEnd: `${selectedDate} ${endTimeStr}:00`,
+        comment: comment
       });
 
       // Отправляем код верификации
@@ -385,6 +535,7 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
       ...result,
       serviceName: selectedService?.name,
       clinicName: selectedDoctor?.name || selectedClinic?.name || selectedClinic?.title,
+      clinicAddress: selectedClinic?.address || selectedClinic?.title,
       appointmentDate: selectedDate,
       appointmentTime: formatTime(selectedTime)
     };
@@ -405,6 +556,7 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
     setSelectedClinic(null);
     setSelectedDate(null);
     setSelectedTime(null);
+    setHasReferral(null); // Сбрасываем выбор направления
     setFormData({
       firstName: '',
       lastName: '',
@@ -433,56 +585,244 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
     if (isOpen) {
       // Сохраняем текущую позицию скролла
       const scrollY = window.scrollY;
+      const scrollX = window.scrollX;
+      
+      // Блокируем скролл на html и body
+      document.documentElement.style.position = 'fixed';
+      document.documentElement.style.top = `-${scrollY}px`;
+      document.documentElement.style.left = `-${scrollX}px`;
+      document.documentElement.style.width = '100%';
+      document.documentElement.style.overflow = 'hidden';
+      
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = `-${scrollX}px`;
       document.body.style.width = '100%';
       document.body.style.overflow = 'hidden';
+      
+      // Сохраняем позицию скролла в data-атрибуте для восстановления
+      document.body.setAttribute('data-scroll-y', scrollY.toString());
+      document.body.setAttribute('data-scroll-x', scrollX.toString());
     } else {
       // Восстанавливаем позицию скролла
-      const scrollY = document.body.style.top;
+      const scrollY = document.body.getAttribute('data-scroll-y') || '0';
+      const scrollX = document.body.getAttribute('data-scroll-x') || '0';
+      
+      // Восстанавливаем стили
+      document.documentElement.style.position = '';
+      document.documentElement.style.top = '';
+      document.documentElement.style.left = '';
+      document.documentElement.style.width = '';
+      document.documentElement.style.overflow = '';
+      
       document.body.style.position = '';
       document.body.style.top = '';
+      document.body.style.left = '';
       document.body.style.width = '';
       document.body.style.overflow = '';
-      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      
+      // Удаляем data-атрибуты
+      document.body.removeAttribute('data-scroll-y');
+      document.body.removeAttribute('data-scroll-x');
+      
+      // Восстанавливаем позицию скролла
+      window.scrollTo(parseInt(scrollX), parseInt(scrollY));
     }
 
     return () => {
+      // Очистка при размонтировании
+      document.documentElement.style.position = '';
+      document.documentElement.style.top = '';
+      document.documentElement.style.left = '';
+      document.documentElement.style.width = '';
+      document.documentElement.style.overflow = '';
+      
       document.body.style.position = '';
       document.body.style.top = '';
+      document.body.style.left = '';
       document.body.style.width = '';
       document.body.style.overflow = '';
+      
+      document.body.removeAttribute('data-scroll-y');
+      document.body.removeAttribute('data-scroll-x');
     };
   }, [isOpen]);
 
+  // Функция для форматирования названия категории
+  const formatCategoryName = (name) => {
+    if (!name) return '';
+    
+    // Удаляем текст в скобках
+    let formatted = name.replace(/\s*\([^)]*\)/g, '');
+    
+    // Приводим к нормальному регистру (первая буква заглавная, остальные строчные)
+    // Разбиваем на слова и форматируем каждое слово
+    formatted = formatted
+      .toLowerCase()
+      .split(' ')
+      .map(word => {
+        if (!word) return '';
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      })
+      .join(' ')
+      .trim();
+    
+    return formatted;
+  };
+
+  // Функция для получения изображения категории
+  const getCategoryImage = (category) => {
+    if (!category) return null;
+    
+    // Если у категории есть изображение в БД, используем его
+    if (category.imageUrl) {
+      const getServerBaseUrl = () => {
+        if (typeof process !== 'undefined' && process.env && process.env.REACT_APP_API_URL) {
+          return process.env.REACT_APP_API_URL.replace('/api', '');
+        }
+        return 'http://localhost:5000';
+      };
+      return `${getServerBaseUrl()}${category.imageUrl}`;
+    }
+    
+    // Fallback на старые изображения из assets (для обратной совместимости)
+    if (!category.name) return null;
+    
+    const nameUpper = category.name.toUpperCase();
+    
+    // IMG-3: ЛОР-исследования (проверяем первым, т.к. может содержать "3D" в названии)
+    if (nameUpper.includes('ЛОР')) {
+      return modalImg3;
+    }
+    
+    // IMG-1: Двухмерные рентгенологические исследования
+    if (nameUpper.includes('ДВУХМЕРН')) {
+      return modalImg1;
+    }
+    
+    // IMG-2: Трехмерные рентгенологические исследования челюстей (3D КЛКТ)
+    if (nameUpper.includes('ТРЕХМЕРН') || nameUpper.includes('3D') || nameUpper.includes('КЛКТ')) {
+      return modalImg2;
+    }
+    
+    return null;
+  };
+
   // Рендер шага 1 - Выбор категории
-  const renderStep1 = () => (
-    <div className="appointment-step">
-      <h2 className="appointment-title">Выберите категорию услуги</h2>
-      {isLoading ? (
-        <div className="services-grid">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="service-card skeleton" />
-          ))}
-        </div>
-      ) : (
-        <div className="services-grid">
-          {categories.map(category => (
-            <div
-              key={category.id}
-              className={`service-card ${selectedCategory?.id === category.id ? 'selected' : ''}`}
-              onClick={() => handleCategorySelect(category)}
-            >
-              <div className="service-content">
-                <h3 className="service-title">{category.name}</h3>
-                <p className="service-description">{category.description}</p>
+  const renderStep1 = () => {
+    // Фильтруем категории исследований (исключаем "Дополнительные услуги" и "Пакетное предложение")
+    const investigationCategories = categories.filter(cat => {
+      const nameUpper = cat.name.toUpperCase();
+      const isNotAdditional = !nameUpper.includes('ДОПОЛНИТЕЛЬН');
+      const isNotPackage = !nameUpper.includes('ПАКЕТН');
+      const isRoot = cat.parentId === null || cat.parentId === undefined; // Только корневые категории
+      
+      return isNotAdditional && isNotPackage && isRoot;
+    });
+
+    // Добавляем карточку консультации в конец
+    const allCards = [
+      ...investigationCategories.map(cat => ({
+        id: cat.id,
+        title: formatCategoryName(cat.name),
+        type: 'category',
+        categoryData: cat,
+        image: getCategoryImage(cat)
+      })),
+      {
+        id: 'consultation',
+        title: 'Не знаю. Нужна консультация',
+        type: 'consultation',
+        image: null
+      }
+    ];
+
+    const handleInitialCategorySelect = (card) => {
+      if (card.type === 'category') {
+        handleCategorySelect(card.categoryData);
+      } else if (card.type === 'consultation') {
+        // Открываем модальное окно консультации
+        setShowConsultationModal(true);
+      }
+    };
+
+    return (
+      <div className="appointment-step">
+        <h2 className="appointment-title">Какой снимок вас интересует?</h2>
+        {isLoading ? (
+          <div className="initial-services-grid">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="initial-service-card skeleton" />
+            ))}
+          </div>
+        ) : allCards.length === 0 ? (
+          <div className="no-categories-message">
+            <p>Категории услуг не найдены</p>
+            <small>Пожалуйста, выполните синхронизацию с Renovatio CRM</small>
+          </div>
+        ) : (
+          <div className="initial-services-grid">
+            {allCards.map(card => (
+              <div
+                key={card.id}
+                className={`initial-service-card ${selectedCategory?.id === card.id ? 'selected' : ''} ${!card.image ? 'no-image' : ''}`}
+                onClick={() => handleInitialCategorySelect(card)}
+              >
+                <div className="initial-service-content">
+                  <h3 className="initial-service-title">{card.title}</h3>
+                </div>
+                {card.image && card.image !== null && card.image !== '' ? (
+                  <div className={`initial-service-image ${card.image === modalImg2 ? 'no-filter' : ''}`}>
+                    <img src={card.image} alt={card.title} />
+                  </div>
+                ) : (
+                  <div className="initial-service-arrow">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path fillRule="evenodd" clipRule="evenodd" d="M0.75 6.00311C0.75 5.5889 1.08579 5.25311 1.5 5.25311H10.5C10.9142 5.25311 11.25 5.5889 11.25 6.00311C11.25 6.41733 10.9142 6.75311 10.5 6.75311H1.5C1.08579 6.75311 0.75 6.41733 0.75 6.00311Z" fill="currentColor"/>
+                      <path fillRule="evenodd" clipRule="evenodd" d="M5.46967 0.96967C5.76256 0.676777 6.23744 0.676777 6.53033 0.96967L11.0303 5.46967C11.3232 5.76256 11.3232 6.23744 11.0303 6.53033L6.53033 11.0303C6.23744 11.3232 5.76256 11.3232 5.46967 11.0303C5.17678 10.7374 5.17678 10.2626 5.46967 9.96967L9.43934 6L5.46967 2.03033C5.17678 1.73744 5.17678 1.26256 5.46967 0.96967Z" fill="currentColor"/>
+                    </svg>
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // Рендер шага 1.5 - Вопрос о направлении (только для ЛОР исследований)
+  const renderStep1_5 = () => {
+    return (
+      <div className="appointment-step">
+        <h2 className="appointment-title">У вас имеется направление от врача?</h2>
+        <div className="referral-options">
+          <label className="radio-option">
+            <input
+              type="radio"
+              name="hasReferral"
+              value="yes"
+              checked={hasReferral === true}
+              onChange={() => setHasReferral(true)}
+            />
+            <span className="radio-icon"></span>
+            <span className="radio-text">Да</span>
+          </label>
+          <label className="radio-option">
+            <input
+              type="radio"
+              name="hasReferral"
+              value="no"
+              checked={hasReferral === false}
+              onChange={() => setHasReferral(false)}
+            />
+            <span className="radio-icon"></span>
+            <span className="radio-text">Нет</span>
+          </label>
         </div>
-      )}
-    </div>
-  );
+      </div>
+    );
+  };
 
   // Рендер шага 2 - Выбор услуги
   const renderStep2 = () => {
@@ -490,32 +830,70 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
       service.categoryId === selectedCategory?.id
     );
     
+    // Функция для получения изображения услуги
+    const getServiceImage = (service) => {
+      // Если у услуги есть свое изображение, проверяем его
+      if (service.imageUrl) {
+        // Проверяем, не совпадает ли imageUrl услуги с imageUrl категории
+        if (selectedCategory?.imageUrl && service.imageUrl === selectedCategory.imageUrl) {
+          // Если совпадает, используем fallback (изображение категории через getCategoryImage)
+          return getCategoryImage(selectedCategory);
+        }
+        
+        // Проверяем, не находится ли изображение в папке categories (старые данные)
+        if (service.imageUrl.includes('/uploads/categories/')) {
+          // Если изображение в папке categories, используем fallback
+          return getCategoryImage(selectedCategory);
+        }
+        
+        // Определяем базовый URL сервера
+        const getServerBaseUrl = () => {
+          if (typeof process !== 'undefined' && process.env && process.env.REACT_APP_API_URL) {
+            return process.env.REACT_APP_API_URL.replace('/api', '');
+          }
+          return 'http://localhost:5000';
+        };
+        return `${getServerBaseUrl()}${service.imageUrl}`;
+      }
+      // Иначе используем изображение категории как fallback
+      return getCategoryImage(selectedCategory);
+    };
+    
     return (
       <div className="appointment-step">
-        <h2 className="appointment-title">Выберите конкретную услугу</h2>
+        <div className="step2-header">
+          <h2 className="appointment-title">{selectedCategory?.name || 'Выберите услугу'}</h2>
+          <p className="step2-subtitle">Выберите снимок</p>
+        </div>
         {isLoading ? (
-          <div className="services-grid">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="service-card skeleton" />
+          <div className="services-grid-step2">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="service-card-step2 skeleton" />
             ))}
           </div>
         ) : (
-          <div className="services-grid">
-            {filteredServices.map(service => (
-              <div
-                key={service.id}
-                className={`service-card ${selectedService?.id === service.id ? 'selected' : ''}`}
-                onClick={() => handleServiceSelect(service)}
-              >
-                <div className="service-content">
-                  <h3 className="service-title">{service.name}</h3>
-                  <p className="service-description">{service.description}</p>
-                  <div className="service-price">
-                    {service.price} ₽
+          <div className="services-grid-step2">
+            {filteredServices.map(service => {
+              const serviceImage = getServiceImage(service);
+              return (
+                <div
+                  key={service.id}
+                  className={`service-card-step2 ${selectedService?.id === service.id ? 'selected' : ''} ${!serviceImage || serviceImage === null || serviceImage === '' ? 'no-image' : ''}`}
+                  onClick={() => handleServiceSelect(service)}
+                >
+                  <div className="service-card-step2-wrapper">
+                    <div className="service-content-step2">
+                      <h3 className="service-title-step2">{service.name}</h3>
+                    </div>
+                    {serviceImage && serviceImage !== null && serviceImage !== '' ? (
+                      <div className="service-image-step2">
+                        <img src={serviceImage} alt={service.name} />
+                      </div>
+                    ) : null}
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
@@ -525,243 +903,266 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
   // Рендер шага 3 - Выбор клиники и врача
   const renderStep3 = () => (
     <div className="appointment-step">
-      <h2 className="appointment-title">Выберите клинику</h2>
+      <h2 className="appointment-title">Выберите филиал для записи</h2>
       
       <div className="step3-content">
-        <div className="clinics-section">
-          <h3 className="section-title">Доступные клиники</h3>
-          {isLoading ? (
-            <div className="loading-skeleton">
-              {[...Array(2)].map((_, i) => (
-                <div key={i} className="clinic-card skeleton" />
-              ))}
-            </div>
-          ) : (
-            <div className="clinics-list">
-              {doctors.map(doctor => (
-                <div
-                  key={doctor.id}
-                  className={`clinic-card ${selectedDoctor?.id === doctor.id ? 'selected' : ''}`}
-                  onClick={() => handleDoctorSelect(doctor)}
-                >
-                  <div className="clinic-info">
-                    <h4 className="clinic-name">{doctor.name}</h4>
-                    <p className="clinic-address">{doctor.profession}</p>
-                    <p className="clinic-details">Врач-рентгенолог</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        {isLoading ? (
+          <div className="clinics-radio-list">
+            {[...Array(2)].map((_, i) => (
+              <div key={i} className="clinic-radio-option skeleton" />
+            ))}
+          </div>
+        ) : (
+          <div className="clinics-radio-list">
+            {doctors.map(doctor => (
+              <label
+                key={doctor.id}
+                className={`clinic-radio-option ${selectedDoctor?.id === doctor.id ? 'selected' : ''}`}
+                onClick={() => handleDoctorSelect(doctor)}
+              >
+                <input
+                  type="radio"
+                  name="clinic"
+                  value={doctor.id}
+                  checked={selectedDoctor?.id === doctor.id}
+                  onChange={() => handleDoctorSelect(doctor)}
+                  className="clinic-radio-input"
+                />
+                <span className="clinic-radio-icon"></span>
+                <span className="clinic-radio-text">{doctor.name}</span>
+              </label>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 
   // Рендер шага 4 - Выбор даты и времени
-  const renderStep4 = () => (
-    <div className="appointment-step">
-      <h2 className="appointment-title">Выберите дату и время</h2>
-      
-      <div className="step4-content">
-        <div className="date-section">
-          <h3 className="section-title">Дата</h3>
-          <div className="date-picker">
-            <input
-              type="date"
-              className="date-input"
-              value={selectedDate || ''}
-              onChange={(e) => handleDateSelect(e.target.value)}
-              min={new Date().toISOString().split('T')[0]}
-            />
+  const renderStep4 = () => {
+    // Форматирование даты для отображения
+    const formatDateForDisplay = (dateString) => {
+      if (!dateString) return '00.00.0000';
+      const date = new Date(dateString);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}.${month}.${year}`;
+    };
+
+    return (
+      <div className="appointment-step">
+        <h2 className="appointment-title">Выберите дату и время для записи</h2>
+        
+        <div className="step4-content">
+          <div className="date-time-field">
+            <label className="date-time-label">Выберите дату</label>
+            <div className="date-dropdown-wrapper">
+              <input
+                type="date"
+                className="date-dropdown-input"
+                value={selectedDate || ''}
+                onChange={(e) => handleDateSelect(e.target.value)}
+                min={new Date().toISOString().split('T')[0]}
+                id="date-input"
+              />
+            </div>
+          </div>
+
+          <div className="date-time-field">
+            <label className="date-time-label">Выберите время</label>
+            <div className="time-dropdown-wrapper">
+              {!selectedDate ? (
+                <div className="time-dropdown disabled">
+                  <span className="time-dropdown-text">00.00</span>
+                  <svg className="time-dropdown-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0ZM8 14.4C4.46528 14.4 1.6 11.5347 1.6 8C1.6 4.46528 4.46528 1.6 8 1.6C11.5347 1.6 14.4 4.46528 14.4 8C14.4 11.5347 11.5347 14.4 8 14.4ZM8.8 4.8V8.8L11.2 10.4L10.4 11.6L7.6 9.6V4.8H8.8Z" fill="rgba(24, 37, 61, 0.32)"/>
+                  </svg>
+                </div>
+              ) : isLoading ? (
+                <div className="time-dropdown loading">
+                  <span className="time-dropdown-text">Загрузка...</span>
+                </div>
+              ) : Array.isArray(availableSlots) && availableSlots.length > 0 ? (
+                <div className={`custom-time-dropdown ${isTimeDropdownOpen ? 'open' : ''}`}>
+                  <div 
+                    className="custom-time-dropdown-trigger"
+                    onClick={() => setIsTimeDropdownOpen(!isTimeDropdownOpen)}
+                  >
+                    <span className={`custom-time-dropdown-text ${selectedTime ? 'has-value' : ''}`}>
+                      {selectedTime ? formatTime(selectedTime) : '00.00'}
+                    </span>
+                    <svg 
+                      className={`custom-time-dropdown-arrow ${isTimeDropdownOpen ? 'open' : ''}`} 
+                      width="16" 
+                      height="16" 
+                      viewBox="0 0 16 16" 
+                      fill="none" 
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M4 6L8 10L12 6" stroke="rgba(24, 37, 61, 0.32)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  {isTimeDropdownOpen && (
+                    <div className="custom-time-dropdown-list">
+                      {availableSlots
+                        .filter(slot => slot.available)
+                        .map((slot, index) => {
+                          const timeValue = formatTime(slot.time);
+                          const isSelected = selectedTime === slot.time;
+                          return (
+                            <React.Fragment key={slot.time || slot.id}>
+                              {index > 0 && <div className="custom-time-dropdown-divider" />}
+                              <div
+                                className={`custom-time-dropdown-item ${isSelected ? 'selected' : ''}`}
+                                onClick={() => {
+                                  handleTimeSelect(slot.time);
+                                  setIsTimeDropdownOpen(false);
+                                }}
+                              >
+                                <span className="custom-time-dropdown-item-text">{timeValue}</span>
+                                {isSelected && (
+                                  <svg className="custom-time-dropdown-item-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 8L7 11L12 5" stroke="rgba(24, 37, 61, 0.32)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                  </svg>
+                                )}
+                              </div>
+                            </React.Fragment>
+                          );
+                        })}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="time-dropdown disabled">
+                  <span className="time-dropdown-text">Нет доступного времени</span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-
-        <div className="time-section">
-          <h3 className="section-title">Время</h3>
-          {!selectedDate ? (
-            <div className="no-slots-message">
-              <p>Выберите дату, чтобы увидеть доступное время</p>
-            </div>
-          ) : isLoading ? (
-            <div className="loading-skeleton">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="time-slot skeleton" />
-              ))}
-            </div>
-          ) : Array.isArray(availableSlots) && availableSlots.length > 0 ? (
-            <div className="time-slots">
-              {availableSlots.map(slot => (
-                <button
-                  key={slot.time || slot.id}
-                  className={`time-slot ${selectedTime === slot.time ? 'selected' : ''} ${!slot.available ? 'unavailable' : ''}`}
-                  onClick={() => slot.available && handleTimeSelect(slot.time)}
-                  disabled={!slot.available}
-                  title={!slot.available ? 'Время занято' : 'Выбрать время'}
-                >
-                  {formatTime(slot.time)}
-                </button>
-              ))}
-            </div>
-          ) : (
-            <div className="no-slots-message">
-              <p>Нет доступных временных слотов на выбранную дату</p>
-              <small>Попробуйте выбрать другую дату</small>
-            </div>
-          )}
-        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   // Рендер шага 5 - Контактные данные
   const renderStep5 = () => (
-    <div className="appointment-step">
-      <h2 className="appointment-title">Ваши контактные данные</h2>
+    <div className="appointment-step step5">
+      <h2 className="appointment-title step5-title">Контактная информация</h2>
       
-      <div className="form-section">
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="firstName">Имя *</label>
+      <div className="step5-form">
+        <div className="step5-form-row">
+          <div className="step5-form-group">
             <input
               type="text"
               id="firstName"
               name="firstName"
               value={formData.firstName}
               onChange={handleInputChange}
-              className={errors.firstName ? 'error' : ''}
+              placeholder="Введите Имя"
+              className={`step5-input ${errors.firstName ? 'error' : ''}`}
               required
             />
             {errors.firstName && <span className="error-message">{errors.firstName}</span>}
           </div>
 
-          <div className="form-group">
-            <label htmlFor="lastName">Фамилия *</label>
+          <div className="step5-form-group">
             <input
               type="text"
               id="lastName"
               name="lastName"
               value={formData.lastName}
               onChange={handleInputChange}
-              className={errors.lastName ? 'error' : ''}
+              placeholder="Введите Фамилию"
+              className={`step5-input ${errors.lastName ? 'error' : ''}`}
               required
             />
             {errors.lastName && <span className="error-message">{errors.lastName}</span>}
           </div>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="thirdName">Отчество</label>
-          <input
-            type="text"
-            id="thirdName"
-            name="thirdName"
-            value={formData.thirdName}
-            onChange={handleInputChange}
-            className={errors.thirdName ? 'error' : ''}
-          />
-          {errors.thirdName && <span className="error-message">{errors.thirdName}</span>}
+        <div className="step5-form-row">
+          <div className="step5-form-group">
+            <input
+              type="text"
+              id="thirdName"
+              name="thirdName"
+              value={formData.thirdName}
+              onChange={handleInputChange}
+              placeholder="Введите Отчество"
+              className={`step5-input ${errors.thirdName ? 'error' : ''}`}
+            />
+            {errors.thirdName && <span className="error-message">{errors.thirdName}</span>}
+          </div>
+          <div className="step5-form-group"></div>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="email">Email *</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            className={errors.email ? 'error' : ''}
-            required
-          />
-          {errors.email && <span className="error-message">{errors.email}</span>}
-        </div>
+        <div className="step5-form-row">
+          <div className="step5-form-group">
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              value={formData.phone}
+              onChange={handleInputChange}
+              placeholder="Ваш телефон"
+              className={`step5-input ${errors.phone ? 'error' : ''}`}
+              required
+            />
+            {errors.phone && <span className="error-message">{errors.phone}</span>}
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="phone">Телефон *</label>
-          <input
-            type="tel"
-            id="phone"
-            name="phone"
-            value={formData.phone}
-            onChange={handleInputChange}
-            className={errors.phone ? 'error' : ''}
-            required
-          />
-          {errors.phone && <span className="error-message">{errors.phone}</span>}
-        </div>
-
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="birthDate">Дата рождения</label>
+          <div className="step5-form-group step5-date-group">
             <input
               type="date"
               id="birthDate"
               name="birthDate"
               value={formData.birthDate}
               onChange={handleInputChange}
-              className={errors.birthDate ? 'error' : ''}
+              className={`step5-input step5-date-input ${errors.birthDate ? 'error' : ''} ${!formData.birthDate ? 'empty' : ''}`}
             />
+            {!formData.birthDate && (
+              <span className="step5-date-placeholder">Дата рождения</span>
+            )}
             {errors.birthDate && <span className="error-message">{errors.birthDate}</span>}
           </div>
-
-          <div className="form-group">
-            <label htmlFor="gender">Пол</label>
-            <select
-              id="gender"
-              name="gender"
-              value={formData.gender || ''}
-              onChange={handleInputChange}
-            >
-              <option value="">Не указан</option>
-              <option value="1">Мужской</option>
-              <option value="2">Женский</option>
-            </select>
-          </div>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="comment">Комментарий</label>
-          <textarea
-            id="comment"
-            name="comment"
-            value={formData.comment}
+        <div className="step5-form-group">
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
             onChange={handleInputChange}
-            className={errors.comment ? 'error' : ''}
-            rows="4"
+            placeholder="Email"
+            className={`step5-input ${errors.email ? 'error' : ''}`}
+            required
           />
-          {errors.comment && <span className="error-message">{errors.comment}</span>}
+          {errors.email && <span className="error-message">{errors.email}</span>}
         </div>
-      </div>
 
-      <div className="appointment-summary">
-        <h3 className="summary-title">Сводка записи</h3>
-        <div className="summary-item">
-          <span className="summary-label">Категория:</span>
-          <span className="summary-value">{selectedCategory?.name}</span>
-        </div>
-        <div className="summary-item">
-          <span className="summary-label">Услуга:</span>
-          <span className="summary-value">{selectedService?.name}</span>
-        </div>
-        <div className="summary-item">
-          <span className="summary-label">Клиника:</span>
-          <span className="summary-value">{selectedDoctor?.name || selectedClinic?.name || selectedClinic?.title}</span>
-        </div>
-        <div className="summary-item">
-          <span className="summary-label">Дата и время:</span>
-          <span className="summary-value">
-            {selectedDate} в {formatTime(selectedTime)}
-          </span>
+        <div className="step5-divider"></div>
+
+        <div className="step5-checkbox-wrapper">
+          <input
+            type="checkbox"
+            id="privacyConsent"
+            name="privacyConsent"
+            className="step5-checkbox"
+            required
+          />
+          <label htmlFor="privacyConsent" className="step5-checkbox-label">
+            Я согласен на обработку персональных данных согласно политике конфиденциальности
+          </label>
         </div>
       </div>
     </div>
   );
 
-  if (!isOpen) return null;
-
   return (
     <>
+      {isOpen && !showConsultationModal && (
       <div className="modal-overlay" onClick={handleClose}>
         <button className="modal-close" onClick={handleClose} disabled={isLoading}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -770,12 +1171,12 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
         </button>
         <div className="modal-content" onClick={(e) => e.stopPropagation()}>
           <div className="modal-header">
-            <h1 className="modal-title">Записаться на прием</h1>
+            <h1 className="modal-title">Записаться на снимок</h1>
             <div className="progress-bar">
               {[1, 2, 3, 4, 5].map(step => (
                 <div
                   key={step}
-                  className={`progress-step ${step < currentStep ? 'active' : ''}`}
+                  className={`progress-step ${step < Math.ceil(currentStep) ? 'active' : ''}`}
                 />
               ))}
             </div>
@@ -783,6 +1184,7 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
 
           <div className="modal-body">
             {currentStep === 1 && renderStep1()}
+            {currentStep === 1.5 && renderStep1_5()}
             {currentStep === 2 && renderStep2()}
             {currentStep === 3 && renderStep3()}
             {currentStep === 4 && renderStep4()}
@@ -795,10 +1197,12 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
               onClick={currentStep === 1 ? handleClose : handleBack}
               disabled={isLoading}
             >
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <path d="M7.5 3L4.5 6L7.5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-              Назад
+              <div className="text-btn-wrapper">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M7.5 3L4.5 6L7.5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <span>Назад</span>
+              </div>
             </button>
             <div className="btn-divider"></div>
             <button
@@ -807,29 +1211,35 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
               disabled={
                 isLoading ||
                 (currentStep === 1 && !selectedCategory) ||
+                (currentStep === 1.5 && hasReferral === null) ||
                 (currentStep === 2 && !selectedService) ||
                 (currentStep === 3 && (!selectedClinic || !selectedDoctor)) ||
                 (currentStep === 4 && (!selectedDate || !selectedTime)) ||
                 (currentStep === 5 && (!formData.firstName || !formData.lastName || !formData.email || !formData.phone))
               }
             >
-              {isLoading ? (
-                <>
-                  <div className="spinner" />
-                  Загрузка...
-                </>
-              ) : currentStep === 5 ? (
-                'Отправить код подтверждения'
-              ) : (
-                'Далее'
-              )}
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+              <div className="text-btn-wrapper">
+                {isLoading ? (
+                  <>
+                    <div className="spinner" />
+                    <span>Загрузка...</span>
+                  </>
+                ) : currentStep === 5 ? (
+                  <span>Отправить код подтверждения</span>
+                ) : (
+                  <>
+                    <span>Далее</span>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                      <path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </>
+                )}
+              </div>
             </button>
           </div>
         </div>
       </div>
+      )}
 
       {/* Модальное окно верификации */}
       <EmailVerificationModal
@@ -858,6 +1268,13 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
           endTime.setMinutes(endTime.getMinutes() + durationMinutes);
           const endTimeStr = endTime.toTimeString().substring(0, 5);
           
+          // Формируем комментарий с учетом направления для ЛОР исследований
+          let comment = formData.comment || '';
+          if (isLorCategory(selectedCategory) && hasReferral !== null) {
+            const referralText = hasReferral ? 'Пациент имеет направление от врача' : 'Пациент не имеет направления от врача';
+            comment = comment ? `${referralText}. ${comment}` : referralText;
+          }
+          
           return {
             firstName: formData.firstName,
             lastName: formData.lastName,
@@ -871,7 +1288,7 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
             serviceId: selectedService?.id,
             timeStart: `${selectedDate} ${selectedTime}:00`,
             timeEnd: `${selectedDate} ${endTimeStr}:00`,
-            comment: formData.comment
+            comment: comment
           };
         })()}
         onSuccess={handleVerificationSuccess}
@@ -888,6 +1305,14 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
           </div>
         </div>
       )}
+
+      {/* Модальное окно консультации */}
+      <ConsultationModal
+        isOpen={showConsultationModal}
+        onClose={() => {
+          setShowConsultationModal(false);
+        }}
+      />
     </>
   );
 };

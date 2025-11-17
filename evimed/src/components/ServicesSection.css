@@ -174,6 +174,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px;
+  transition: all 0.4s ease;
 }
 
 /* Card */
@@ -350,6 +351,42 @@
   border: 1px solid rgba(20, 72, 140, 0.44);
 }
 
+/* Show All Button */
+.show-all-container {
+  margin-top: 32px;
+}
+
+.show-all-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 32px;
+  min-height: 44px;
+  width: 100%;
+  background: var(--color-greylight-100);
+  border: 1px solid rgba(20, 72, 140, 0.44);
+  border-radius: 22px;
+  color: rgba(20, 72, 140, 0.92);
+  font: 500 16px/20px var(--font-family, 'Montserrat');
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.show-all-btn:hover {
+  background: var(--color-primary-700);
+  border-color: var(--color-primary-700);
+  color: #C8DEFA;
+}
+
+.show-all-btn svg {
+  transition: transform 0.3s ease;
+}
+
+.show-all-btn svg.rotated {
+  transform: rotate(180deg);
+}
+
 /* Generic grid (legacy fallback) */
 .services-grid {
   display: grid;
@@ -462,4 +499,16 @@
   .ct-price-currency { font-size: 14px; }
 
   .ct-icon-btn { min-width: 32px; min-height: 32px; }
+
+  .show-all-container {
+    margin-top: 24px;
+  }
+
+  .show-all-btn {
+    padding: 10px 24px;
+    min-height: 40px;
+    font: 500 14px/18px var(--font-family, 'Montserrat');
+    border-radius: 20px;
+    gap: 8px;
+  }
 }

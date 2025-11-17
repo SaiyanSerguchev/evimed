@@ -14,14 +14,26 @@
 }
 
 .modal-content {
-  background: var(--color-white);
+  background: #FFFFFF;
   border-radius: 64px;
-  width: 100%;
+  width: 1142px;
+  height: 720px;
   max-width: 1142px;
-  max-height: 90vh;
+  max-height: 720px;
   overflow: hidden;
   position: relative;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 1200px) {
+  .modal-content {
+    width: 100%;
+    max-width: 1142px;
+    height: auto;
+    max-height: 90vh;
+  }
 }
 
 .modal-close {
@@ -46,18 +58,31 @@
 }
 
 .modal-header {
-  padding: 40px 40px 24px;
-  border-bottom: none;
+  height: 86px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 32px 117px 24px;
+  border-bottom: 1px solid rgba(22, 35, 61, 0.17);
 }
 
 .modal-title {
+  width: 100%;
+  min-height: 30px;
+  font-family: 'Montserrat', sans-serif;
   font-size: 22px;
   font-weight: 500;
-  color: #1A232E;
-  margin-bottom: 24px;
-  text-align: center;
-  line-height: 30px;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.36;
   letter-spacing: 0.15px;
+  text-align: left;
+  color: #1A232E;
+  margin: 0;
+  padding: 0;
 }
 
 .progress-bar {
@@ -84,21 +109,32 @@
 }
 
 .modal-body {
-  padding: 40px;
-  max-height: 60vh;
+  flex: 1;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0;
 }
 
 .appointment-step {
-  min-height: 400px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0;
+}
+
+.appointment-step:not(.step5) {
+  padding: 48px 117px;
 }
 
 .appointment-title {
   font-size: 20px;
   font-weight: 500;
   color: #1A232E;
-  margin-bottom: 32px;
-  text-align: center;
+  margin-bottom: 44px;
+  text-align: left;
   line-height: 28px;
   letter-spacing: 0.15px;
 }
@@ -152,6 +188,22 @@
     inset 0 1px 1px rgba(13, 34, 61, 0.04),
     0 1px 1px rgba(13, 34, 61, 0.16),
     0 8px 16px rgba(20, 72, 140, 0.2);
+}
+
+/* Карточка услуги без изображения */
+.service-card.no-image {
+  justify-content: space-between;
+}
+
+.service-card.no-image .service-content {
+  padding: 20px 20px 0;
+  max-height: none;
+  flex: 0 0 auto;
+  display: block;
+}
+
+.service-card.no-image .service-image {
+  display: none;
 }
 
 .service-image {
@@ -209,21 +261,531 @@
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 
 .service-arrow {
-  position: absolute;
-  bottom: 28px;
-  right: 28px;
-  color: rgba(20, 72, 140, 0.92);
   width: 32px;
   height: 32px;
+  border-radius: 16px;
+  background: rgba(200, 222, 250, 0.12);
+  border: 1px solid rgba(20, 72, 140, 0.44);
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: auto 20px 20px auto;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 3;
+}
+
+.service-arrow svg {
+  width: 12px;
+  height: 12px;
+  color: rgba(20, 72, 140, 0.92);
+}
+
+.service-card:hover .service-arrow {
+  background: rgba(20, 72, 140, 0.92);
+  border-color: rgba(20, 72, 140, 0.92);
+}
+
+.service-card:hover .service-arrow svg {
+  color: rgba(200, 222, 250, 1);
+}
+
+/* Стили для описания и цены в карточках услуг (шаг 2) */
+.initial-service-card .service-description {
+  font-size: 12px;
+  color: #8690A3;
+  line-height: 1.4;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.initial-service-card .service-price {
+  font-size: 16px;
+  font-weight: 600;
+  color: #14488C;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+/* Step 2 - Service Selection (новый дизайн) */
+.step2-header {
+  margin-bottom: 44px;
+}
+
+.step2-subtitle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0.024px;
+  color: #485366;
+  margin-top: 16px;
+  margin-bottom: 0;
+}
+
+.services-grid-step2 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.service-card-step2 {
+  width: 100%;
+  height: 292px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.service-card-step2-wrapper {
+  width: 212px;
+  height: 280px;
+  margin-top: 12px;
+  border-radius: 44px;
+  background: #EBEDF2;
+  background: linear-gradient(180deg, #F5F7FA 0%, rgba(245, 247, 250, 0) 100%);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 
+    inset 0 -4px 8px rgba(13, 34, 61, 0.04),
+    inset 0 6px 4px rgba(255, 255, 255, 0.32),
+    inset 0 1px 1px rgba(13, 34, 61, 0.04),
+    0 1px 1px rgba(13, 34, 61, 0.16),
+    0 4px 8px rgba(13, 34, 61, 0.08);
+}
+
+.service-card-step2:hover .service-card-step2-wrapper {
+  transform: translateY(-2px);
+  box-shadow: 
+    inset 0 -4px 8px rgba(13, 34, 61, 0.04),
+    inset 0 6px 4px rgba(255, 255, 255, 0.32),
+    inset 0 1px 1px rgba(13, 34, 61, 0.04),
+    0 1px 1px rgba(13, 34, 61, 0.16),
+    0 8px 16px rgba(13, 34, 61, 0.12);
+}
+
+.service-card-step2.selected .service-card-step2-wrapper {
+  background: rgba(20, 72, 140, 0.05);
+  box-shadow: 
+    inset 0 -4px 8px rgba(13, 34, 61, 0.04),
+    inset 0 6px 4px rgba(255, 255, 255, 0.32),
+    inset 0 1px 1px rgba(13, 34, 61, 0.04),
+    0 1px 1px rgba(13, 34, 61, 0.16),
+    0 8px 16px rgba(20, 72, 140, 0.2);
+}
+
+.service-content-step2 {
+  padding: 28px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.service-title-step2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22px;
+  letter-spacing: 0.15px;
+  color: #1A232E;
+  margin: 0;
+  text-align: left;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}
+
+.service-image-step2 {
+  width: 100%;
+  height: 140px;
+  min-height: 140px;
+  max-height: 140px;
+  border-radius: 44px;
+  margin-top: auto;
+  align-self: stretch;
+  flex-shrink: 0;
+  flex-grow: 0;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  padding: 0;
+  z-index: 2;
+  box-shadow: 
+    inset 0 -1px 1px 0 rgba(13, 34, 61, 0.08),
+    0 -1px 1px 0 rgba(13, 34, 61, 0.08),
+    0 -4px 8px 0 rgba(13, 34, 61, 0.06),
+    0 -12px 32px 0 rgba(13, 34, 61, 0.08);
+}
+
+.service-image-step2::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(to right, transparent 70%, rgba(0, 0, 0, 0.15) 100%), 
+    linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, transparent 30%);
+  pointer-events: none;
+  z-index: 2;
+  border-radius: 44px;
+  filter: blur(4px);
+}
+
+.service-image-step2 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  border-radius: 44px;
+}
+
+.service-card-step2.no-image .service-card-step2-wrapper {
+  height: auto;
+  min-height: 140px;
+}
+
+.service-card-step2.skeleton {
+  height: 292px;
+}
+
+.service-card-step2.skeleton .service-card-step2-wrapper {
+  background: linear-gradient(90deg, #EBEDF2 25%, #E0E3E9 50%, #EBEDF2 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  box-shadow:
+    inset 0 -4px 8px rgba(13, 34, 61, 0.04),
+    inset 0 6px 4px rgba(255, 255, 255, 0.32),
+    inset 0 1px 1px rgba(13, 34, 61, 0.04),
+    0 1px 1px rgba(13, 34, 61, 0.16),
+    0 4px 8px rgba(13, 34, 61, 0.08);
+}
+
+/* Initial Step - Service Category Selection */
+.initial-services-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.initial-service-card {
+  border: none;
+  border-radius: 44px;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #EBEDF2;
+  background: linear-gradient(180deg, #F5F7FA 0%, rgba(245, 247, 250, 0) 100%);
+  position: relative;
+  height: 280px;
+  min-height: 280px;
+  max-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-shadow: 
+    inset 0 -4px 8px rgba(13, 34, 61, 0.04),
+    inset 0 6px 4px rgba(255, 255, 255, 0.32),
+    inset 0 1px 1px rgba(13, 34, 61, 0.04),
+    0 1px 1px rgba(13, 34, 61, 0.16),
+    0 4px 8px rgba(13, 34, 61, 0.08);
+  overflow: hidden;
+}
+
+/* Плавный градиент снизу карточки */
+.initial-service-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(to bottom, transparent 0%, rgba(26, 35, 46, 0.06) 100%);
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 0 0 44px 44px;
+}
+
+.initial-service-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    inset 0 -4px 8px rgba(13, 34, 61, 0.04),
+    inset 0 6px 4px rgba(255, 255, 255, 0.32),
+    inset 0 1px 1px rgba(13, 34, 61, 0.04),
+    0 1px 1px rgba(13, 34, 61, 0.16),
+    0 8px 16px rgba(13, 34, 61, 0.12);
+}
+
+.initial-service-card.selected {
+  background: rgba(20, 72, 140, 0.05);
+  box-shadow: 
+    inset 0 -4px 8px rgba(13, 34, 61, 0.04),
+    inset 0 6px 4px rgba(255, 255, 255, 0.32),
+    inset 0 1px 1px rgba(13, 34, 61, 0.04),
+    0 1px 1px rgba(13, 34, 61, 0.16),
+    0 8px 16px rgba(20, 72, 140, 0.2);
+}
+
+.initial-service-content {
+  padding: 28px 28px 0;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: flex-start;
+  min-height: 0;
+  max-height: calc(280px - 140px);
+  overflow: hidden;
+  position: relative;
+  z-index: 2;
+}
+
+.initial-service-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1A232E;
+  margin: 0;
+  line-height: 22px;
+  letter-spacing: 0.15px;
+  text-align: left;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}
+
+.initial-service-image {
+  width: 100%;
+  height: 140px;
+  min-height: 140px;
+  max-height: 140px;
+  border-radius: 44px;
+  margin-top: auto;
+  align-self: stretch;
+  flex-shrink: 0;
+  flex-grow: 0;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  padding: 0;
+  z-index: 2;
+  box-shadow: 
+    inset 0 -1px 1px 0 rgba(13, 34, 61, 0.08),
+    0 -1px 1px 0 rgba(13, 34, 61, 0.08),
+    0 -4px 8px 0 rgba(13, 34, 61, 0.06),
+    0 -12px 32px 0 rgba(13, 34, 61, 0.08);
+}
+
+.initial-service-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  border-radius: 44px;
+}
+
+/* Фильтр баннер (затемнения по краям изображения) */
+.initial-service-image::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(to right, transparent 70%, rgba(0, 0, 0, 0.15) 100%), 
+    linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, transparent 30%);
+  pointer-events: none;
+  z-index: 2;
+  border-radius: 44px;
+  filter: blur(4px);
+}
+
+/* Убираем фильтр для IMG-2 (3D КЛКТ) */
+.initial-service-image.no-filter::after {
+  display: none;
+}
+
+/* Вопрос о направлении (шаг 1.5 для ЛОР) */
+.referral-options {
+  display: flex;
+  gap: 32px;
+  margin-top: 48px;
+  padding: 0 117px;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.radio-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.radio-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(24, 37, 61, 0.32);
+  margin-right: 16px;
+  position: relative;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.radio-option input[type="radio"]:checked + .radio-icon {
+  border-color: #14488C;
+  border-width: 6px;
+}
+
+.radio-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.15px;
+  color: #374252;
+}
+
+.radio-option:hover .radio-icon {
+  border-color: rgba(20, 72, 140, 0.6);
+}
+
+/* Карточка без изображения (консультация) */
+.initial-service-card.no-image {
+  justify-content: space-between;
+}
+
+.initial-service-card.no-image .initial-service-content {
+  padding: 28px 28px 0;
+  max-height: none;
+  flex: 0 0 auto;
+  display: block;
+}
+
+.initial-service-card.no-image .initial-service-title {
+  text-align: left;
+  -webkit-line-clamp: 4;
+}
+
+.initial-service-card.no-image .initial-service-image {
+  display: none;
+}
+
+.initial-service-arrow {
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
   background: rgba(200, 222, 250, 0.12);
   border: 1px solid rgba(20, 72, 140, 0.44);
-  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 28px 28px auto;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 3;
+}
+
+.initial-service-arrow svg {
+  width: 12px;
+  height: 12px;
+  color: rgba(20, 72, 140, 0.92);
+}
+
+.initial-service-card.no-image:hover .initial-service-arrow {
+  background: rgba(20, 72, 140, 0.92);
+  border-color: rgba(20, 72, 140, 0.92);
+}
+
+.initial-service-card.no-image:hover .initial-service-arrow svg {
+  color: rgba(200, 222, 250, 1);
+}
+
+.initial-service-card.skeleton {
+  height: 280px;
+  border-radius: 44px;
+  background: linear-gradient(90deg, #EBEDF2 25%, #E0E3E9 50%, #EBEDF2 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  box-shadow:
+    inset 0 -4px 8px rgba(13, 34, 61, 0.04),
+    inset 0 6px 4px rgba(255, 255, 255, 0.32),
+    inset 0 1px 1px rgba(13, 34, 61, 0.04),
+    0 1px 1px rgba(13, 34, 61, 0.16),
+    0 4px 8px rgba(13, 34, 61, 0.08);
+}
+
+.no-categories-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 20px;
+  color: #666666;
+  min-height: 300px;
+}
+
+.no-categories-message p {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 500;
+  color: #1A232E;
+}
+
+.no-categories-message small {
+  font-size: 14px;
+  color: #8690A3;
 }
 
 /* Step 2 - Branch and Time */
@@ -416,65 +978,128 @@
 
 /* Modal Footer */
 .modal-footer {
-  padding: 0;
-  background: transparent;
-  border-top: 1px solid rgba(22, 35, 61, 0.17);
-  display: flex;
-  align-items: center;
+  width: 1142px;
   height: 68px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 0;
+  border-top: 1px solid rgba(22, 35, 61, 0.17);
 }
 
 .modal-footer .btn {
+  height: 68px;
   flex: 1;
-  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 24px 0;
   border-radius: 0;
+  font-family: 'Montserrat', sans-serif;
   font-size: 13px;
   font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.54;
+  letter-spacing: -0.15px;
+  text-align: left;
   cursor: pointer;
   transition: all 0.2s ease;
   border: none;
-  height: 68px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: transparent;
-  color: #8690A3;
-  letter-spacing: -0.15px;
-  line-height: 20px;
-}
-
-.modal-footer .btn-primary {
   background: transparent;
   color: #1A232E;
 }
 
+.modal-footer .btn .text-btn-wrapper {
+  height: 20px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-footer .btn-secondary .text-btn-wrapper {
+  width: 61px;
+}
+
+.modal-footer .btn span {
+  height: 20px;
+  flex-shrink: 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.54;
+  letter-spacing: -0.15px;
+  text-align: left;
+  color: #1A232E;
+}
+
+.modal-footer .btn-secondary {
+  padding-left: 117px;
+  padding-right: 0;
+  color: #1A232E;
+}
+
+.modal-footer .btn-secondary:hover:not(:disabled) {
+  background: transparent;
+  color: #1A232E;
+}
+
+.modal-footer .btn-primary {
+  padding-left: 0;
+  padding-right: 117px;
+  justify-content: center;
+  align-items: flex-end;
+  background-color: rgba(200, 222, 250, 0.44);
+  color: #14488C;
+}
+
+.modal-footer .btn-primary .text-btn-wrapper {
+  width: auto;
+  min-width: 159px;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-footer .btn-primary span {
+  width: auto;
+  text-align: left;
+  color: #14488C;
+  white-space: nowrap;
+}
+
 .modal-footer .btn-primary:hover:not(:disabled) {
-  background: rgba(20, 72, 140, 0.05) !important;
+  background-color: rgba(200, 222, 250, 0.6);
+  color: #14488C;
 }
 
 .modal-footer .btn-primary:disabled {
-  background: transparent;
+  background-color: rgba(200, 222, 250, 0.2);
   color: #8690A3;
   cursor: not-allowed;
   transform: none;
 }
 
-.modal-footer .btn-secondary {
-  background: transparent;
-  color: #8690A3;
-  border: none;
-}
-
-.modal-footer .btn-secondary:hover {
-  background: rgba(20, 72, 140, 0.05) !important;
-  color: #1A232E !important;
-}
-
 .modal-footer .btn-divider {
   width: 1px;
   height: 68px;
+  align-self: stretch;
+  flex-shrink: 0;
   background: rgba(22, 35, 61, 0.17);
+}
+
+.modal-footer .btn svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
 }
 
 /* Loading States */
@@ -549,9 +1174,73 @@
 .step3-content {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2xl);
+  gap: 0;
 }
 
+.clinics-radio-list {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-top: 48px;
+}
+
+.clinic-radio-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  width: 100%;
+  max-width: 362px;
+}
+
+.clinic-radio-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.clinic-radio-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 18px;
+  border: 1px solid rgba(24, 37, 61, 0.32);
+  margin-right: 16px;
+  position: relative;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  background: transparent;
+}
+
+.clinic-radio-option .clinic-radio-input:checked + .clinic-radio-icon {
+  border-color: #14488C;
+  border-width: 6px;
+  background: transparent;
+}
+
+.clinic-radio-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.15px;
+  color: #374252;
+}
+
+.clinic-radio-option:hover .clinic-radio-icon {
+  border-color: rgba(20, 72, 140, 0.6);
+}
+
+.clinic-radio-option.skeleton {
+  height: 20px;
+  width: 362px;
+  background: linear-gradient(90deg, #EBEDF2 25%, #E0E3E9 50%, #EBEDF2 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 4px;
+}
+
+/* Legacy styles for backward compatibility */
 .clinics-section {
   display: flex;
   flex-direction: column;
@@ -565,7 +1254,6 @@
   gap: var(--spacing-md);
 }
 
-.clinic-card,
 .doctor-card {
   border: 2px solid var(--color-grey-200);
   border-radius: var(--radius-lg);
@@ -574,18 +1262,15 @@
   transition: var(--transition-fast);
 }
 
-.clinic-card:hover,
 .doctor-card:hover {
   border-color: var(--color-primary-300);
 }
 
-.clinic-card.selected,
 .doctor-card.selected {
   border-color: var(--color-primary-700);
   background: var(--color-primary-50);
 }
 
-.clinic-name,
 .doctor-name {
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
@@ -593,28 +1278,311 @@
   margin-bottom: var(--spacing-xs);
 }
 
-.clinic-address,
 .doctor-specialty {
+  font-size: var(--font-size-sm);
+  color: var(--color-grey-600);
+}
+
+.clinic-address {
   font-size: var(--font-size-sm);
   color: var(--color-grey-600);
 }
 
 /* Step 4 - Date and Time */
 .step4-content {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: var(--spacing-2xl);
-}
-
-.date-section,
-.time-section {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: 60px;
+  margin-top: 48px;
+}
+
+.date-time-field {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.date-time-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 14px;
+  letter-spacing: 0.15px;
+  color: #1A232E;
+}
+
+.date-dropdown-wrapper,
+.time-dropdown-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 438px;
+}
+
+.date-dropdown-input {
+  width: 100%;
+  height: 36px;
+  border: 1px solid rgba(24, 37, 61, 0.32);
+  border-radius: 18px;
+  padding: 8px 16px;
+  padding-right: 40px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.15px;
+  color: #1A232E;
+  background: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.date-dropdown-input:hover {
+  border-color: rgba(20, 72, 140, 0.6);
+}
+
+.date-dropdown-input:focus {
+  outline: none;
+  border-color: #14488C;
+}
+
+.date-dropdown-input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 12px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  opacity: 1;
+  z-index: 1;
+}
+
+.date-dropdown-input::-webkit-datetime-edit {
+  color: #8690A3;
+}
+
+.date-dropdown-input::-webkit-datetime-edit-text {
+  color: #8690A3;
+  padding: 0 2px;
+}
+
+.date-dropdown-input::-webkit-datetime-edit-month-field,
+.date-dropdown-input::-webkit-datetime-edit-day-field,
+.date-dropdown-input::-webkit-datetime-edit-year-field {
+  color: #8690A3;
+  padding: 0;
+}
+
+.date-dropdown-input:valid::-webkit-datetime-edit,
+.date-dropdown-input:valid::-webkit-datetime-edit-text,
+.date-dropdown-input:valid::-webkit-datetime-edit-month-field,
+.date-dropdown-input:valid::-webkit-datetime-edit-day-field,
+.date-dropdown-input:valid::-webkit-datetime-edit-year-field {
+  color: #1A232E;
+}
+
+.date-dropdown-input::-moz-placeholder {
+  color: #8690A3;
+  opacity: 1;
+}
+
+.date-dropdown-input::placeholder {
+  color: #8690A3;
+  opacity: 1;
+}
+
+.time-dropdown {
+  width: 100%;
+  height: 36px;
+  border: 1px solid rgba(24, 37, 61, 0.32);
+  border-radius: 18px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  background: #FFFFFF;
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.date-dropdown:hover,
+.time-dropdown:hover:not(.disabled):not(.loading) {
+  border-color: rgba(20, 72, 140, 0.6);
+}
+
+/* Custom Time Dropdown */
+.custom-time-dropdown {
+  position: relative;
+  width: 100%;
+  max-width: 438px;
+  z-index: 1;
+}
+
+.custom-time-dropdown.open {
+  z-index: 9999;
+}
+
+.custom-time-dropdown-trigger {
+  width: 100%;
+  height: 36px;
+  border: 1px solid rgba(24, 37, 61, 0.32);
+  border-radius: 18px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  background: #FFFFFF;
+  transition: all 0.2s ease;
+}
+
+.custom-time-dropdown-trigger:hover {
+  border-color: rgba(20, 72, 140, 0.6);
+}
+
+.custom-time-dropdown.open .custom-time-dropdown-trigger {
+  border-color: rgba(24, 37, 61, 0.32);
+  border-radius: 18px 18px 0 0;
+}
+
+.custom-time-dropdown-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.15px;
+  color: #8690A3;
+}
+
+.custom-time-dropdown-text.has-value {
+  color: #1A232E;
+}
+
+.custom-time-dropdown-arrow {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.custom-time-dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.custom-time-dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  border: 1px solid rgba(24, 37, 61, 0.32);
+  border-top: none;
+  border-radius: 0 0 18px 18px;
+  max-height: 180px;
+  overflow-y: auto;
+  z-index: 9999;
+  box-shadow: 0 4px 8px rgba(13, 34, 61, 0.08);
+}
+
+.custom-time-dropdown-item {
+  height: 32px;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  background: transparent;
+}
+
+.custom-time-dropdown-item:hover {
+  background: rgba(200, 222, 250, 0.12);
+}
+
+.custom-time-dropdown-item.selected {
+  background: rgba(200, 222, 250, 0.24);
+}
+
+.custom-time-dropdown-item-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  letter-spacing: -0.15px;
+  color: #485366;
+}
+
+.custom-time-dropdown-item-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.custom-time-dropdown-divider {
+  height: 1px;
+  background: rgba(20, 33, 61, 0.09);
+  margin: 0;
+}
+
+.date-dropdown-text,
+.time-dropdown-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.15px;
+  color: #8690A3;
+}
+
+.date-dropdown.has-value .date-dropdown-text,
+.time-dropdown.has-value .time-dropdown-text {
+  color: #1A232E;
+}
+
+.date-dropdown-icon,
+.time-dropdown-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.time-dropdown.disabled,
+.time-dropdown.loading {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.time-dropdown-select {
+  position: relative;
+  width: 100%;
+}
+
+.time-dropdown-select-element {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 36px;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.time-dropdown-select .time-dropdown {
+  pointer-events: none;
+}
+
+.time-dropdown-select-element:focus + .time-dropdown {
+  border-color: #14488C;
+  outline: none;
 }
 
 /* Form Styles */
-.form-section {
+.form-section:not(.step5-form) {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
@@ -685,6 +1653,17 @@
   margin-top: var(--spacing-sm);
 }
 
+/* Стили для карточек услуг в шаге 2 - используем те же стили, что и для категорий */
+.initial-service-card .initial-service-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.initial-service-card .initial-service-title {
+  margin-bottom: 0;
+}
+
 /* Success Modal */
 .success-modal {
   max-width: 600px;
@@ -711,6 +1690,17 @@
 @media (max-width: 480px) {
   .modal-title {
     font-size: 18px;
+    padding: 0 20px;
+  }
+  
+  .modal-body {
+    padding: 32px 20px;
+  }
+
+  .modal-content {
+    height: auto;
+    min-height: 500px;
+    max-height: 90vh;
   }
   
   .appointment-title {
@@ -719,6 +1709,20 @@
   
   .time-slots {
     grid-template-columns: 1fr;
+  }
+
+  .step4-content {
+    gap: 40px;
+    margin-top: 32px;
+  }
+
+  .date-dropdown-wrapper,
+  .time-dropdown-wrapper {
+    max-width: 100%;
+  }
+
+  .date-time-label {
+    font-size: 13px;
   }
   
   .service-card {
@@ -736,6 +1740,131 @@
 
   .services-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .initial-service-card .service-description {
+    font-size: 11px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+  }
+
+  .initial-service-card .service-price {
+    font-size: 14px;
+    padding-top: 6px;
+  }
+
+  .initial-services-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .services-grid-step2 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .service-card-step2 {
+    height: 240px;
+  }
+
+  .service-card-step2-wrapper {
+    width: 100%;
+    max-width: 212px;
+    height: 220px;
+    margin-top: 10px;
+  }
+
+  .service-content-step2 {
+    padding: 20px;
+  }
+
+  .service-title-step2 {
+    font-size: 13px;
+    line-height: 18px;
+    -webkit-line-clamp: 3;
+  }
+
+  .service-image-step2 {
+    height: 100px;
+    min-height: 100px;
+    max-height: 100px;
+  }
+
+  .step2-subtitle {
+    font-size: 14px;
+    line-height: 20px;
+    margin-top: 12px;
+  }
+
+  .clinics-radio-list {
+    gap: 24px;
+    margin-top: 32px;
+  }
+
+  .clinic-radio-option {
+    max-width: 100%;
+  }
+
+  .clinic-radio-text {
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  .clinic-radio-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 12px;
+  }
+
+  .clinic-radio-option .clinic-radio-input:checked + .clinic-radio-icon {
+    border-width: 5px;
+  }
+
+  .initial-service-card {
+    height: 220px;
+    min-height: 220px;
+    max-height: 220px;
+  }
+
+  .initial-service-content {
+    padding: 20px 20px 0;
+    max-height: calc(220px - 100px);
+  }
+
+  .initial-service-title {
+    font-size: 13px;
+    line-height: 18px;
+    -webkit-line-clamp: 4;
+  }
+
+  .initial-service-image {
+    height: 100px;
+    min-height: 100px;
+    max-height: 100px;
+  }
+
+  .initial-service-image img {
+    object-fit: cover;
+  }
+
+  .initial-service-card.no-image .initial-service-content {
+    padding: 20px 20px 0;
+  }
+
+  .initial-service-card.no-image .initial-service-title {
+    -webkit-line-clamp: 4;
+  }
+
+  .initial-service-arrow {
+    width: 28px;
+    height: 28px;
+    border-radius: 14px;
+    margin: 0 20px 20px auto;
+  }
+
+  .initial-service-arrow svg {
+    width: 10px;
+    height: 10px;
   }
 }
 
@@ -840,5 +1969,273 @@
   }
   100% {
     background-position: -200% 0;
+  }
+}
+
+/* Step 5 - Contact Information Form */
+.appointment-step.step5 {
+  width: 100%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 44px;
+  padding: 48px 117px;
+}
+
+.step5-title {
+  height: 28px;
+  width: 268px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.4;
+  letter-spacing: 0.15px;
+  text-align: left;
+  color: #1A232E;
+  margin: 0;
+  padding: 0;
+}
+
+.step5-form {
+  width: 100%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 32px;
+  padding: 0;
+}
+
+.step5-form-row {
+  width: 100%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 0;
+}
+
+.step5-form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 16px;
+  position: relative;
+  min-width: 0;
+  padding: 0;
+}
+
+.step5-date-group {
+  position: relative;
+}
+
+.step5-input {
+  height: 36px;
+  width: 100%;
+  flex-shrink: 0;
+  border-radius: 18px;
+  border: solid 1px rgba(24, 37, 61, 0.32);
+  padding: 8px 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.54;
+  letter-spacing: -0.15px;
+  text-align: left;
+  color: #1A232E;
+  background: #FFFFFF;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.step5-input::placeholder {
+  color: #8690A3;
+  opacity: 1;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.54;
+  letter-spacing: -0.15px;
+}
+
+.step5-input:hover {
+  border-color: rgba(20, 72, 140, 0.6);
+}
+
+.step5-input:focus {
+  outline: none;
+  border-color: #14488C;
+}
+
+.step5-input.error {
+  border-color: #EF4444;
+}
+
+.step5-date-input {
+  padding-right: 40px;
+}
+
+.step5-date-input.empty::-webkit-datetime-edit {
+  color: transparent;
+}
+
+.step5-date-input.empty::-webkit-datetime-edit-text {
+  color: transparent;
+  padding: 0 2px;
+}
+
+.step5-date-input.empty::-webkit-datetime-edit-month-field,
+.step5-date-input.empty::-webkit-datetime-edit-day-field,
+.step5-date-input.empty::-webkit-datetime-edit-year-field {
+  color: transparent;
+  padding: 0;
+}
+
+.step5-date-input:not(.empty)::-webkit-datetime-edit {
+  color: #1A232E;
+}
+
+.step5-date-input:not(.empty)::-webkit-datetime-edit-text {
+  color: #1A232E;
+  padding: 0 2px;
+}
+
+.step5-date-input:not(.empty)::-webkit-datetime-edit-month-field,
+.step5-date-input:not(.empty)::-webkit-datetime-edit-day-field,
+.step5-date-input:not(.empty)::-webkit-datetime-edit-year-field {
+  color: #1A232E;
+  padding: 0;
+}
+
+.step5-date-input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 12px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  opacity: 1;
+  z-index: 2;
+}
+
+.step5-date-placeholder {
+  position: absolute;
+  top: 8px;
+  left: 16px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.54;
+  letter-spacing: -0.15px;
+  text-align: left;
+  color: #8690A3;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.step5-divider {
+  width: 908px;
+  height: 1px;
+  flex-shrink: 0;
+  background: rgba(22, 35, 61, 0.17);
+  margin: 0;
+  padding: 0;
+}
+
+.step5-checkbox-wrapper {
+  width: 643px;
+  height: 20px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 16px;
+  padding: 0;
+  margin: 0;
+}
+
+.step5-checkbox {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border: 1px solid rgba(24, 37, 61, 0.32);
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.step5-checkbox:checked {
+  background: #14488C;
+  border-color: #14488C;
+}
+
+.step5-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 6L5 9L10 3' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.step5-checkbox-label {
+  width: 607px;
+  height: 20px;
+  flex-shrink: 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.54;
+  letter-spacing: -0.15px;
+  text-align: center;
+  color: #374252;
+  cursor: pointer;
+  user-select: none;
+}
+
+.error-message {
+  color: #EF4444;
+  font-size: 12px;
+  margin-top: 4px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+@media (max-width: 480px) {
+  .step5-form-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .step5-input {
+    width: 100%;
   }
 }

@@ -13,3 +13,20 @@
   color: #EF4444;
 }
 
+/* Success Screen Styles */
+.consultation-success-content {
+  width: 100%;
+  padding: 48px 117px;
+}
+
+.consultation-success-subtitle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 28px;
+  letter-spacing: 0.15px;
+  color: #1A232E;
+  margin: 0;
+  text-align: left;
+}
+

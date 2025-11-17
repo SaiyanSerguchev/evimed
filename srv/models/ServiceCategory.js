@@ -50,13 +50,14 @@ class ServiceCategory {
   }
 
   static async create(categoryData) {
-    const { name, description, order, parentId } = categoryData;
+    const { name, description, order, parentId, imageUrl } = categoryData;
     return await prisma.serviceCategory.create({
       data: {
         name,
         description,
         order: parseInt(order) || 0,
-        parentId: parentId ? parseInt(parentId) : null
+        parentId: parentId ? parseInt(parentId) : null,
+        imageUrl: imageUrl || null
       }
     });
   }
@@ -145,6 +146,10 @@ class ServiceCategory {
         });
 
         if (existingCategory) {
+          // Сохраняем imageUrl, если он уже существует
+          if (existingCategory.imageUrl) {
+            categoryData.imageUrl = existingCategory.imageUrl;
+          }
           await prisma.serviceCategory.update({
             where: { id: existingCategory.id },
             data: categoryData

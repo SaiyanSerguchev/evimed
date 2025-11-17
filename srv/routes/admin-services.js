@@ -17,7 +17,7 @@ router.get('/', adminAuth, async (req, res) => {
 // Create a new service
 router.post('/', adminAuth, async (req, res) => {
   try {
-    const { name, description, price, duration, preparation, categoryId, order } = req.body;
+    const { name, description, price, duration, preparation, categoryId, order, imageUrl } = req.body;
     
     if (!name || !price || !categoryId) {
       return res.status(400).json({ error: 'Name, price and categoryId are required' });
@@ -30,7 +30,8 @@ router.post('/', adminAuth, async (req, res) => {
       duration, 
       preparation, 
       categoryId, 
-      order 
+      order,
+      imageUrl
     });
     res.status(201).json(service);
   } catch (error) {
@@ -42,7 +43,7 @@ router.post('/', adminAuth, async (req, res) => {
 // Update a service
 router.put('/:id', adminAuth, async (req, res) => {
   try {
-    const { name, description, price, duration, preparation, categoryId, order, isActive } = req.body;
+    const { name, description, price, duration, preparation, categoryId, order, isActive, imageUrl } = req.body;
     const updateData = {};
     
     if (name !== undefined) updateData.name = name;
@@ -53,6 +54,7 @@ router.put('/:id', adminAuth, async (req, res) => {
     if (categoryId !== undefined) updateData.categoryId = categoryId;
     if (order !== undefined) updateData.order = order;
     if (isActive !== undefined) updateData.isActive = isActive;
+    if (imageUrl !== undefined) updateData.imageUrl = imageUrl;
 
     const service = await Service.update(req.params.id, updateData);
     res.json(service);

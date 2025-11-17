@@ -62,6 +62,7 @@
   background: #f8f9fa;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
+  overflow: hidden;
 }
 
 .add-category-form,
@@ -71,6 +72,8 @@
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   border: 1px solid #e0e0e0;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .add-category-form h3,
@@ -85,7 +88,31 @@
 .add-service-form form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.add-category-form .form-group,
+.add-service-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.add-category-form .form-group.full-width,
+.add-service-form .form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.add-category-form .form-group label,
+.add-service-form .form-group label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #404040;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .add-category-form input,
@@ -100,6 +127,7 @@
   background: #ffffff;
   color: #1a1a1a;
   transition: border-color 0.3s;
+  font-family: inherit;
 }
 
 .add-category-form input:focus,
@@ -128,6 +156,7 @@
   font-size: 12px;
   margin-top: 10px;
   font-weight: 500;
+  align-self: flex-end;
 }
 
 .add-category-form button:hover,
@@ -212,29 +241,50 @@
   background: #404040;
   color: #ffffff;
   border: none;
-  padding: 4px 8px;
+  padding: 6px 8px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
 }
 
 .edit-btn:hover {
   background: #1a1a1a;
 }
 
+.edit-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
 .delete-btn {
   background: #dc3545;
   color: white;
   border: none;
-  padding: 4px 8px;
-  border-radius: 3px;
+  padding: 6px 8px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
 }
 
 .delete-btn:hover {
   background: #c82333;
+}
+
+.delete-btn svg {
+  width: 16px;
+  height: 16px;
 }
 
 .edit-form {
@@ -244,10 +294,148 @@
 }
 
 .edit-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.service-edit-form {
+  padding: 20px;
+  background: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+}
+
+.service-edit-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-section {
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 15px;
   align-items: start;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.form-section-title {
+  margin: 0 0 15px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0;
+  grid-column: 1 / -1;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+  min-width: 0;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #404040;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  padding: 8px 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 12px;
+  background: #ffffff;
+  color: #1a1a1a;
+  transition: border-color 0.3s;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #404040;
+}
+
+.form-group textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+
+.image-preview-container {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.image-preview-container label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: #404040;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.image-preview {
+  width: 100%;
+  max-width: 100%;
+  height: 200px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.form-group input[type="file"] {
+  padding: 6px;
+  border: 2px dashed #e0e0e0;
+  border-radius: 6px;
+  background: #f8f9fa;
+  cursor: pointer;
+  font-size: 11px;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.form-group input[type="file"]:hover {
+  border-color: #404040;
+  background: #ffffff;
+}
+
+.form-group input[type="file"]:focus {
+  outline: none;
+  border-color: #404040;
+  background: #ffffff;
 }
 
 .edit-form input,
@@ -270,16 +458,15 @@
 }
 
 .edit-form textarea {
-  grid-column: 1 / -1;
   min-height: 60px;
   resize: vertical;
 }
 
 .edit-actions {
-  grid-column: 1 / -1;
   display: flex;
   gap: 10px;
   margin-top: 10px;
+  justify-content: flex-end;
 }
 
 .save-btn {
@@ -348,7 +535,7 @@
 .service-name {
   font-weight: 500;
   color: #1a1a1a;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .service-name.inactive {
@@ -359,12 +546,12 @@
 .service-price {
   color: #1a1a1a;
   font-weight: 600;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .service-duration {
   color: #666666;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .service-actions {
@@ -374,8 +561,20 @@
 
 .service-actions .edit-btn,
 .service-actions .delete-btn {
-  padding: 3px 6px;
-  font-size: 9px;
+  padding: 6px 8px;
+  font-size: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+}
+
+.service-actions .edit-btn svg,
+.service-actions .delete-btn svg {
+  width: 16px;
+  height: 16px;
 }
 
 .admin-services-tree-loading {

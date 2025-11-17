@@ -37,7 +37,7 @@ class Service {
   }
 
   static async create(serviceData) {
-    const { name, description, price, duration, preparation, categoryId, order } = serviceData;
+    const { name, description, price, duration, preparation, categoryId, order, imageUrl } = serviceData;
     
     return await prisma.service.create({
       data: {
@@ -47,7 +47,8 @@ class Service {
         duration,
         preparation,
         categoryId: parseInt(categoryId),
-        order: parseInt(order) || 0
+        order: parseInt(order) || 0,
+        imageUrl: imageUrl || null
       },
       include: {
         category: true
@@ -186,6 +187,10 @@ class Service {
         });
 
         if (existingService) {
+          // Сохраняем imageUrl, если он уже существует
+          if (existingService.imageUrl) {
+            serviceData.imageUrl = existingService.imageUrl;
+          }
           await prisma.service.update({
             where: { id: existingService.id },
             data: serviceData

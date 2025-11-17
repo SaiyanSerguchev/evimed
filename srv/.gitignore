@@ -110,3 +110,6 @@ temp/
 
 # Docs 
 docs/
+
+# Uploaded files
+public/uploads/
