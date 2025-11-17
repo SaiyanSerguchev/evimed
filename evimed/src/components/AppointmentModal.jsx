@@ -55,6 +55,7 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
   
   // Состояние модального окна консультации
   const [showConsultationModal, setShowConsultationModal] = useState(false);
+  const [consultationComment, setConsultationComment] = useState('');
   
   // Состояние ошибок
   const [errors, setErrors] = useState({});
@@ -282,6 +283,8 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
     else if (currentStep === 1.5) {
       // Если пользователь выбрал "Нет" (нет направления), открываем консультацию
       if (hasReferral === false) {
+        const comment = `У меня нет направления от врача.${selectedService ? ` Интересует услуга: ${selectedService.name}${selectedService.description ? `. ${selectedService.description}` : ''}${selectedService.price ? `. Стоимость: ${selectedService.price}₽` : ''}` : ''}`;
+        setConsultationComment(comment);
         setShowConsultationModal(true);
         return;
       }
@@ -1164,11 +1167,6 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
     <>
       {isOpen && !showConsultationModal && (
       <div className="modal-overlay" onClick={handleClose}>
-        <button className="modal-close" onClick={handleClose} disabled={isLoading}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
         <div className="modal-content" onClick={(e) => e.stopPropagation()}>
           <div className="modal-header">
             <h1 className="modal-title">Записаться на снимок</h1>
@@ -1311,7 +1309,9 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
         isOpen={showConsultationModal}
         onClose={() => {
           setShowConsultationModal(false);
+          setConsultationComment('');
         }}
+        initialComment={consultationComment}
       />
     </>
   );

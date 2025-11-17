@@ -4,13 +4,14 @@ import './AppointmentModal.css';
 import './ConsultationModal.css';
 import apiClient from '../services/api';
 
-const ConsultationModal = ({ isOpen, onClose }) => {
+const ConsultationModal = ({ isOpen, onClose, initialComment = '' }) => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     thirdName: '',
     phone: '',
     birthDate: '',
+    comment: '',
     privacyConsent: false
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -97,6 +98,16 @@ const ConsultationModal = ({ isOpen, onClose }) => {
     };
   }, [isOpen]);
 
+  // Установка начального комментария при открытии
+  useEffect(() => {
+    if (isOpen && initialComment) {
+      setFormData(prev => ({
+        ...prev,
+        comment: initialComment
+      }));
+    }
+  }, [isOpen, initialComment]);
+
   // Очистка формы при закрытии
   useEffect(() => {
     if (!isOpen) {
@@ -106,6 +117,7 @@ const ConsultationModal = ({ isOpen, onClose }) => {
         thirdName: '',
         phone: '',
         birthDate: '',
+        comment: '',
         privacyConsent: false
       });
       setErrors({});
@@ -185,7 +197,8 @@ const ConsultationModal = ({ isOpen, onClose }) => {
         lastName: formData.lastName,
         thirdName: formData.thirdName || undefined,
         phone: formData.phone,
-        birthDate: formData.birthDate || undefined
+        birthDate: formData.birthDate || undefined,
+        comment: formData.comment || undefined
       });
 
       // Показываем экран успеха
@@ -332,6 +345,20 @@ const ConsultationModal = ({ isOpen, onClose }) => {
                   )}
                   {errors.birthDate && <span className="error-message">{errors.birthDate}</span>}
                 </div>
+              </div>
+
+              <div className="step5-form-group step5-comment-group">
+                <textarea
+                  id="comment"
+                  name="comment"
+                  value={formData.comment}
+                  onChange={handleChange}
+                  placeholder="Комментарий (необязательно)"
+                  className={`step5-input step5-textarea ${errors.comment ? 'error' : ''}`}
+                  disabled={isLoading}
+                  rows={3}
+                />
+                {errors.comment && <span className="error-message">{errors.comment}</span>}
               </div>
 
               <div className="step5-divider"></div>

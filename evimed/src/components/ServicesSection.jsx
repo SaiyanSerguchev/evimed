@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import AppointmentModal from './AppointmentModal';
+import ConsultationModal from './ConsultationModal';
 import './ServicesSection.css';
 
 const ServicesSection = () => {
@@ -17,6 +18,8 @@ const ServicesSection = () => {
   // Modal state
   const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
   const [selectedServiceForAppointment, setSelectedServiceForAppointment] = useState(null);
+  const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false);
+  const [consultationComment, setConsultationComment] = useState('');
   
   // Show all state
   const [showAllServices, setShowAllServices] = useState(false);
@@ -259,11 +262,32 @@ const ServicesSection = () => {
     return categoryName.toUpperCase().includes('ЛОР');
   };
 
+  // Проверка, является ли категория "Дополнительные услуги"
+  const isAdditionalServicesCategory = (categoryName) => {
+    if (!categoryName) return false;
+    return categoryName.toUpperCase().includes('ДОПОЛНИТЕЛЬН');
+  };
+
   // Обработчики для модального окна записи
   const handleOpenAppointmentModal = (service = null) => {
+    const currentCategory = categories[activeTab];
+    
+    // Если это категория "Дополнительные услуги", открываем ConsultationModal
+    if (isAdditionalServicesCategory(currentCategory?.name)) {
+      if (service) {
+        // Формируем комментарий с информацией о выбранной услуге
+        const comment = `Меня интересует услуга: ${service.name}${service.description ? `. ${service.description}` : ''}${service.price ? `. Стоимость: ${service.price}₽` : ''}`;
+        setConsultationComment(comment);
+      } else {
+        setConsultationComment('Меня интересуют дополнительные услуги');
+      }
+      setIsConsultationModalOpen(true);
+      return;
+    }
+    
+    // Для остальных категорий открываем AppointmentModal
     // Если есть услуга, добавляем к ней информацию о категории
     if (service) {
-      const currentCategory = categories[activeTab];
       const enrichedService = {
         ...service,
         categoryId: currentCategory?.id,
@@ -461,6 +485,16 @@ const ServicesSection = () => {
         isOpen={isAppointmentModalOpen}
         onClose={handleCloseAppointmentModal}
         preselectedService={selectedServiceForAppointment}
+      />
+
+      {/* Модальное окно консультации */}
+      <ConsultationModal
+        isOpen={isConsultationModalOpen}
+        onClose={() => {
+          setIsConsultationModalOpen(false);
+          setConsultationComment('');
+        }}
+        initialComment={consultationComment}
       />
     </section>
   );
