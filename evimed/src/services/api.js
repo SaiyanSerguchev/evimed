@@ -4,16 +4,8 @@ import axios from 'axios';
 class ApiClient {
   constructor() {
     // Определяем базовый URL API
-    const getApiUrl = () => {
-      // Проверяем есть ли переменная окружения
-      if (typeof process !== 'undefined' && process.env && process.env.REACT_APP_API_URL) {
-        return process.env.REACT_APP_API_URL;
-      }
-      // Use relative path - nginx will proxy to backend
-      return '/api';
-    };
-    
-    this.baseURL = getApiUrl();
+    // Webpack DefinePlugin заменит process.env.REACT_APP_API_URL на строку во время сборки
+    this.baseURL = process.env.REACT_APP_API_URL || '/api';
     
     this.client = axios.create({
       baseURL: this.baseURL,

@@ -778,10 +778,13 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
     // Если у категории есть изображение в БД, используем его
     if (category.imageUrl) {
       const getServerBaseUrl = () => {
-        if (typeof process !== 'undefined' && process.env && process.env.REACT_APP_API_URL) {
-          return process.env.REACT_APP_API_URL.replace('/api', '');
+        const apiUrl = process.env.REACT_APP_API_URL || '/api';
+        // Если это относительный путь, возвращаем пустую строку (для nginx proxy)
+        if (apiUrl.startsWith('/')) {
+          return '';
         }
-        return 'http://localhost:5000';
+        // Если это полный URL, убираем /api
+        return apiUrl.replace('/api', '');
       };
       return `${getServerBaseUrl()}${category.imageUrl}`;
     }
@@ -961,10 +964,13 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
         
         // Определяем базовый URL сервера
         const getServerBaseUrl = () => {
-          if (typeof process !== 'undefined' && process.env && process.env.REACT_APP_API_URL) {
-            return process.env.REACT_APP_API_URL.replace('/api', '');
+          const apiUrl = process.env.REACT_APP_API_URL || '/api';
+          // Если это относительный путь, возвращаем пустую строку (для nginx proxy)
+          if (apiUrl.startsWith('/')) {
+            return '';
           }
-          return 'http://localhost:5000';
+          // Если это полный URL, убираем /api
+          return apiUrl.replace('/api', '');
         };
         return `${getServerBaseUrl()}${service.imageUrl}`;
       }
