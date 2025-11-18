@@ -1,8 +1,13 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
+const webpack = require('webpack');
 
-module.exports = {
+module.exports = (env, argv) => {
+  // Get REACT_APP_API_URL from environment or use default
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+  
+  return {
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -46,6 +51,9 @@ module.exports = {
       silent: true,
       defaults: false
     }),
+    new webpack.DefinePlugin({
+      'process.env.REACT_APP_API_URL': JSON.stringify(apiUrl),
+    }),
   ],
   devServer: {
     static: {
@@ -78,5 +86,6 @@ module.exports = {
   },
   stats: 'errors-warnings',
   mode: 'development',
+  };
 };
 
