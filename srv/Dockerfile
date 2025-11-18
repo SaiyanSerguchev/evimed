@@ -13,8 +13,11 @@ COPY prisma ./prisma/
 # Install dependencies
 RUN npm ci --no-audit --no-fund
 
+# Fix permissions for node_modules/.bin
+RUN chmod -R +x node_modules/.bin || true
+
 # Generate Prisma Client
-RUN npx prisma generate
+RUN node node_modules/prisma/build/index.js generate
 
 # Copy application code
 COPY . .
