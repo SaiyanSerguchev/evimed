@@ -9,6 +9,8 @@ ENV REACT_APP_API_URL=$REACT_APP_API_URL
 COPY package*.json ./
 RUN npm ci --no-audit --no-fund
 COPY . .
+# Debug: show environment variable
+RUN echo "REACT_APP_API_URL=$REACT_APP_API_URL"
 RUN npm run build
 
 # Stage 2: Serve with Nginx

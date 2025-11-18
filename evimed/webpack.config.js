@@ -7,6 +7,10 @@ module.exports = (env, argv) => {
   // Get REACT_APP_API_URL from environment or use relative path (nginx proxy)
   const apiUrl = process.env.REACT_APP_API_URL || '/api';
   
+  // Debug output
+  console.log('Building with REACT_APP_API_URL:', apiUrl);
+  console.log('process.env.REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
+  
   return {
   entry: './src/index.js',
   output: {
@@ -86,7 +90,7 @@ module.exports = (env, argv) => {
     },
   },
   stats: 'errors-warnings',
-  mode: 'development',
+  mode: argv.mode || 'production',
   };
 };
 
