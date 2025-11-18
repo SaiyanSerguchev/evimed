@@ -8,7 +8,7 @@ import Logo_card4 from '../assets/images/advantages/Logo_card4.svg';
 const AdvantagesSection = () => {
   const [advantages, setAdvantages] = useState([]);
 
-  const API_BASE = 'http://localhost:5000/api';
+  const API_BASE = process.env.REACT_APP_API_URL || '/api';
 
   useEffect(() => {
     loadAdvantages();
