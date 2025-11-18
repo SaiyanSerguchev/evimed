@@ -9,8 +9,8 @@ class ApiClient {
       if (typeof process !== 'undefined' && process.env && process.env.REACT_APP_API_URL) {
         return process.env.REACT_APP_API_URL;
       }
-      // Fallback на localhost
-      return 'http://localhost:5000/api';
+      // Use relative path - nginx will proxy to backend
+      return '/api';
     };
     
     this.baseURL = getApiUrl();

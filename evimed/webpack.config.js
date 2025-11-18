@@ -4,8 +4,8 @@ const Dotenv = require('dotenv-webpack');
 const webpack = require('webpack');
 
 module.exports = (env, argv) => {
-  // Get REACT_APP_API_URL from environment or use default
-  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+  // Get REACT_APP_API_URL from environment or use relative path (nginx proxy)
+  const apiUrl = process.env.REACT_APP_API_URL || '/api';
   
   return {
   entry: './src/index.js',
