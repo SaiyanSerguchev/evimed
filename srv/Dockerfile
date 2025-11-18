@@ -22,6 +22,9 @@ RUN node node_modules/prisma/build/index.js generate
 # Copy application code
 COPY . .
 
+# Remove .env file if it exists (use environment variables from docker-compose instead)
+RUN rm -f .env .env.local .env.*.local || true
+
 # Create uploads directory
 RUN mkdir -p public/uploads/categories public/uploads/services
 
