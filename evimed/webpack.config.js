@@ -51,8 +51,9 @@ module.exports = (env, argv) => {
       silent: true,
       defaults: false
     }),
+    // DefinePlugin должен быть последним, чтобы перезаписать значения из .env
     new webpack.DefinePlugin({
-      'process.env.REACT_APP_API_URL': JSON.stringify(apiUrl),
+      'process.env.REACT_APP_API_URL': JSON.stringify(process.env.REACT_APP_API_URL || apiUrl),
     }),
   ],
   devServer: {
