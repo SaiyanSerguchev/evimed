@@ -8,7 +8,7 @@ module.exports = (env, argv) => {
   const apiUrl = process.env.REACT_APP_API_URL || '/api';
   
   // Debug output
-  console.log('Building with REACT_APP_API_URL:', apiUrl);
+  console.log('Building with REACT_APP_API_URL:', process.env.REACT_APP_API_URL || '/api');
   console.log('process.env.REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
   
   return {
@@ -57,7 +57,7 @@ module.exports = (env, argv) => {
     }),
     // DefinePlugin должен быть последним, чтобы перезаписать значения из .env
     new webpack.DefinePlugin({
-      'process.env.REACT_APP_API_URL': JSON.stringify(process.env.REACT_APP_API_URL || apiUrl),
+      'process.env.REACT_APP_API_URL': JSON.stringify(process.env.REACT_APP_API_URL || '/api'),
     }),
   ],
   devServer: {
