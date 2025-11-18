@@ -74,11 +74,11 @@ services:
     build:
       context: ./evimed
       dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:5000/api}
     container_name: evimed-frontend
     ports:
       - "${FRONTEND_PORT:-8080}:80"
-    environment:
-      REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:5000/api}
     depends_on:
       - backend
     networks:

@@ -1,6 +1,11 @@
 # Stage 1: Build the React app
 FROM node:18-alpine AS builder
 WORKDIR /app
+
+# Accept build argument for API URL
+ARG REACT_APP_API_URL=http://localhost:5000/api
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+
 COPY package*.json ./
 RUN npm ci --no-audit --no-fund
 COPY . .
