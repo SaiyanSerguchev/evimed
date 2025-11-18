@@ -10,8 +10,8 @@ RUN apk add --no-cache openssl
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Install dependencies
-RUN npm ci --no-audit --no-fund
+# Install dependencies (using npm install to update lock file if needed)
+RUN npm install --no-audit --no-fund
 
 # Fix permissions for node_modules/.bin
 RUN chmod -R +x node_modules/.bin || true
