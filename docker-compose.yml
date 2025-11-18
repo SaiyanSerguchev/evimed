@@ -29,7 +29,11 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV:-production}
       PORT: 5000
-      DATABASE_URL: "postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-postgres}@postgres:5432/${DB_NAME:-evimed}?schema=public"
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DB_NAME: ${DB_NAME:-evimed}
+      DB_HOST: postgres
+      DB_PORT: 5432
       JWT_SECRET: ${JWT_SECRET:-your_super_secret_jwt_key_here_make_it_long_and_random}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
@@ -59,12 +63,6 @@ services:
     networks:
       - evimed-network
     restart: unless-stopped
-    command: >
-      sh -c "
-        npm run db:generate &&
-        npm run db:deploy &&
-        npm start
-      "
 
   # Frontend React App
   frontend:

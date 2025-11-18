@@ -28,6 +28,10 @@ RUN rm -f .env .env.local .env.*.local || true
 # Create uploads directory
 RUN mkdir -p public/uploads/categories public/uploads/services
 
+# Copy and set up entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Expose port
 EXPOSE 5000
 
@@ -35,6 +39,9 @@ EXPOSE 5000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
   CMD node -e "require('http').get('http://localhost:5000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
+# Use entrypoint script
+ENTRYPOINT ["docker-entrypoint.sh"]
+
 # Start server
-CMD ["npm", "start"]
+CMD ["sh", "-c", "npm run db:generate && npm run db:deploy && npm start"]
 
