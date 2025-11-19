@@ -29,6 +29,14 @@ export DATABASE_URL="postgresql://${DB_USER_ENCODED}:${DB_PASSWORD_ENCODED}@${DB
 # Debug output (without password)
 echo "Connecting to database: postgresql://${DB_USER_ENCODED}:***@${DB_HOST_VAL}:${DB_PORT_VAL}/${DB_NAME_ENCODED}?schema=public"
 
+# Check if migrations exist
+if [ -d "/app/prisma/migrations" ] && [ "$(ls -A /app/prisma/migrations 2>/dev/null)" ]; then
+  echo "Migrations found in /app/prisma/migrations"
+  ls -la /app/prisma/migrations/
+else
+  echo "WARNING: No migrations found in /app/prisma/migrations"
+fi
+
 # Execute the command
 exec "$@"
 

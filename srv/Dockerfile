@@ -10,6 +10,9 @@ RUN apk add --no-cache openssl
 COPY package*.json ./
 COPY prisma ./prisma/
 
+# Debug: verify migrations are copied
+RUN ls -la prisma/migrations/ || echo "No migrations directory found"
+
 # Install dependencies (using npm install to update lock file if needed)
 RUN npm install --no-audit --no-fund
 
