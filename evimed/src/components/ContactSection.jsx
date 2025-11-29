@@ -14,7 +14,66 @@ const ContactSection = () => {
   const [branches, setBranches] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Yandex Maps state
+  const [mapInstance, setMapInstance] = useState(null);
+  const [markers, setMarkers] = useState([]);
+  const [geocodedBranches, setGeocodedBranches] = useState([]);
+  const [mapLoading, setMapLoading] = useState(true);
+  const [yandexMapsLoaded, setYandexMapsLoaded] = useState(false);
+  const [mapError, setMapError] = useState(false);
+  const mapContainerRef = useRef(null);
+
   const API_BASE = process.env.REACT_APP_API_URL || '/api';
+  const YANDEX_API_KEY = process.env.REACT_APP_YANDEX_MAPS_API_KEY || '';
+
+  // Load Yandex Maps API
+  useEffect(() => {
+    if (window.ymaps) {
+      window.ymaps.ready(() => {
+        setYandexMapsLoaded(true);
+      });
+      return;
+    }
+
+    // Check if script already exists
+    const existingScript = document.querySelector('script[src*="api-maps.yandex.ru"]');
+    if (existingScript) {
+      existingScript.addEventListener('load', () => {
+        if (window.ymaps) {
+          window.ymaps.ready(() => {
+            setYandexMapsLoaded(true);
+          });
+        }
+      });
+      return;
+    }
+
+    const script = document.createElement('script');
+    const apiKeyParam = YANDEX_API_KEY ? `apikey=${YANDEX_API_KEY}&` : '';
+    script.src = `https://api-maps.yandex.ru/2.1/?${apiKeyParam}lang=ru_RU`;
+    script.async = true;
+    script.onload = () => {
+      if (window.ymaps) {
+        window.ymaps.ready(() => {
+          setYandexMapsLoaded(true);
+        });
+      } else {
+        console.error('Yandex Maps API не загрузился');
+        setMapError(true);
+        setMapLoading(false);
+      }
+    };
+    script.onerror = () => {
+      console.error('Ошибка загрузки Yandex Maps API');
+      setMapError(true);
+      setMapLoading(false);
+    };
+    document.head.appendChild(script);
+
+    return () => {
+      // Don't remove script on cleanup to avoid reloading
+    };
+  }, [YANDEX_API_KEY]);
 
   useEffect(() => {
     loadBranches();
@@ -65,6 +124,197 @@ const ContactSection = () => {
     setIsDragging(false);
     listRef.current.style.cursor = 'grab';
   };
+
+  // Geocoding function with caching
+  const geocodeAddress = async (address) => {
+    const cacheKey = `geocode_${address}`;
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      try {
+        return JSON.parse(cached);
+      } catch (e) {
+        localStorage.removeItem(cacheKey);
+      }
+    }
+
+    if (!window.ymaps) return null;
+
+    return new Promise((resolve) => {
+      window.ymaps.ready(() => {
+        try {
+          window.ymaps.geocode(address).then((result) => {
+            const firstGeoObject = result.geoObjects.get(0);
+            if (firstGeoObject) {
+              const coordinates = firstGeoObject.geometry.getCoordinates();
+              const data = { coordinates, address: firstGeoObject.getAddressLine() };
+              localStorage.setItem(cacheKey, JSON.stringify(data));
+              resolve(data);
+            } else {
+              resolve(null);
+            }
+          }).catch((error) => {
+            console.error(`Ошибка геокодирования адреса ${address}:`, error);
+            resolve(null);
+          });
+        } catch (error) {
+          console.error(`Ошибка геокодирования адреса ${address}:`, error);
+          resolve(null);
+        }
+      });
+    });
+  };
+
+  // Geocode all branches
+  useEffect(() => {
+    if (!yandexMapsLoaded || !branches.length) return;
+
+    const geocodeBranches = async () => {
+      try {
+        const geocoded = await Promise.all(
+          branches.map(async (branch) => {
+            try {
+              const geocoded = await geocodeAddress(branch.address);
+              return {
+                ...branch,
+                coordinates: geocoded?.coordinates || null,
+                geocodedAddress: geocoded?.address || branch.address
+              };
+            } catch (error) {
+              console.warn(`Не удалось геокодировать адрес: ${branch.address}`, error);
+              return {
+                ...branch,
+                coordinates: null,
+                geocodedAddress: branch.address
+              };
+            }
+          })
+        );
+        const validBranches = geocoded.filter(b => b.coordinates !== null);
+        setGeocodedBranches(validBranches);
+        
+        // If no branches were geocoded, show error
+        if (validBranches.length === 0 && geocoded.length > 0) {
+          console.warn('Не удалось геокодировать ни один адрес');
+        }
+      } catch (error) {
+        console.error('Ошибка при геокодировании филиалов:', error);
+        setMapError(true);
+      }
+    };
+
+    geocodeBranches();
+  }, [yandexMapsLoaded, branches]);
+
+  // Initialize map
+  useEffect(() => {
+    if (!yandexMapsLoaded || !mapContainerRef.current || mapInstance) return;
+    if (!geocodedBranches.length) return;
+
+    window.ymaps.ready(() => {
+      try {
+        // Default center: Yakutsk
+        const defaultCenter = [62.0278, 129.7325];
+        const center = geocodedBranches[0]?.coordinates || defaultCenter;
+
+        const map = new window.ymaps.Map(mapContainerRef.current, {
+          center: center,
+          zoom: 12,
+          controls: ['zoomControl', 'fullscreenControl']
+        });
+
+        setMapInstance(map);
+        setMapLoading(false);
+      } catch (error) {
+        console.error('Ошибка инициализации карты:', error);
+        setMapError(true);
+        setMapLoading(false);
+      }
+    });
+  }, [yandexMapsLoaded, geocodedBranches, mapInstance]);
+
+  // Create markers
+  useEffect(() => {
+    if (!mapInstance || !geocodedBranches.length) return;
+
+    window.ymaps.ready(() => {
+      // Clear existing markers
+      if (markers.length > 0) {
+        markers.forEach(marker => {
+          mapInstance.geoObjects.remove(marker.placemark);
+        });
+        setMarkers([]);
+      }
+
+      const newMarkers = geocodedBranches.map((branch, index) => {
+        const placemark = new window.ymaps.Placemark(
+          branch.coordinates,
+          {
+            balloonContentHeader: branch.title,
+            balloonContentBody: `
+              <div style="padding: 8px 0;">
+                <div style="margin-bottom: 8px;"><strong>${branch.address}</strong></div>
+                ${branch.phone ? `<div style="margin-bottom: 4px;"><a href="tel:${branch.phone.replace(/\s/g, '')}">${branch.phone}</a></div>` : ''}
+                ${branch.email ? `<div style="margin-bottom: 4px;"><a href="mailto:${branch.email}">${branch.email}</a></div>` : ''}
+                ${branch.workingHours ? `<div style="margin-bottom: 8px; color: #666;">${branch.workingHours}</div>` : ''}
+                <div style="margin-top: 8px;">
+                  ${branch.phone ? `<a href="tel:${branch.phone.replace(/\s/g, '')}" style="margin-right: 8px; color: #14488C;">Позвонить</a>` : ''}
+                  ${branch.email ? `<a href="mailto:${branch.email}" style="margin-right: 8px; color: #14488C;">Написать</a>` : ''}
+                  <a href="https://yandex.ru/maps/?pt=${branch.coordinates[1]},${branch.coordinates[0]}&z=15" target="_blank" style="color: #14488C;">Построить маршрут</a>
+                </div>
+              </div>
+            `,
+            hintContent: branch.title
+          },
+          {
+            preset: 'islands#blueMedicalIcon'
+          }
+        );
+
+        placemark.events.add('click', () => {
+          const branchIndex = branches.findIndex(b => b.id === branch.id);
+          if (branchIndex !== -1) {
+            setActiveBranch(branchIndex);
+          }
+        });
+
+        mapInstance.geoObjects.add(placemark);
+        return { placemark, branchIndex: index, branchId: branch.id };
+      });
+
+      setMarkers(newMarkers);
+
+      // Auto-fit bounds to show all markers
+      if (newMarkers.length > 0) {
+        const bounds = mapInstance.geoObjects.getBounds();
+        if (bounds) {
+          mapInstance.setBounds(bounds, { duration: 300, checkZoomRange: true });
+        }
+      }
+    });
+  }, [mapInstance, geocodedBranches, branches]);
+
+  // Sync active branch with map
+  useEffect(() => {
+    if (!mapInstance || !markers.length || activeBranch === null) return;
+
+    const activeBranchData = branches[activeBranch];
+    if (!activeBranchData) return;
+
+    const marker = markers.find(m => m.branchId === activeBranchData.id);
+    if (marker) {
+      mapInstance.setCenter(marker.placemark.geometry.getCoordinates(), 15, { duration: 300 });
+      marker.placemark.balloon.open();
+    }
+  }, [activeBranch, mapInstance, markers, branches]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (mapInstance) {
+        mapInstance.destroy();
+      }
+    };
+  }, [mapInstance]);
 
   return (
     <section className="contact-section" id="contacts">
@@ -136,7 +386,21 @@ const ContactSection = () => {
         </div>
       </div>
       <div className="contact-map" role="img" aria-label="Карта филиалов">
-        <img src={contactsMap} alt="Карта филиалов" />
+        {mapError || (!yandexMapsLoaded && !mapLoading && geocodedBranches.length === 0) ? (
+          <img src={contactsMap} alt="Карта филиалов" />
+        ) : (
+          <div 
+            ref={mapContainerRef} 
+            id="yandex-map" 
+            className="yandex-map-container"
+          >
+            {mapLoading && !mapInstance && (
+              <div className="map-loading">
+                Загрузка карты...
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </section>
   );

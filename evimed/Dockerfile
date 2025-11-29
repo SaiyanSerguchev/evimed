@@ -2,15 +2,19 @@
 FROM node:18-alpine AS builder
 WORKDIR /app
 
-# Accept build argument for API URL
+# Accept build arguments
 ARG REACT_APP_API_URL=/api
 ENV REACT_APP_API_URL=$REACT_APP_API_URL
+
+ARG REACT_APP_YANDEX_MAPS_API_KEY
+ENV REACT_APP_YANDEX_MAPS_API_KEY=$REACT_APP_YANDEX_MAPS_API_KEY
 
 COPY package*.json ./
 RUN npm ci --no-audit --no-fund
 COPY . .
-# Debug: show environment variable
+# Debug: show environment variables
 RUN echo "REACT_APP_API_URL=$REACT_APP_API_URL"
+RUN echo "REACT_APP_YANDEX_MAPS_API_KEY is set: $([ -n "$REACT_APP_YANDEX_MAPS_API_KEY" ] && echo 'yes' || echo 'no')"
 RUN npm run build
 
 # Stage 2: Serve with Nginx
