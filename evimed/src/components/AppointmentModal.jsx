@@ -610,15 +610,37 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
         comment: comment
       });
 
-      // Отправляем код верификации
-      const response = await verificationApi.sendVerificationCode(appointmentData);
+      // ВРЕМЕННО ЗАКОММЕНТИРОВАНО: Отправка кода верификации
+      // const response = await verificationApi.sendVerificationCode(appointmentData);
+      // 
+      // if (response.success) {
+      //   setShowVerificationModal(true);
+      //   toast.success('Код подтверждения отправлен на ваш email');
+      // } else {
+      //   toast.error(response.message || 'Не удалось отправить код подтверждения');
+      // }
+
+      // ВРЕМЕННО: Пропускаем верификацию и сразу создаем запись
+      // Симулируем успешный ответ от верификации
+      const mockVerificationResponse = {
+        success: true,
+        appointment: {
+          id: Date.now(), // Временный ID
+          renovatioId: null,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          doctorId: selectedDoctor.id,
+          clinicId: selectedClinic.id,
+          timeStart: `${selectedDate} ${selectedTime}:00`,
+          timeEnd: `${selectedDate} ${endTimeStr}:00`,
+          serviceId: selectedService?.id,
+          status: 'upcoming'
+        }
+      };
       
-      if (response.success) {
-        setShowVerificationModal(true);
-        toast.success('Код подтверждения отправлен на ваш email');
-      } else {
-        toast.error(response.message || 'Не удалось отправить код подтверждения');
-      }
+      handleVerificationSuccess(mockVerificationResponse);
     } catch (error) {
       const handledError = handleAppointmentError(error);
       toast.error(handledError.message);
@@ -1389,8 +1411,8 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
       </div>
       )}
 
-      {/* Модальное окно верификации */}
-      <EmailVerificationModal
+      {/* ВРЕМЕННО ЗАКОММЕНТИРОВАНО: Модальное окно верификации */}
+      {/* <EmailVerificationModal
         isOpen={showVerificationModal}
         onClose={() => setShowVerificationModal(false)}
         email={formData.email}
@@ -1440,7 +1462,7 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
           };
         })()}
         onSuccess={handleVerificationSuccess}
-      />
+      /> */}
 
       {/* Экран успеха */}
       {showSuccessStep && (
