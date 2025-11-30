@@ -219,7 +219,8 @@ const ContactSection = () => {
         const map = new window.ymaps.Map(mapContainerRef.current, {
           center: center,
           zoom: 12,
-          controls: ['zoomControl', 'fullscreenControl']
+          controls: ['zoomControl', 'fullscreenControl'],
+          behaviors: ['default', 'scrollZoom', 'dblClickZoom', 'drag', 'multiTouch']
         });
 
         setMapInstance(map);
