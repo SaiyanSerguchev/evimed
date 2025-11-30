@@ -261,6 +261,148 @@ router.post('/verify-code', async (req, res) => {
   }
 });
 
+// ВРЕМЕННО: Создание записи без верификации email
+router.post('/create-appointment', async (req, res) => {
+  try {
+    const { 
+      email,
+      phone,
+      first_name,
+      last_name,
+      third_name,
+      birth_date,
+      gender,
+      doctor_id,
+      clinic_id,
+      time_start,
+      time_end,
+      service_id,
+      comment,
+      channel,
+      source,
+      type,
+      is_outside,
+      is_telemedicine
+    } = req.body;
+
+    // Валидация обязательных полей
+    if (!email || !first_name || !last_name || !doctor_id || !clinic_id || !time_start || !time_end) {
+      return res.status(400).json({
+        error: 'Missing required fields',
+        message: 'Email, first_name, last_name, doctor_id, clinic_id, time_start, and time_end are required'
+      });
+    }
+
+    // Валидация email
+    if (!verificationService.validateEmail(email)) {
+      return res.status(400).json({
+        error: 'Invalid email format',
+        message: 'Please provide a valid email address'
+      });
+    }
+
+    const formattedEmail = verificationService.formatEmail(email);
+
+    // Создаем запись в Renovatio
+    const renovatioAppointmentData = {
+      first_name,
+      last_name,
+      third_name,
+      mobile: phone || '',
+      email: formattedEmail,
+      birth_date,
+      gender,
+      doctor_id,
+      clinic_id,
+      time_start,
+      time_end,
+      comment: comment || '',
+      channel: channel || 'website',
+      source: source || 'evimed',
+      type: type || 'appointment',
+      is_outside: is_outside ? 1 : 2,
+      is_telemedicine: is_telemedicine ? 1 : 2,
+      check_intersection: 1
+    };
+
+    // Добавляем услуги если указаны
+    if (service_id) {
+      renovatioAppointmentData.services = JSON.stringify([{
+        service_id: service_id,
+        count: 1,
+        discount: 0
+      }]);
+    }
+
+    let renovatioAppointmentId = null;
+    try {
+      renovatioAppointmentId = await renovatioService.createAppointment(renovatioAppointmentData);
+    } catch (renovatioError) {
+      console.error('Renovatio appointment creation failed:', renovatioError);
+      return res.status(500).json({
+        error: 'Failed to create appointment in Renovatio',
+        message: 'Ошибка создания записи в системе. Попробуйте позже.'
+      });
+    }
+
+    // Сохраняем в локальную БД
+    const appointmentData = {
+      userId: null, // Пользователь не зарегистрирован
+      serviceId: service_id || null,
+      appointmentDate: new Date(time_start),
+      appointmentTime: time_start,
+      notes: comment || '',
+      renovatioId: renovatioAppointmentId,
+      renovatioStatus: 'upcoming',
+      doctorId: doctor_id,
+      clinicId: clinic_id
+    };
+
+    const appointment = await Appointment.createWithRenovatio(appointmentData);
+
+    // Отправляем email с подтверждением записи
+    try {
+      await emailService.sendAppointmentConfirmation(formattedEmail, {
+        firstName: first_name,
+        lastName: last_name,
+        doctorName: 'Врач', // Можно получить из Renovatio
+        clinicName: 'Клиника', // Можно получить из Renovatio
+        date: time_start.split(' ')[0],
+        time: time_start.split(' ')[1],
+        serviceName: service_id ? 'Услуга' : null
+      });
+    } catch (emailError) {
+      console.error('Failed to send confirmation email:', emailError);
+      // Не блокируем процесс из-за ошибки email
+    }
+
+    res.status(201).json({
+      success: true,
+      message: 'Запись на прием успешно создана',
+      appointment: {
+        id: appointment.id,
+        renovatioId: renovatioAppointmentId,
+        firstName: first_name,
+        lastName: last_name,
+        email: formattedEmail,
+        phone: phone || '',
+        doctorId: doctor_id,
+        clinicId: clinic_id,
+        timeStart: time_start,
+        timeEnd: time_end,
+        serviceId: service_id || null,
+        status: 'upcoming'
+      }
+    });
+  } catch (error) {
+    console.error('Create appointment error:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+      message: 'Failed to create appointment'
+    });
+  }
+});
+
 // Получение статуса верификации
 router.get('/status/:email', async (req, res) => {
   try {

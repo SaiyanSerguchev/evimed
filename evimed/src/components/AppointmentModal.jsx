@@ -620,27 +620,15 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
       //   toast.error(response.message || 'Не удалось отправить код подтверждения');
       // }
 
-      // ВРЕМЕННО: Пропускаем верификацию и сразу создаем запись
-      // Симулируем успешный ответ от верификации
-      const mockVerificationResponse = {
-        success: true,
-        appointment: {
-          id: Date.now(), // Временный ID
-          renovatioId: null,
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          phone: formData.phone,
-          doctorId: selectedDoctor.id,
-          clinicId: selectedClinic.id,
-          timeStart: `${selectedDate} ${selectedTime}:00`,
-          timeEnd: `${selectedDate} ${endTimeStr}:00`,
-          serviceId: selectedService?.id,
-          status: 'upcoming'
-        }
-      };
+      // ВРЕМЕННО: Создаем запись напрямую без верификации email
+      const response = await verificationApi.createAppointmentWithoutVerification(appointmentData);
       
-      handleVerificationSuccess(mockVerificationResponse);
+      if (response.success && response.appointment) {
+        handleVerificationSuccess(response);
+        toast.success('Запись успешно создана!');
+      } else {
+        toast.error(response.message || 'Не удалось создать запись');
+      }
     } catch (error) {
       const handledError = handleAppointmentError(error);
       toast.error(handledError.message);

@@ -66,6 +66,16 @@ class VerificationApi {
       throw error;
     }
   }
+
+  // ВРЕМЕННО: Создание записи без верификации email
+  async createAppointmentWithoutVerification(appointmentData) {
+    try {
+      const response = await apiClient.post('/verification/create-appointment', appointmentData);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 // Создаем экземпляр API верификации
