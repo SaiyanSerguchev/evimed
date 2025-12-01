@@ -603,7 +603,7 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
       // Форматируем данные для отправки
       const appointmentData = formatAppointmentData(formData, {
         doctorId: selectedDoctor.id,
-        clinicId: selectedClinic.id,
+        clinicId: selectedDoctor.default_clinic || selectedClinic.id, // Используем default_clinic из данных врача
         serviceId: selectedService?.id,
         timeStart: `${selectedDate} ${selectedTime}:00`,
         timeEnd: `${selectedDate} ${endTimeStr}:00`,

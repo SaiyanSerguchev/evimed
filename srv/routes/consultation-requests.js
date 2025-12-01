@@ -5,7 +5,7 @@ const renovatioService = require('../services/renovatioService');
 // Создание запроса на консультацию
 router.post('/', async (req, res) => {
   try {
-    const { firstName, lastName, phone, email, comment } = req.body;
+    const { firstName, lastName, phone, email, comment, birthDate, thirdName } = req.body;
 
     // Валидация
     if (!firstName || !lastName || !phone) {
@@ -43,12 +43,39 @@ router.post('/', async (req, res) => {
     const dueDate = `${String(tomorrow.getDate()).padStart(2, '0')}.${String(tomorrow.getMonth() + 1).padStart(2, '0')}.${tomorrow.getFullYear()}`;
     const dueTime = '10:00';
 
+    // Функция для конвертации даты рождения из YYYY-MM-DD в dd.mm.yyyy
+    const formatBirthDateForDisplay = (dateStr) => {
+      if (!dateStr) return null;
+      try {
+        // Если уже в формате dd.mm.yyyy, возвращаем как есть
+        if (/^\d{2}\.\d{2}\.\d{4}$/.test(dateStr)) {
+          return dateStr;
+        }
+        
+        // Если в формате YYYY-MM-DD, конвертируем
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) return null;
+        
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        
+        return `${day}.${month}.${year}`;
+      } catch (error) {
+        console.error('Error formatting birth date:', dateStr, error);
+        return null;
+      }
+    };
+
     // Формируем описание задачи
+    const formattedBirthDate = birthDate ? formatBirthDateForDisplay(birthDate) : null;
+    const fullName = thirdName ? `${firstName} ${lastName} ${thirdName}` : `${firstName} ${lastName}`;
+    
     const taskDescription = `Запрос на консультацию от нового клиента
 
 Контакты:
-Имя: ${firstName} ${lastName}
-Телефон: ${phone}${email ? `\nEmail: ${email}` : ''}
+Имя: ${fullName}
+Телефон: ${phone}${email ? `\nEmail: ${email}` : ''}${formattedBirthDate ? `\nДата рождения: ${formattedBirthDate}` : ''}
 
 Комментарий:
 ${comment || 'Не указан'}
