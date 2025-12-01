@@ -352,15 +352,15 @@ router.post('/create-appointment', async (req, res) => {
       first_name,
       last_name,
       ...(third_name && { third_name }), // Передаем только если указано
-      mobile: phone || '',
+      mobile: phone || '', // Оставляем как есть, но можно попробовать форматировать
       email: formattedEmail,
-      ...(formatBirthDateForRenovatio(birth_date) && { birth_date: formatBirthDateForRenovatio(birth_date) }), // Передаем только если указано
-      ...(gender && { gender }), // Передаем gender только если он указан (1 или 2)
+      ...(formatBirthDateForRenovatio(birth_date) && { birth_date: formatBirthDateForRenovatio(birth_date) }),
+      ...(gender && { gender }), // Передаем gender только если указан
       doctor_id,
       clinic_id,
       time_start: formatDateTimeForRenovatio(time_start),
       time_end: formatDateTimeForRenovatio(time_end),
-      ...(comment && { comment }), // Передаем только если указано
+      comment: comment || '', // Передаем даже пустой comment, как в рабочем коде
       channel: channel || 'website',
       source: source || 'evimed',
       type: type || 'appointment',
