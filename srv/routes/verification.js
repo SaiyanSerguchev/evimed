@@ -351,20 +351,17 @@ router.post('/create-appointment', async (req, res) => {
     const renovatioAppointmentData = {
       first_name,
       last_name,
-      third_name, // Передаем как есть
+      third_name, // Передаем как есть, даже если null
       mobile: phone || '',
       email: formattedEmail,
       birth_date: formatBirthDateForRenovatio(birth_date),
-      gender, // Передаем как есть
+      gender, // Передаем как есть, даже если null
       doctor_id,
       clinic_id,
       time_start: formatDateTimeForRenovatio(time_start),
       time_end: formatDateTimeForRenovatio(time_end),
-      comment: comment || '',
-      // Убираем channel, source, type или передаем null
-      // channel: channel || 'website',
-      // source: source || 'evimed',
-      // type: type || 'appointment',
+      ...(comment && { comment }), // Передаем только если не пустой
+      // Убираем channel, source, type - возможно они должны быть ID или не нужны
       is_outside: is_outside ? 1 : 2,
       is_telemedicine: is_telemedicine ? 1 : 2,
       check_intersection: 1
