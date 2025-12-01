@@ -569,6 +569,20 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
     try {
       setIsLoading(true);
       
+      // Логирование для отладки
+      console.log('Selected doctor:', selectedDoctor);
+      console.log('Default clinic:', selectedDoctor?.default_clinic);
+      console.log('Selected clinic:', selectedClinic);
+      console.log('Selected clinic id:', selectedClinic?.id);
+      
+      // Проверяем, что у выбранного врача есть default_clinic
+      if (!selectedDoctor.default_clinic) {
+        console.error('Default clinic is missing for doctor:', selectedDoctor);
+        toast.error('Не удалось определить клинику. Попробуйте выбрать другого врача.');
+        setIsLoading(false);
+        return;
+      }
+      
       // Вычисляем длительность услуги
       let durationMinutes = 30; // По умолчанию
       if (selectedService?.duration) {
@@ -603,11 +617,17 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
       // Форматируем данные для отправки
       const appointmentData = formatAppointmentData(formData, {
         doctorId: selectedDoctor.id,
-        clinicId: selectedDoctor.default_clinic || selectedClinic.id, // Используем default_clinic из данных врача
+        clinicId: selectedDoctor.default_clinic, // Используем только default_clinic
         serviceId: selectedService?.id,
         timeStart: `${selectedDate} ${selectedTime}:00`,
         timeEnd: `${selectedDate} ${endTimeStr}:00`,
         comment: comment
+      });
+      
+      console.log('Appointment data being sent:', {
+        doctorId: appointmentData.doctor_id,
+        clinicId: appointmentData.clinic_id,
+        serviceId: appointmentData.service_id
       });
 
       // ВРЕМЕННО ЗАКОММЕНТИРОВАНО: Отправка кода верификации
