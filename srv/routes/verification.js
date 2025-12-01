@@ -303,6 +303,50 @@ router.post('/create-appointment', async (req, res) => {
 
     const formattedEmail = verificationService.formatEmail(email);
 
+    // Функция для конвертации даты и времени из YYYY-MM-DD HH:mm:ss в dd.mm.yyyy hh:mm
+    const formatDateTimeForRenovatio = (dateTimeStr) => {
+      if (!dateTimeStr) return null;
+      try {
+        const date = new Date(dateTimeStr);
+        if (isNaN(date.getTime())) return null;
+        
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        
+        return `${day}.${month}.${year} ${hours}:${minutes}`;
+      } catch (error) {
+        console.error('Error formatting dateTime:', dateTimeStr, error);
+        return null;
+      }
+    };
+
+    // Функция для конвертации даты рождения из YYYY-MM-DD в dd.mm.yyyy
+    const formatBirthDateForRenovatio = (dateStr) => {
+      if (!dateStr) return null;
+      try {
+        // Если уже в формате dd.mm.yyyy, возвращаем как есть
+        if (/^\d{2}\.\d{2}\.\d{4}$/.test(dateStr)) {
+          return dateStr;
+        }
+        
+        // Если в формате YYYY-MM-DD, конвертируем
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) return null;
+        
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        
+        return `${day}.${month}.${year}`;
+      } catch (error) {
+        console.error('Error formatting birth date:', dateStr, error);
+        return null;
+      }
+    };
+
     // Создаем запись в Renovatio
     const renovatioAppointmentData = {
       first_name,
@@ -310,12 +354,12 @@ router.post('/create-appointment', async (req, res) => {
       third_name,
       mobile: phone || '',
       email: formattedEmail,
-      birth_date,
+      birth_date: formatBirthDateForRenovatio(birth_date),
       gender,
       doctor_id,
       clinic_id,
-      time_start,
-      time_end,
+      time_start: formatDateTimeForRenovatio(time_start),
+      time_end: formatDateTimeForRenovatio(time_end),
       comment: comment || '',
       channel: channel || 'website',
       source: source || 'evimed',
