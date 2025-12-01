@@ -351,16 +351,16 @@ router.post('/create-appointment', async (req, res) => {
     const renovatioAppointmentData = {
       first_name,
       last_name,
-      third_name,
+      ...(third_name && { third_name }), // Передаем только если указано
       mobile: phone || '',
       email: formattedEmail,
-      birth_date: formatBirthDateForRenovatio(birth_date),
-      gender,
+      ...(formatBirthDateForRenovatio(birth_date) && { birth_date: formatBirthDateForRenovatio(birth_date) }), // Передаем только если указано
+      ...(gender && { gender }), // Передаем gender только если он указан (1 или 2)
       doctor_id,
       clinic_id,
       time_start: formatDateTimeForRenovatio(time_start),
       time_end: formatDateTimeForRenovatio(time_end),
-      comment: comment || '',
+      ...(comment && { comment }), // Передаем только если указано
       channel: channel || 'website',
       source: source || 'evimed',
       type: type || 'appointment',
@@ -377,6 +377,24 @@ router.post('/create-appointment', async (req, res) => {
         discount: 0
       }]);
     }
+
+    // Логирование для отладки
+    console.log('Creating appointment with data:', {
+      first_name,
+      last_name,
+      third_name,
+      mobile: phone || '',
+      email: formattedEmail,
+      birth_date: formatBirthDateForRenovatio(birth_date),
+      gender,
+      doctor_id,
+      clinic_id,
+      time_start: formatDateTimeForRenovatio(time_start),
+      time_end: formatDateTimeForRenovatio(time_end),
+      service_id,
+      comment: comment || ''
+    });
+    console.log('Final renovatioAppointmentData:', JSON.stringify(renovatioAppointmentData, null, 2));
 
     let renovatioAppointmentId = null;
     try {
