@@ -381,7 +381,6 @@ router.post('/create-appointment', async (req, res) => {
       mobile: formatPhoneForRenovatio(phone || ''), // Форматируем телефон
       email: formattedEmail,
       birth_date: formatBirthDateForRenovatio(birth_date),
-      gender, // Передаем как есть, даже если null
       doctor_id,
       clinic_id,
       time_start: formatDateTimeForRenovatio(time_start),
