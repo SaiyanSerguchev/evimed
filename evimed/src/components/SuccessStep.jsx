@@ -42,39 +42,54 @@ const SuccessStep = ({
   };
 
   return (
-    <div className="success-step">
-      <h2 className="success-title">Спасибо за заявку</h2>
-      
-      <div className="success-content">
-        <h3 className="success-subtitle">Вас записали</h3>
+    <>
+      <div className="modal-header">
+        <h1 className="modal-title">Спасибо за заявку</h1>
+      </div>
 
-        <div className="success-details">
-          <div className="success-detail-item">
-            <div className="success-detail-label">Выбранная услуга</div>
-            <div className="success-detail-value">
-              {serviceName || 'Не указана'}
+      <div className="modal-body">
+        <div className="success-step">
+          <h2 className="success-subtitle">Вас записали</h2>
+
+          <div className="success-details">
+            <div className="success-detail-item">
+              <div className="success-detail-label">Выбранная услуга</div>
+              <div className="success-detail-value">
+                {serviceName || 'Не указана'}
+              </div>
             </div>
-          </div>
 
-          <div className="success-detail-item">
-            <div className="success-detail-label">Адрес филиала</div>
-            <div className="success-detail-value">
-              {clinicAddress || clinicName || 'Не указан'}
+            <div className="success-detail-item">
+              <div className="success-detail-label">Адрес филиала</div>
+              <div className="success-detail-value">
+                {clinicAddress || clinicName || 'Не указан'}
+              </div>
             </div>
-          </div>
 
-          <div className="success-detail-item">
-            <div className="success-detail-label">Дата и время</div>
-            <div className="success-detail-value">
-              {appointmentDate && appointmentTime 
-                ? `${formatDateForDisplay(appointmentDate)} в ${formatTime(appointmentTime)}`
-                : 'Не указано'
-              }
+            <div className="success-detail-item">
+              <div className="success-detail-label">Дата и время</div>
+              <div className="success-detail-value">
+                {appointmentDate && appointmentTime 
+                  ? `${formatDateForDisplay(appointmentDate)} в ${formatTime(appointmentTime)}`
+                  : 'Не указано'
+                }
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <div className="modal-footer">
+        <button
+          className="btn btn-primary"
+          onClick={onClose}
+        >
+          <div className="text-btn-wrapper">
+            <span>Закрыть</span>
+          </div>
+        </button>
+      </div>
+    </>
   );
 };
 
