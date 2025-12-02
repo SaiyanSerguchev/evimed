@@ -347,12 +347,38 @@ router.post('/create-appointment', async (req, res) => {
       }
     };
 
+    // Функция для форматирования телефона для Renovatio
+    const formatPhoneForRenovatio = (phone) => {
+      if (!phone) return '';
+      
+      // Убираем все символы кроме цифр
+      const cleanPhone = phone.replace(/\D/g, '');
+      
+      // Если номер начинается с 8 и имеет 11 цифр, заменяем 8 на +7
+      if (cleanPhone.length === 11 && cleanPhone.startsWith('8')) {
+        return `+7${cleanPhone.slice(1)}`;
+      }
+      
+      // Если номер начинается с 7 и имеет 11 цифр, добавляем +
+      if (cleanPhone.length === 11 && cleanPhone.startsWith('7')) {
+        return `+${cleanPhone}`;
+      }
+      
+      // Если номер имеет 10 цифр, добавляем +7
+      if (cleanPhone.length === 10) {
+        return `+7${cleanPhone}`;
+      }
+      
+      // Возвращаем как есть, если формат не распознан
+      return phone;
+    };
+
     // Создаем запись в Renovatio
     const renovatioAppointmentData = {
       first_name,
       last_name,
       third_name, // Передаем как есть, даже если null
-      mobile: phone || '',
+      mobile: formatPhoneForRenovatio(phone || ''), // Форматируем телефон
       email: formattedEmail,
       birth_date: formatBirthDateForRenovatio(birth_date),
       gender, // Передаем как есть, даже если null
