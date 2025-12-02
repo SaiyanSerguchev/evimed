@@ -255,8 +255,8 @@ class Appointment {
     
     return await prisma.appointment.create({
       data: {
-        userId: parseInt(userId),
-        serviceId: parseInt(serviceId),
+        userId: userId ? parseInt(userId) : null,
+        serviceId: serviceId ? parseInt(serviceId) : null,
         appointmentDate: new Date(appointmentDate),
         appointmentTime: appointmentTime,
         notes,
@@ -364,3 +364,5 @@ class Appointment {
     });
   }
 }
+
+module.exports = Appointment;
