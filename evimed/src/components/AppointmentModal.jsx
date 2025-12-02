@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import './AppointmentModal.css';
+import './SuccessStep.css';
 import EmailVerificationModal from './EmailVerificationModal';
 import ConsultationModal from './ConsultationModal';
 import apiClient from '../services/api';
@@ -1223,7 +1224,7 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
     };
 
     return (
-      <div className="appointment-step success-step">
+      <div className="success-step">
         <h2 className="success-subtitle">Вас записали</h2>
 
         <div className="success-details">
@@ -1485,11 +1486,10 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
           )}
 
           {currentStep === 6 && (
-            <div className="modal-footer">
+            <div className="modal-footer" style={{ justifyContent: 'center' }}>
               <button
                 className="btn btn-primary"
                 onClick={handleClose}
-                style={{ width: '100%', justifyContent: 'center' }}
               >
                 <div className="text-btn-wrapper">
                   <span>Закрыть</span>
