@@ -7,6 +7,8 @@ const VerificationCode = require('../models/VerificationCode');
 const AppointmentRequest = require('../models/AppointmentRequest');
 const Appointment = require('../models/Appointment');
 const emailRateLimit = require('../middleware/emailRateLimit').combinedEmailRateLimit;
+const Service = require('../models/Service');
+const prisma = require('../lib/prisma');
 
 // Отправка кода верификации
 router.post('/send-code', emailRateLimit, async (req, res) => {
@@ -373,27 +375,41 @@ router.post('/create-appointment', async (req, res) => {
       return phone;
     };
 
+    // Перед созданием renovatioAppointmentData, получаем renovatioId услуги
+    let renovatioServiceId = null;
+    if (service_id) {
+      const service = await prisma.service.findUnique({
+        where: { id: service_id },
+        select: { renovatioId: true }
+      });
+      
+      if (service && service.renovatioId) {
+        renovatioServiceId = service.renovatioId;
+      } else {
+        console.warn(`Service with id ${service_id} not found or has no renovatioId`);
+      }
+    }
+
     // Создаем запись в Renovatio
     const renovatioAppointmentData = {
       first_name,
       last_name,
-      ...(third_name && { third_name }), // Передаем только если указано
-      mobile: formatPhoneForRenovatio(phone || ''), // Форматируем телефон
+      ...(third_name && { third_name }),
+      mobile: formatPhoneForRenovatio(phone || ''),
       email: formattedEmail,
       birth_date: formatBirthDateForRenovatio(birth_date),
       doctor_id,
       clinic_id,
       time_start: formatDateTimeForRenovatio(time_start),
       time_end: formatDateTimeForRenovatio(time_end),
-      ...(comment && { comment }), // Передаем только если не пустой
-      // Убираем is_outside и is_telemedicine
+      ...(comment && { comment }),
       check_intersection: 1
     };
 
-    // Добавляем услуги если указаны
-    if (service_id) {
+    // Добавляем услуги если указаны и найден renovatioId
+    if (renovatioServiceId) {
       renovatioAppointmentData.services = JSON.stringify([{
-        service_id: service_id,
+        service_id: renovatioServiceId, // Используем renovatioId вместо нашего service_id
         count: 1,
         discount: 0
       }]);
