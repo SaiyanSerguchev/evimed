@@ -386,8 +386,7 @@ router.post('/create-appointment', async (req, res) => {
       time_start: formatDateTimeForRenovatio(time_start),
       time_end: formatDateTimeForRenovatio(time_end),
       ...(comment && { comment }), // Передаем только если не пустой
-      is_outside: is_outside ? 1 : 2,
-      is_telemedicine: is_telemedicine ? 1 : 2,
+      // Убираем is_outside и is_telemedicine
       check_intersection: 1
     };
 
