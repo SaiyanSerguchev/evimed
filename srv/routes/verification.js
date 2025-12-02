@@ -444,20 +444,8 @@ router.post('/create-appointment', async (req, res) => {
       });
     }
 
-    // Сохраняем в локальную БД
-    const appointmentData = {
-      userId: null, // Пользователь не зарегистрирован
-      serviceId: service_id || null,
-      appointmentDate: new Date(time_start),
-      appointmentTime: time_start,
-      notes: comment || '',
-      renovatioId: renovatioAppointmentId,
-      renovatioStatus: 'upcoming',
-      doctorId: doctor_id,
-      clinicId: clinic_id
-    };
-
-    const appointment = await Appointment.createWithRenovatio(appointmentData);
+    // Не сохраняем в локальную БД для незарегистрированных пользователей
+    // Основная информация хранится в Renovatio
 
     // Отправляем email с подтверждением записи
     try {
@@ -479,8 +467,8 @@ router.post('/create-appointment', async (req, res) => {
       success: true,
       message: 'Запись на прием успешно создана',
       appointment: {
-        id: appointment.id,
-        renovatioId: renovatioAppointmentId,
+        id: null, // Не сохраняем в локальную БД
+        renovatioId: renovatioAppointmentId, // Основной ID из Renovatio
         firstName: first_name,
         lastName: last_name,
         email: formattedEmail,
