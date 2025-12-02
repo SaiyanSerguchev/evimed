@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import './AppointmentModal.css';
 import EmailVerificationModal from './EmailVerificationModal';
-import SuccessStep from './SuccessStep';
 import ConsultationModal from './ConsultationModal';
 import apiClient from '../services/api';
 import renovatioApi from '../services/renovatioApi';
@@ -51,7 +50,6 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
   
   // Состояние верификации
   const [showVerificationModal, setShowVerificationModal] = useState(false);
-  const [showSuccessStep, setShowSuccessStep] = useState(false);
   const [appointmentResult, setAppointmentResult] = useState(null);
   
   // Состояние модального окна консультации
@@ -321,7 +319,7 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
         setCurrentStep(3);
       }
     }
-    // Для остальных шагов просто увеличиваем номер
+    // Для остальных шагов просто увеличиваем номер (но не больше 5, шаг 6 - это экран успеха)
     else if (currentStep < 5) {
       setCurrentStep(currentStep + 1);
     }
@@ -672,7 +670,7 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
     };
     
     setAppointmentResult(appointmentDataWithDisplay);
-    setShowSuccessStep(true);
+    setCurrentStep(6); // Переходим на шаг 6 (экран успеха)
     toast.success('Запись успешно создана!');
   };
 
@@ -700,15 +698,8 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
     });
     setErrors({});
     setShowVerificationModal(false);
-    setShowSuccessStep(false);
     setAppointmentResult(null);
     onClose();
-  };
-
-  // Обработчик закрытия успешного экрана
-  const handleSuccessClose = () => {
-    setShowSuccessStep(false);
-    handleClose();
   };
 
   // Отключение скролла при открытии модального окна
@@ -1194,6 +1185,76 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
     );
   };
 
+  // Рендер шага 6 - Экран успеха
+  const renderStep6 = () => {
+    const {
+      serviceName,
+      clinicName,
+      clinicAddress,
+      appointmentDate,
+      appointmentTime
+    } = appointmentResult || {};
+
+    const formatDateForDisplay = (dateString) => {
+      if (!dateString) return '';
+      const date = new Date(dateString);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}.${month}.${year}`;
+    };
+
+    const formatTimeForDisplay = (timeString) => {
+      if (!timeString) return '';
+      if (typeof timeString === 'string' && timeString.match(/^\d{2}:\d{2}$/)) {
+        return timeString;
+      }
+      if (typeof timeString === 'string' && timeString.includes('T')) {
+        const date = new Date(timeString);
+        if (!isNaN(date.getTime())) {
+          return date.toLocaleTimeString('ru-RU', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          });
+        }
+      }
+      return timeString || '';
+    };
+
+    return (
+      <div className="appointment-step success-step">
+        <h2 className="success-subtitle">Вас записали</h2>
+
+        <div className="success-details">
+          <div className="success-detail-item">
+            <div className="success-detail-label">Выбранная услуга</div>
+            <div className="success-detail-value">
+              {serviceName || 'Не указана'}
+            </div>
+          </div>
+
+          <div className="success-detail-item">
+            <div className="success-detail-label">Адрес филиала</div>
+            <div className="success-detail-value">
+              {clinicAddress || clinicName || 'Не указан'}
+            </div>
+          </div>
+
+          <div className="success-detail-item">
+            <div className="success-detail-label">Дата и время</div>
+            <div className="success-detail-value">
+              {appointmentDate && appointmentTime 
+                ? `${formatDateForDisplay(appointmentDate)} в ${formatTimeForDisplay(appointmentTime)}`
+                : 'Не указано'
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   // Рендер шага 5 - Контактные данные
   const renderStep5 = () => (
     <div className="appointment-step step5">
@@ -1349,15 +1410,19 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
       <div className="modal-overlay" onClick={handleClose}>
         <div className="modal-content" onClick={(e) => e.stopPropagation()}>
           <div className="modal-header">
-            <h1 className="modal-title">Записаться на снимок</h1>
-            <div className="progress-bar">
-              {[1, 2, 3, 4, 5].map(step => (
-                <div
-                  key={step}
-                  className={`progress-step ${step < Math.ceil(currentStep) ? 'active' : ''}`}
-                />
-              ))}
-            </div>
+            <h1 className="modal-title">
+              {currentStep === 6 ? 'Спасибо за заявку' : 'Записаться на снимок'}
+            </h1>
+            {currentStep !== 6 && (
+              <div className="progress-bar">
+                {[1, 2, 3, 4, 5].map(step => (
+                  <div
+                    key={step}
+                    className={`progress-step ${step < Math.ceil(currentStep) ? 'active' : ''}`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="modal-body">
@@ -1367,54 +1432,71 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
             {currentStep === 3 && renderStep3()}
             {currentStep === 4 && renderStep4()}
             {currentStep === 5 && renderStep5()}
+            {currentStep === 6 && renderStep6()}
           </div>
 
-          <div className="modal-footer">
-            <button
-              className="btn btn-secondary"
-              onClick={currentStep === 1 ? handleClose : handleBack}
-              disabled={isLoading}
-            >
-              <div className="text-btn-wrapper">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                  <path d="M7.5 3L4.5 6L7.5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                <span>Назад</span>
-              </div>
-            </button>
-            <div className="btn-divider"></div>
-            <button
-              className="btn btn-primary"
-              onClick={currentStep === 5 ? handleSubmit : handleNext}
-              disabled={
-                isLoading ||
-                (currentStep === 1 && !selectedCategory && !isConsultationSelected) ||
-                (currentStep === 1.5 && hasReferral === null) ||
-                (currentStep === 2 && !selectedService) ||
-                (currentStep === 3 && (!selectedClinic || !selectedDoctor)) ||
-                (currentStep === 4 && (!selectedDate || !selectedTime)) ||
-                (currentStep === 5 && (!formData.firstName || !formData.lastName || !formData.email || !formData.phone))
-              }
-            >
-              <div className="text-btn-wrapper">
-                {isLoading ? (
-                  <>
-                    <div className="spinner" />
-                    <span>Загрузка...</span>
-                  </>
-                ) : currentStep === 5 ? (
-                  <span>Отправить код подтверждения</span>
-                ) : (
-                  <>
-                    <span>Далее</span>
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                      <path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </>
-                )}
-              </div>
-            </button>
-          </div>
+          {currentStep !== 6 && (
+            <div className="modal-footer">
+              <button
+                className="btn btn-secondary"
+                onClick={currentStep === 1 ? handleClose : handleBack}
+                disabled={isLoading}
+              >
+                <div className="text-btn-wrapper">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M7.5 3L4.5 6L7.5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <span>Назад</span>
+                </div>
+              </button>
+              <div className="btn-divider"></div>
+              <button
+                className="btn btn-primary"
+                onClick={currentStep === 5 ? handleSubmit : handleNext}
+                disabled={
+                  isLoading ||
+                  (currentStep === 1 && !selectedCategory && !isConsultationSelected) ||
+                  (currentStep === 1.5 && hasReferral === null) ||
+                  (currentStep === 2 && !selectedService) ||
+                  (currentStep === 3 && (!selectedClinic || !selectedDoctor)) ||
+                  (currentStep === 4 && (!selectedDate || !selectedTime)) ||
+                  (currentStep === 5 && (!formData.firstName || !formData.lastName || !formData.email || !formData.phone))
+                }
+              >
+                <div className="text-btn-wrapper">
+                  {isLoading ? (
+                    <>
+                      <div className="spinner" />
+                      <span>Загрузка...</span>
+                    </>
+                  ) : currentStep === 5 ? (
+                    <span>Отправить код подтверждения</span>
+                  ) : (
+                    <>
+                      <span>Далее</span>
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </>
+                  )}
+                </div>
+              </button>
+            </div>
+          )}
+
+          {currentStep === 6 && (
+            <div className="modal-footer">
+              <button
+                className="btn btn-primary"
+                onClick={handleClose}
+                style={{ width: '100%', justifyContent: 'center' }}
+              >
+                <div className="text-btn-wrapper">
+                  <span>Закрыть</span>
+                </div>
+              </button>
+            </div>
+          )}
         </div>
       </div>
       )}
@@ -1472,17 +1554,6 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
         onSuccess={handleVerificationSuccess}
       /> */}
 
-      {/* Экран успеха */}
-      {showSuccessStep && (
-        <div className="modal-overlay">
-          <div className="modal-content success-modal">
-            <SuccessStep
-              appointmentData={appointmentResult}
-              onClose={handleSuccessClose}
-            />
-          </div>
-        </div>
-      )}
 
       {/* Модальное окно консультации */}
       <ConsultationModal
