@@ -109,28 +109,26 @@ const HeaderSection = () => {
               >
                 +7 (495) 492-43-40
               </a>
-              {isDropdownOpen && (
-                <div className="phone-dropdown">
-                  <div className="phone-dropdown-content">
-                    <div className="phone-row">
-                      <span className="phone-number-dropdown">+7 (495) 492-43-40</span>
+              <div className={`phone-dropdown ${isDropdownOpen ? 'active' : ''}`}>
+                <div className="phone-dropdown-content">
+                  <div className="phone-row">
+                    <span className="phone-number-dropdown">+7 (495) 492-43-40</span>
 
-                    </div>
-                    
-                    <div className="working-hours">
-                      <span className="hours-label">Время работы:</span>
-                      <span className="hours-value">Ежедневно <b>10:00-20:00</b></span>
-                    </div>
-                    
-                    <button className="callback-button" onClick={handleConsultationClick}>
-                      <span>Обратный звонок</span>
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M4.5 3L7.5 6L4.5 9" stroke="#14488C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </button>
                   </div>
+                  
+                  <div className="working-hours">
+                    <span className="hours-label">Время работы:</span>
+                    <span className="hours-value">Ежедневно <b>10:00-20:00</b></span>
+                  </div>
+                  
+                  <button className="callback-button" onClick={handleConsultationClick}>
+                    <span>Обратный звонок</span>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M4.5 3L7.5 6L4.5 9" stroke="#14488C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </button>
                 </div>
-              )}
+              </div>
             </div>
             <button className="mobile-menu-button" onClick={toggleMobileMenu} aria-label="Открыть меню" aria-expanded={isMobileMenuOpen}>
               <img src={HamburgerIcon} alt="Меню" width={24} height={24} />
