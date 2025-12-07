@@ -392,6 +392,7 @@
 
 .service-card-step2:hover .service-content-step2 {
   overflow: visible;
+  z-index: 100;
 }
 
 .service-card-step2.selected {
@@ -2365,6 +2366,7 @@
 /* Service tooltip */
 .service-title-wrapper {
   position: relative;
+  z-index: 10;
 }
 
 .service-tooltip {
