@@ -23,6 +23,8 @@ FROM nginx:1.25-alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Copy build artifacts
 COPY --from=builder /app/dist /usr/share/nginx/html
+# Copy static files from public (favicon, etc.)
+COPY --from=builder /app/public/Symbol_Logo.ico /usr/share/nginx/html/Symbol_Logo.ico
 # Expose port
 EXPOSE 80
 # Default command

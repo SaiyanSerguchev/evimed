@@ -108,7 +108,10 @@ async function optimizeImage(inputPath, outputPath) {
  */
 async function processUploadedImage(filePath) {
   const ext = path.extname(filePath).toLowerCase();
-  const optimizedPath = filePath.replace(ext, '.jpg');
+  const dir = path.dirname(filePath);
+  const baseName = path.basename(filePath, ext);
+  // Всегда создаем файл с уникальным именем, добавляя суффикс -opt
+  const optimizedPath = path.join(dir, `${baseName}-opt.jpg`);
   
   await optimizeImage(filePath, optimizedPath);
   
