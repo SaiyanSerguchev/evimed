@@ -118,11 +118,10 @@
   text-decoration: none;
   line-height: 1.44;
   letter-spacing: 0.15%;
-  transition: color 0.3s ease;
+  transition: color 0.3s ease, opacity 0.3s ease;
   white-space: nowrap;
   padding-bottom: 4px;
   border-bottom: 2px dashed var(--color-grey-200);
-  
 }
 
 
@@ -158,6 +157,11 @@
   visibility: visible;
   transform: translateX(-50%) translateY(0);
   pointer-events: auto;
+}
+
+.phone-section:hover .phone-number {
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .phone-dropdown-content {
