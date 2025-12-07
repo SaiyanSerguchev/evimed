@@ -1024,7 +1024,10 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
                 >
                   <div className="service-card-step2-wrapper">
                     <div className="service-content-step2">
-                      <h3 className="service-title-step2">{service.name}</h3>
+                      <div className="service-title-wrapper">
+                        <h3 className="service-title-step2">{service.name}</h3>
+                        <div className="service-tooltip">{service.name}</div>
+                      </div>
                     </div>
                     {serviceImage && serviceImage !== null && serviceImage !== '' ? (
                       <div className="service-image-step2">
