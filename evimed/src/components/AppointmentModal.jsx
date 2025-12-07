@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { toast } from 'react-toastify';
 import './AppointmentModal.css';
 import './SuccessStep.css';
@@ -14,6 +14,41 @@ import { handleApiError, handleAppointmentError } from '../utils/errorHandler';
 import modalImg1 from '../assets/images/modal/IMG-1.png';
 import modalImg2 from '../assets/images/modal/IMG-2.png';
 import modalImg3 from '../assets/images/modal/IMG-3.png';
+
+// Компонент карточки услуги с тултипом (показывается только если текст обрезан)
+const ServiceCardStep2 = ({ service, isSelected, serviceImage, onClick }) => {
+  const titleRef = useRef(null);
+  const [isTruncated, setIsTruncated] = useState(false);
+
+  useEffect(() => {
+    const el = titleRef.current;
+    if (el) {
+      // Проверяем, обрезан ли текст
+      setIsTruncated(el.scrollHeight > el.clientHeight);
+    }
+  }, [service.name]);
+
+  return (
+    <div
+      className={`service-card-step2 ${isSelected ? 'selected' : ''} ${!serviceImage ? 'no-image' : ''}`}
+      onClick={onClick}
+    >
+      <div className="service-card-step2-wrapper">
+        <div className="service-content-step2">
+          <div className="service-title-wrapper">
+            <h3 ref={titleRef} className="service-title-step2">{service.name}</h3>
+            {isTruncated && <div className="service-tooltip">{service.name}</div>}
+          </div>
+        </div>
+        {serviceImage && (
+          <div className="service-image-step2">
+            <img src={serviceImage} alt={service.name} />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
   // Состояние шагов
@@ -1014,30 +1049,15 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
           </div>
         ) : (
           <div className="services-grid-step2">
-            {filteredServices.map(service => {
-              const serviceImage = getServiceImage(service);
-              return (
-                <div
-                  key={service.id}
-                  className={`service-card-step2 ${selectedService?.id === service.id ? 'selected' : ''} ${!serviceImage || serviceImage === null || serviceImage === '' ? 'no-image' : ''}`}
-                  onClick={() => handleServiceSelect(service)}
-                >
-                  <div className="service-card-step2-wrapper">
-                    <div className="service-content-step2">
-                      <div className="service-title-wrapper">
-                        <h3 className="service-title-step2">{service.name}</h3>
-                        <div className="service-tooltip">{service.name}</div>
-                      </div>
-                    </div>
-                    {serviceImage && serviceImage !== null && serviceImage !== '' ? (
-                      <div className="service-image-step2">
-                        <img src={serviceImage} alt={service.name} />
-                      </div>
-                    ) : null}
-                  </div>
-                </div>
-              );
-            })}
+            {filteredServices.map(service => (
+              <ServiceCardStep2
+                key={service.id}
+                service={service}
+                isSelected={selectedService?.id === service.id}
+                serviceImage={getServiceImage(service)}
+                onClick={() => handleServiceSelect(service)}
+              />
+            ))}
           </div>
         )}
       </div>

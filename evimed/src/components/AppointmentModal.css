@@ -374,6 +374,7 @@
 
 .service-card-step2:hover {
   transform: translateY(-12px);
+  z-index: 50;
 }
 
 .service-card-step2:hover .service-card-step2-wrapper {
@@ -382,10 +383,15 @@
     0px 4px 16px 0px rgba(13, 34, 61, 0.12), 
     0px 8px 32px 0px rgba(13, 34, 61, 0.08), 
     0px 16px 64px 0px rgba(13, 34, 61, 0.04);
+  overflow: visible;
 }
 
 .service-card-step2:hover .service-title-step2 {
   color: var(--color-primary-700);
+}
+
+.service-card-step2:hover .service-content-step2 {
+  overflow: visible;
 }
 
 .service-card-step2.selected {
