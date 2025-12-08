@@ -400,21 +400,6 @@ const ConsultationModal = ({ isOpen, onClose, initialComment = '' }) => {
                 <div className="step5-form-group">
                   <input
                     type="text"
-                    id="firstName"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    placeholder="Введите Имя"
-                    className={`step5-input ${errors.firstName ? 'error' : ''}`}
-                    disabled={isLoading}
-                    required
-                  />
-                  {errors.firstName && <span className="error-message">{errors.firstName}</span>}
-                </div>
-
-                <div className="step5-form-group">
-                  <input
-                    type="text"
                     id="lastName"
                     name="lastName"
                     value={formData.lastName}
@@ -425,6 +410,21 @@ const ConsultationModal = ({ isOpen, onClose, initialComment = '' }) => {
                     required
                   />
                   {errors.lastName && <span className="error-message">{errors.lastName}</span>}
+                </div>
+
+                <div className="step5-form-group">
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    placeholder="Введите Имя"
+                    className={`step5-input ${errors.firstName ? 'error' : ''}`}
+                    disabled={isLoading}
+                    required
+                  />
+                  {errors.firstName && <span className="error-message">{errors.firstName}</span>}
                 </div>
               </div>
 

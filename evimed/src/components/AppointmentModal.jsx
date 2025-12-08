@@ -1289,20 +1289,6 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
           <div className="step5-form-group">
             <input
               type="text"
-              id="firstName"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleInputChange}
-              placeholder="Введите Имя"
-              className={`step5-input ${errors.firstName ? 'error' : ''}`}
-              required
-            />
-            {errors.firstName && <span className="error-message">{errors.firstName}</span>}
-          </div>
-
-          <div className="step5-form-group">
-            <input
-              type="text"
               id="lastName"
               name="lastName"
               value={formData.lastName}
@@ -1312,6 +1298,20 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
               required
             />
             {errors.lastName && <span className="error-message">{errors.lastName}</span>}
+          </div>
+
+          <div className="step5-form-group">
+            <input
+              type="text"
+              id="firstName"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleInputChange}
+              placeholder="Введите Имя"
+              className={`step5-input ${errors.firstName ? 'error' : ''}`}
+              required
+            />
+            {errors.firstName && <span className="error-message">{errors.firstName}</span>}
           </div>
         </div>
 
