@@ -103,22 +103,23 @@ const HeaderSection = () => {
 
             <div className="phone-section" ref={dropdownRef} onMouseEnter={toggleDropdown} onMouseLeave={toggleDropdown}>
               <a 
-                href="tel:+74954924340" 
+                href="tel:+74112250509" 
                 className="phone-number" 
-                aria-label="Позвонить по номеру +7 (495) 492-43-40"
+                aria-label="Позвонить по номеру +7 (4112) 25-05-09"
               >
-                +7 (495) 492-43-40
+                +7 (4112) 25-05-09
               </a>
               <div className={`phone-dropdown ${isDropdownOpen ? 'active' : ''}`}>
                 <div className="phone-dropdown-content">
                   <div className="phone-row">
-                    <span className="phone-number-dropdown">+7 (495) 492-43-40</span>
+                    <span className="phone-number-dropdown"> +7 (4112) 25-05-09</span>
 
                   </div>
                   
                   <div className="working-hours">
                     <span className="hours-label">Время работы:</span>
-                    <span className="hours-value">Ежедневно <b>10:00-20:00</b></span>
+                    <span className="hours-value">Будние <b>9:00-20:00</b></span>
+                    <span className="hours-value">Выходные <b>10:00-15:00</b></span>
                   </div>
                   
                   <button className="callback-button" onClick={handleConsultationClick}>
@@ -178,7 +179,7 @@ const HeaderSection = () => {
           </button>
         </nav>
         <div className="mobile-contacts">
-          <a href="tel:+74954924340" className="mobile-phone">+7 (495) 492-43-40</a>
+          <a href="tel:+74112250509" className="mobile-phone">+7 (4112) 25-05-09</a>
           <div className="mobile-working-hours">
             <span>Время работы:</span>
             <span>Ежедневно <b>10:00-20:00</b></span>

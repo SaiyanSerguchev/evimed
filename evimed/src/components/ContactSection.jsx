@@ -7,7 +7,7 @@ const ContactSection = () => {
   const kicker = 'Адреса и контакты';
   const title = 'Свяжитесь с нами';
   const description = 'Широкая сеть наших центров диагностики охватывает всю страну и постоянно растёт. Мы стараемся быть ближе к вам.';
-  const phone = '+7 (495) 492-43-40';
+  const phone = '+7 (4112) 25-05-09';
   const email = 'info@axiomaykt.ru';
 
   // Data state
@@ -332,7 +332,7 @@ const ContactSection = () => {
           <div className="contact-info">
             <div className="contact-details">
               <div className="contact-lines">
-                <a href="tel:+74954924340" className="contact-line">{contactText.phone}</a>
+                <a href="tel:+74112250509" className="contact-line">{contactText.phone}</a>
                 <a href="mailto:info@axiomaykt.ru" className="contact-line">{contactText.email}</a>
               </div>
             </div>

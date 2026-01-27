@@ -212,7 +212,7 @@ async function main() {
         {
           title: 'Головной центр рентгено-диагностики',
           address: 'Якутск, пр. Ленина 1, этаж 7, офис 721',
-          phone: '+7 (495) 492-43-40',
+          phone: '+7 (4112) 25-05-09',
           email: 'info@axiomaykt.ru',
           workingHours: 'Пн-Пт: 9:00-18:00, Сб: 9:00-15:00',
           order: 1

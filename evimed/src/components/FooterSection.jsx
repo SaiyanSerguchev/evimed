@@ -71,7 +71,7 @@ const FooterSection = () => {
           <div className="footer-right">
             <div className="footer-contact">
               <div className="footer-contact-info">
-                <a href="tel:+74954924340" className="footer-contact-link">+7 (495) 492-43-40</a>
+                <a href="tel:+74112250509" className="footer-contact-link">+7 (4112) 25-05-09</a>
                 <div className="contact-underline"></div>
               </div>
               <div className="footer-contact-info">
