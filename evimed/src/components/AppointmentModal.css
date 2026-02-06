@@ -1749,195 +1749,95 @@
   }
 }
 
-/* (all non-480px media queries removed) */
 
-@media (max-width: 480px) {
-  .modal-title {
-    font-size: 18px;
-    padding: 0 20px;
-  }
-  
-  .modal-body {
-    padding: 32px 20px;
-  }
-
-  .modal-content {
-    height: auto;
-    min-height: 500px;
-    max-height: 90vh;
-  }
-  
-  .appointment-title {
-    font-size: 16px;
-  }
-  
-  .time-slots {
-    grid-template-columns: 1fr;
-  }
-
-  .step4-content {
-    gap: 40px;
-    margin-top: 32px;
-  }
-
-  .date-dropdown-wrapper,
-  .time-dropdown-wrapper {
-    max-width: 100%;
-  }
-
-  .date-time-label {
-    font-size: 13px;
-  }
-  
-  .service-card {
-    height: 180px;
-  }
-  
-  .service-content {
-    padding: 16px;
-  }
-  
-  .service-title {
-    font-size: 12px;
-    line-height: 16px;
-  }
-
-  .services-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .initial-service-card .service-description {
-    font-size: 11px;
-    margin-top: 6px;
-    margin-bottom: 6px;
-  }
-
-  .initial-service-card .service-price {
-    font-size: 14px;
-    padding-top: 6px;
-  }
-
-  .initial-services-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-
-  .services-grid-step2 {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-
-  .service-card-step2 {
-    height: 240px;
-  }
-
-  .service-card-step2-wrapper {
-    width: 100%;
-    max-width: 212px;
-    height: 220px;
-    margin-top: 10px;
-  }
-
-  .service-content-step2 {
-    padding: 20px;
-  }
-
-  .service-title-step2 {
-    font-size: 13px;
-    line-height: 18px;
-    -webkit-line-clamp: 3;
-  }
-
-  .service-image-step2 {
-    height: 100px;
-    min-height: 100px;
-    max-height: 100px;
-  }
-
-  .step2-subtitle {
-    font-size: 14px;
-    line-height: 20px;
-    margin-top: 12px;
-  }
-
-  .clinics-radio-list {
-    gap: 24px;
-    margin-top: 32px;
-  }
-
-  .clinic-radio-option {
-    max-width: 100%;
-  }
-
-  .clinic-radio-text {
-    font-size: 12px;
-    line-height: 18px;
-  }
-
-  .clinic-radio-icon {
-    width: 18px;
-    height: 18px;
-    margin-right: 12px;
-  }
-
-  .clinic-radio-option .clinic-radio-input:checked + .clinic-radio-icon {
-    border-width: 5px;
-  }
-
-  .initial-service-card {
-    height: 220px;
-    min-height: 220px;
-    max-height: 220px;
-  }
-
-  .initial-service-content {
-    padding: 20px 20px 0;
-    max-height: calc(220px - 100px);
-  }
-
-  .initial-service-title {
-    font-size: 13px;
-    line-height: 18px;
-    -webkit-line-clamp: 4;
-  }
-
-  .initial-service-image {
-    height: 100px;
-    min-height: 100px;
-    max-height: 100px;
-  }
-
-  .initial-service-image img {
-    object-fit: cover;
-  }
-
-  .initial-service-card.no-image .initial-service-content {
-    padding: 20px 20px 0;
-  }
-
-  .initial-service-card.no-image .initial-service-title {
-    -webkit-line-clamp: 4;
-  }
-
-  .initial-service-arrow {
-    width: 28px;
-    height: 28px;
-    border-radius: 14px;
-    margin: 0 20px 20px auto;
-  }
-
-  .initial-service-arrow svg {
-    width: 10px;
-    height: 10px;
-  }
-}
 
 /* Time Slots Styles */
 .time-slots {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 8px;
+}
+
+/* Mobile Styles */
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding: 0;
+  }
   
+  .modal-content {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 0;
+  }
+  
+  .modal-header {
+    padding: 20px 16px;
+    height: auto;
+  }
+  
+  .modal-title {
+    font-size: 20px;
+    text-align: center;
+  }
+  
+  .appointment-step:not(.step5) {
+    padding: 24px 16px;
+  }
+  
+  .appointment-title {
+    font-size: 18px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  
+  .services-grid,
+  .services-grid-step2 {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  
+  .service-card,
+  .service-card-step2-wrapper {
+    height: 180px;
+  }
+  
+  .service-content,
+  .service-content-step2 {
+    padding: 16px;
+  }
+  
+  .service-title {
+    font-size: 13px;
+    line-height: 1.3;
+  }
+  
+  .service-description {
+    font-size: 11px;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+  
+  .modal-close {
+    top: 16px;
+    right: 16px;
+  }
+  
+  .step2-subtitle {
+    font-size: 14px;
+    text-align: center;
+    margin: 12px 0 24px;
+  }
+  
+  .modal-footer {
+    padding: 16px;
+  }
+  
+  .btn {
+    height: 48px;
+    font-size: 16px;
+  }
 }
 
 .time-slot {
@@ -2352,16 +2252,7 @@
   font-family: 'Montserrat', sans-serif;
 }
 
-@media (max-width: 480px) {
-  .step5-form-row {
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .step5-input {
-    width: 100%;
-  }
-}
+
 
 /* Service tooltip */
 .service-title-wrapper {
@@ -2420,23 +2311,4 @@
   transform: translateY(0);
 }
 
-@media (max-width: 480px) {
-  .service-tooltip {
-    position: fixed;
-    bottom: auto;
-    top: 50%;
-    left: 50%;
-    right: auto;
-    transform: translate(-50%, -50%) scale(0.95);
-    width: calc(100vw - 40px);
-    max-width: 300px;
-  }
-  
-  .service-title-wrapper:hover .service-tooltip {
-    transform: translate(-50%, -50%) scale(1);
-  }
-  
-  .service-tooltip::after {
-    display: none;
-  }
-}
+

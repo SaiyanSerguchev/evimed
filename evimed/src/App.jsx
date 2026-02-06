@@ -39,7 +39,7 @@ function App() {
 
   // Показываем заглушку для мобильной версии (кроме админ панели)
   if (isMobile && !showAdmin) {
-    return <MobilePlaceholder />;
+
   }
 
   if (showAdmin) {
