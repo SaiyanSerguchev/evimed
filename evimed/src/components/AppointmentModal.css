@@ -524,6 +524,15 @@
   max-width: 100%;
 }
 
+/* Desktop/Mobile visibility classes */
+.desktop-only {
+  display: grid !important;
+}
+
+.mobile-only {
+  display: none !important;
+}
+
 .initial-service-card {
   border: 1px solid transparent;
   border-radius: 44px;
@@ -1014,13 +1023,13 @@
 
 /* Modal Footer */
 .modal-footer {
-  width: 1142px;
+  width: 100%;
   height: 68px;
   flex-shrink: 0;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
   padding: 0;
   border-top: 1px solid rgba(22, 35, 61, 0.17);
 }
@@ -1031,7 +1040,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
   padding: 24px 0;
   border-radius: 0;
@@ -1042,7 +1051,7 @@
   font-style: normal;
   line-height: 1.54;
   letter-spacing: -0.15px;
-  text-align: left;
+  text-align: center;
   cursor: pointer;
   transition: all 0.2s ease;
   border: none;
@@ -1074,12 +1083,12 @@
   font-style: normal;
   line-height: 1.54;
   letter-spacing: -0.15px;
-  text-align: left;
+  text-align: center;
   color: #1A232E;
 }
 
 .modal-footer .btn-secondary {
-  padding-left: 117px;
+  padding-left: 0;
   padding-right: 0;
   color: #1A232E;
 }
@@ -1097,10 +1106,8 @@
 
 .modal-footer .btn-primary {
   padding-left: 0;
-  padding-right: 117px;
+  padding-right: 0;
   justify-content: center;
-  align-items: flex-end;
-  background-color: transparent;
   color: #1A232E;
 }
 
@@ -1113,7 +1120,7 @@
 
 .modal-footer .btn-primary span {
   width: auto;
-  text-align: left;
+  text-align: center;
   color: #1A232E;
   white-space: nowrap;
 }
@@ -1830,13 +1837,268 @@
     margin: 12px 0 24px;
   }
   
-  .modal-footer {
-    padding: 16px;
-  }
-  
   .btn {
     height: 48px;
     font-size: 16px;
+  }
+  
+  /* Mobile styles for initial services grid */
+  .initial-services-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .initial-service-card {
+    display: none; /* Hide cards on mobile */
+  }
+  
+  .desktop-only {
+    display: none !important;
+  }
+  
+  .mobile-only {
+    display: flex !important;
+  }
+  
+  /* Mobile radio options for service selection */
+  .mobile-service-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .mobile-service-option {
+    display: flex;
+    align-items: flex-start;
+    padding: 16px;
+    border: 2px solid #E5E7EB;
+    border-radius: 12px;
+    background: #FFFFFF;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    gap: 12px;
+  }
+  
+  .mobile-service-option:hover {
+    border-color: #14488C;
+    background: #F8FAFF;
+  }
+  
+  .mobile-service-option.selected {
+    border-color: #14488C;
+    background: #EBF2FF;
+  }
+  
+  .mobile-service-option input[type="radio"] {
+    margin: 0;
+    margin-top: 2px;
+    width: 18px;
+    height: 18px;
+    accent-color: #14488C;
+  }
+  
+  .mobile-service-content {
+    flex: 1;
+  }
+  
+  .mobile-service-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: #1A232E;
+    margin: 0 0 4px 0;
+    line-height: 1.4;
+  }
+  
+  .mobile-service-description {
+    font-size: 14px;
+    color: #64748B;
+    line-height: 1.4;
+    margin: 0;
+  }
+  
+  /* Step 5 mobile styles */
+  .appointment-step.step5 {
+    padding: 24px 16px !important;
+    gap: 32px !important;
+  }
+  
+  .step5-form-row {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+  
+  .step5-form-group {
+    flex: 1;
+    width: 100% !important;
+    gap:0 !important;
+  }
+  
+  .step5-title {
+    font-size: 18px !important;
+    width: 100% !important;
+    text-align: center !important;
+  }
+  
+  .step5-checkbox-wrapper {
+    width: 100% !important;
+    flex-direction: row !important;
+    align-items: center;
+    gap: 12px !important;
+  }
+  
+  .step5-checkbox-label {
+    width: calc(100% - 32px) !important;
+    font-size: 14px;
+    line-height: 1.4;
+    text-align: left !important;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+  
+  .step5-divider {
+    width: 100% !important;
+  }
+  
+  .step5-input {
+    height: 44px !important;
+    font-size: 16px !important;
+  }
+  
+  .step5-textarea {
+    height: 100px !important;
+    font-size: 16px !important;
+  }
+  
+  /* Other steps mobile styles */
+  .appointment-step:not(.step5) {
+    padding: 24px 16px !important;
+  }
+  
+  .appointment-title {
+    font-size: 18px !important;
+    text-align: center !important;
+    margin-bottom: 24px !important;
+  }
+  
+  /* Services grid mobile */
+  .services-grid,
+  .services-grid-step2 {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+  
+  .service-card,
+  .service-card-step2-wrapper {
+    height: 180px !important;
+  }
+  
+  .service-content,
+  .service-content-step2 {
+    padding: 16px !important;
+  }
+  
+  .service-title {
+    font-size: 13px !important;
+    line-height: 1.3 !important;
+  }
+  
+  .service-description {
+    font-size: 11px !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+  }
+  
+  /* Time slots mobile */
+  .time-slots {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+  
+  .time-slot {
+    padding: 8px 12px !important;
+    font-size: 14px !important;
+  }
+  
+  /* Clinics radio mobile */
+  .clinics-radio-list {
+    gap: 16px !important;
+    margin-top: 24px !important;
+  }
+  
+  .clinic-radio-option {
+    max-width: 100% !important;
+  }
+  
+  /* Summary mobile */
+  .appointment-summary {
+    padding: 16px !important;
+  }
+  
+  .summary-item {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+  }
+  
+  .summary-value {
+    text-align: left !important;
+    max-width: 100% !important;
+  }
+  
+  /* Step 6 - Success screen mobile */
+  .success-screen {
+    padding: 40px 20px !important;
+    text-align: center !important;
+  }
+  
+  .success-icon {
+    width: 80px !important;
+    height: 80px !important;
+    margin-bottom: 24px !important;
+  }
+  
+  .success-title {
+    font-size: 20px !important;
+    margin-bottom: 16px !important;
+  }
+  
+  .success-message {
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+    margin-bottom: 32px !important;
+  }
+  
+  /* Referral options mobile */
+  .referral-options {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+  
+  .radio-option {
+    padding: 16px !important;
+    width: 100% !important;
+  }
+  
+  /* Form groups mobile */
+  .form-group {
+    margin-bottom: 20px !important;
+  }
+  
+  .form-group input,
+  .form-group textarea {
+    padding: 12px !important;
+    font-size: 16px !important;
+  }
+  
+  /* Modal close button mobile */
+  .modal-close {
+    top: 12px !important;
+    right: 12px !important;
+    width: 32px !important;
+    height: 32px !important;
   }
 }
 
@@ -2239,7 +2501,7 @@
   font-style: normal;
   line-height: 1.54;
   letter-spacing: -0.15px;
-  text-align: center;
+  text-align: left;
   color: #374252;
   cursor: pointer;
   user-select: none;

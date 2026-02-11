@@ -916,7 +916,6 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
 
   // Рендер шага 1 - Выбор категории
   const renderStep1 = () => {
-    // Показываем скелетоны только при первой загрузке (когда categories пустой)
     const showSkeletons = isLoading && categories.length === 0;
 
     return (
@@ -934,31 +933,57 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
             <small>Пожалуйста, выполните синхронизацию с Renovatio CRM</small>
           </div>
         ) : (
-          <div className="initial-services-grid">
-            {allCards.map(card => (
-              <div
-                key={card.id}
-                className={`initial-service-card ${(card.type === 'consultation' && isConsultationSelected) || (card.type === 'category' && selectedCategory?.id === card.id) ? 'selected' : ''} ${!card.image ? 'no-image' : ''}`}
-                onClick={() => handleInitialCategorySelect(card)}
-              >
-                <div className="initial-service-content">
-                  <h3 className="initial-service-title">{card.title}</h3>
+          <>
+            {/* Desktop version - cards */}
+            <div className="initial-services-grid desktop-only">
+              {allCards.map(card => (
+                <div
+                  key={card.id}
+                  className={`initial-service-card ${(card.type === 'consultation' && isConsultationSelected) || (card.type === 'category' && selectedCategory?.id === card.id) ? 'selected' : ''} ${!card.image ? 'no-image' : ''}`}
+                  onClick={() => handleInitialCategorySelect(card)}
+                >
+                  <div className="initial-service-content">
+                    <h3 className="initial-service-title">{card.title}</h3>
+                  </div>
+                  {card.image && card.image !== null && card.image !== '' ? (
+                    <div className={`initial-service-image ${card.image === modalImg2 ? 'no-filter' : ''}`}>
+                      <img src={card.image} alt={card.title} loading="lazy" />
+                    </div>
+                  ) : (
+                    <div className="initial-service-arrow">
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fillRule="evenodd" clipRule="evenodd" d="M0.75 6.00311C0.75 5.5889 1.08579 5.25311 1.5 5.25311H10.5C10.9142 5.25311 11.25 5.5889 11.25 6.00311C11.25 6.41733 10.9142 6.75311 10.5 6.75311H1.5C1.08579 6.75311 0.75 6.41733 0.75 6.00311Z" fill="currentColor"/>
+                        <path fillRule="evenodd" clipRule="evenodd" d="M5.46967 0.96967C5.76256 0.676777 6.23744 0.676777 6.53033 0.96967L11.0303 5.46967C11.3232 5.76256 11.3232 6.23744 11.0303 6.53033L6.53033 11.0303C6.23744 11.3232 5.76256 11.3232 5.46967 11.0303C5.17678 10.7374 5.17678 10.2626 5.46967 9.96967L9.43934 6L5.46967 2.03033C5.17678 1.73744 5.17678 1.26256 5.46967 0.96967Z" fill="currentColor"/>
+                      </svg>
+                    </div>
+                  )}
                 </div>
-                {card.image && card.image !== null && card.image !== '' ? (
-                  <div className={`initial-service-image ${card.image === modalImg2 ? 'no-filter' : ''}`}>
-                    <img src={card.image} alt={card.title} loading="lazy" />
+              ))}
+            </div>
+            
+            {/* Mobile version - radio options */}
+            <div className="mobile-service-options mobile-only">
+              {allCards.map(card => (
+                <label
+                  key={card.id}
+                  className={`mobile-service-option ${(card.type === 'consultation' && isConsultationSelected) || (card.type === 'category' && selectedCategory?.id === card.id) ? 'selected' : ''}`}
+                >
+                  <input
+                    type="radio"
+                    name="mobile-service"
+                    checked={(card.type === 'consultation' && isConsultationSelected) || (card.type === 'category' && selectedCategory?.id === card.id)}
+                    onChange={() => handleInitialCategorySelect(card)}
+                  />
+                  <div className="mobile-service-content">
+                    <div className="mobile-service-title">{card.title}</div>
+                    {card.description && (
+                      <div className="mobile-service-description">{card.description}</div>
+                    )}
                   </div>
-                ) : (
-                  <div className="initial-service-arrow">
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path fillRule="evenodd" clipRule="evenodd" d="M0.75 6.00311C0.75 5.5889 1.08579 5.25311 1.5 5.25311H10.5C10.9142 5.25311 11.25 5.5889 11.25 6.00311C11.25 6.41733 10.9142 6.75311 10.5 6.75311H1.5C1.08579 6.75311 0.75 6.41733 0.75 6.00311Z" fill="currentColor"/>
-                      <path fillRule="evenodd" clipRule="evenodd" d="M5.46967 0.96967C5.76256 0.676777 6.23744 0.676777 6.53033 0.96967L11.0303 5.46967C11.3232 5.76256 11.3232 6.23744 11.0303 6.53033L6.53033 11.0303C6.23744 11.3232 5.76256 11.3232 5.46967 11.0303C5.17678 10.7374 5.17678 10.2626 5.46967 9.96967L9.43934 6L5.46967 2.03033C5.17678 1.73744 5.17678 1.26256 5.46967 0.96967Z" fill="currentColor"/>
-                    </svg>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+                </label>
+              ))}
+            </div>
+          </>
         )}
       </div>
     );

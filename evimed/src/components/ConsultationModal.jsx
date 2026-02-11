@@ -388,7 +388,9 @@ const ConsultationModal = ({ isOpen, onClose, initialComment = '' }) => {
         ) : (
           <>
             <div className="modal-header">
-              <h2 className="modal-title">Записаться на консультацию</h2>
+              <h2 className="modal-title">
+                {window.innerWidth <= 480 ? 'Записаться' : 'Записаться на консультацию'}
+              </h2>
             </div>
 
             <div className="modal-body">
@@ -576,7 +578,7 @@ const ConsultationModal = ({ isOpen, onClose, initialComment = '' }) => {
                 </>
               ) : (
                 <>
-                  <span>Записаться на консультацию</span>
+                  <span>{window.innerWidth <= 480 ? 'Записаться' : 'Записаться на консультацию'}</span>
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                     <path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
