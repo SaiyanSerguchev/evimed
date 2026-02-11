@@ -44,17 +44,24 @@
   height: 40px;
   border-radius: var(--radius-full);
   background: transparent;
-  color: white;
-  display: flex;
+  color: #1F2937;
+  display: none;
   align-items: center;
   justify-content: center;
-  transition: var(--transition-fast);
+  cursor: pointer;
+  transition: all 0.2s ease;
   z-index: 20;
 }
 
 .modal-close:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: white;
+  color: #1A232E;
+}
+
+@media (max-width: 480px) {
+  .modal-close {
+    display: flex;
+  }
 }
 
 .modal-header {
@@ -83,21 +90,24 @@
   color: #1A232E;
   margin: 0;
   padding: 0;
+  padding-right: 64px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  white-space: normal;
 }
 
 .progress-bar {
   display: flex;
   gap: 8px;
   justify-content: center;
-  margin-bottom: 0;
 }
 
 .progress-step {
   flex: 1;
-  height: 6px;
-  background: #E5E7EB;
-  border-radius: 3px;
+  background: #C8DEFA;
   transition: var(--transition-fast);
+  margin-bottom: -2px;
 }
 
 .progress-step.active {
@@ -1780,13 +1790,47 @@
   }
   
   .modal-header {
-    padding: 20px 16px;
+    padding: 16px 0px 0px 0px;
     height: auto;
+  }
+  
+  .progress-bar {
+    width: 100% !important;
+  }
+  
+  
+  .progress-step.active {
+    background: #0D3B7A !important;
+    box-shadow: 0 0 20px rgba(13, 59, 122, 0.8) !important,
+                0 0 40px rgba(13, 59, 122, 0.4) !important,
+                inset 0 0 10px rgba(255, 255, 255, 0.2) !important;
+    border: 2px solid #0D3B7A !important;
+    transform: scale(1.05) !important;
+    animation: glow 2s ease-in-out infinite alternate !important;
+  }
+  
+  @keyframes glow {
+    from {
+      box-shadow: 0 0 20px rgba(13, 59, 122, 0.8) !important,
+                  0 0 40px rgba(13, 59, 122, 0.4) !important,
+                  inset 0 0 10px rgba(255, 255, 255, 0.2) !important;
+    }
+    to {
+      box-shadow: 0 0 30px rgba(13, 59, 122, 1) !important,
+                  0 0 60px rgba(13, 59, 122, 0.6) !important,
+                  inset 0 0 15px rgba(255, 255, 255, 0.3) !important;
+    }
   }
   
   .modal-title {
     font-size: 20px;
-    text-align: center;
+    text-align: left;
+    margin-left: 16px;
+    padding-right: 56px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    white-space: normal;
   }
   
   .appointment-step:not(.step5) {
@@ -2095,10 +2139,19 @@
   
   /* Modal close button mobile */
   .modal-close {
-    top: 12px !important;
+    top: 14px !important;
     right: 12px !important;
     width: 32px !important;
     height: 32px !important;
+  }
+  
+  /* Modal title mobile */
+  .modal-title {
+    padding-right: 48px !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    hyphens: auto !important;
+    white-space: normal !important;
   }
 }
 

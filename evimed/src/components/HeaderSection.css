@@ -396,7 +396,7 @@
 .close-menu {
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: 36px;
   line-height: 1;
   cursor: pointer;
   color: #1F2937;
@@ -540,3 +540,11 @@
   }
 }
 
+@media (max-width: 320px) {
+    .header-section {
+        padding: 8px;
+    }
+    .logo-symbol{
+      display: none !important;
+    }
+}

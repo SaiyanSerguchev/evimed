@@ -9,6 +9,13 @@
   text-align: center;
 }
 
+/* Показываем кнопку закрытия только в мобильной версии */
+@media (max-width: 480px) {
+
+}
+
+
+
 .required {
   color: #EF4444;
 }

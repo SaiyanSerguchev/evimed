@@ -1458,6 +1458,11 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
       {isOpen && !showConsultationModal && (
       <div className="modal-overlay" onClick={handleClose}>
         <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <button className="modal-close" onClick={handleClose} aria-label="Закрыть">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+          </button>
           <div className="modal-header">
             <h1 className="modal-title">
               {currentStep === 6 ? 'Спасибо за заявку' : 'Записаться на снимок'}
@@ -1467,7 +1472,7 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
                 {[1, 2, 3, 4, 5].map(step => (
                   <div
                     key={step}
-                    className={`progress-step ${step < Math.ceil(currentStep) ? 'active' : ''}`}
+                    className={`progress-step ${step <= currentStep ? 'active' : ''}`}
                   />
                 ))}
               </div>

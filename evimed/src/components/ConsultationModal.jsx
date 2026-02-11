@@ -351,7 +351,7 @@ const ConsultationModal = ({ isOpen, onClose, initialComment = '' }) => {
   };
 
   return (
-    <div className="modal-overlay" onClick={handleOverlayClick}>
+    <div className="modal-overlay consultation-modal" onClick={handleOverlayClick}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose} aria-label="Закрыть">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -389,8 +389,16 @@ const ConsultationModal = ({ isOpen, onClose, initialComment = '' }) => {
           <>
             <div className="modal-header">
               <h2 className="modal-title">
-                {window.innerWidth <= 480 ? 'Записаться' : 'Записаться на консультацию'}
+                {window.innerWidth <= 480 ? 'Записаться на консультацию' : 'Записаться на консультацию'}
               </h2>
+              <div className="progress-bar">
+                {[1, 2, 3, 4, 5].map(step => (
+                  <div
+                    key={step}
+                    className={`progress-step ${step <= 5 ? 'active' : ''}`}
+                  />
+                ))}
+              </div>
             </div>
 
             <div className="modal-body">
