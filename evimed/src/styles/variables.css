@@ -162,7 +162,7 @@
   --advantages-height: calc(var(--advantages-base-height) * var(--layout-scale));
 
   /* Advantages Cards Height - adaptive (456px at 1440px, scales to ~608px at 1920px) */
-  --advantages-card-base-height: 580px;
+  --advantages-card-base-height: 460px;
   --advantages-card-height: calc(var(--advantages-card-base-height) * var(--layout-scale));
 
   /* Typography - Zeplin specs (static sizes) */
