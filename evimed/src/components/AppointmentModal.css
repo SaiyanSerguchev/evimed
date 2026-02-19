@@ -1321,47 +1321,6 @@
   border-radius: 4px;
 }
 
-/* Step 3 — список филиалов как аккордеон (без изображений, описание под выбранным) */
-.step3-clinic-list {
-  gap: 0;
-}
-
-.step3-clinic-item {
-  border-bottom: 1px solid rgba(24, 37, 61, 0.12);
-  overflow: hidden;
-}
-
-.step3-clinic-item:first-child {
-  border-top: 1px solid rgba(24, 37, 61, 0.12);
-}
-
-.step3-clinic-item .clinic-radio-option {
-  max-width: none;
-  width: 100%;
-  padding: 16px 0;
-  margin: 0;
-}
-
-.step3-clinic-description {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 1.5;
-  letter-spacing: -0.1px;
-  color: #64748B;
-  padding: 0 0 16px 36px;
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition: max-height 0.25s ease, opacity 0.2s ease, padding 0.2s ease;
-}
-
-.step3-clinic-item.selected .step3-clinic-description {
-  max-height: 120px;
-  opacity: 1;
-  padding: 0 0 16px 36px;
-}
-
 /* Legacy styles for backward compatibility */
 .clinics-section {
   display: flex;
@@ -2061,9 +2020,78 @@
     margin-bottom: 24px !important;
   }
   
-  /* Services grid mobile */
-  .services-grid,
-  .services-grid-step2 {
+  /* Services grid mobile — скрыт, вместо него список */
+  .services-grid-step2.desktop-only {
+    display: none !important;
+  }
+  
+  /* Step 2 mobile — список-аккордеон без изображений */
+  .step2-mobile-list {
+    display: flex !important;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 24px;
+    width: 100%;
+  }
+  
+  .step2-mobile-item {
+    border-bottom: 1px solid #E5E7EB;
+    overflow: hidden;
+  }
+  
+  .step2-mobile-item:first-child {
+    border-top: 1px solid #E5E7EB;
+  }
+  
+  .step2-mobile-item-label {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 14px 0;
+    cursor: pointer;
+    position: relative;
+    gap: 0;
+  }
+  
+  .step2-mobile-item .clinic-radio-icon {
+    flex-shrink: 0;
+    margin-right: 16px;
+  }
+  
+  .step2-mobile-item .clinic-radio-text {
+    flex: 1;
+    min-width: 0;
+    font-size: 14px;
+  }
+  
+  .step2-mobile-item-detail {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
+  }
+  
+  .step2-mobile-item.selected .step2-mobile-item-detail {
+    max-height: 400px;
+  }
+  
+  .step2-mobile-item-detail-inner {
+    padding: 0 0 16px 36px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.45;
+    color: #64748B;
+  }
+  
+  .step2-mobile-item.skeleton {
+    height: 52px;
+    background: linear-gradient(90deg, #EBEDF2 25%, #E0E3E9 50%, #EBEDF2 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: 4px;
+  }
+  
+  .services-grid {
     grid-template-columns: 1fr 1fr !important;
     gap: 12px !important;
   }
@@ -2104,20 +2132,6 @@
   .clinics-radio-list {
     gap: 16px !important;
     margin-top: 24px !important;
-  }
-  
-  .clinics-radio-list.step3-clinic-list {
-    gap: 0 !important;
-  }
-  
-  .step3-clinic-item .clinic-radio-option {
-    padding: 14px 0 !important;
-  }
-  
-  .step3-clinic-description {
-    padding-left: 36px !important;
-    padding-right: 0 !important;
-    font-size: 12px !important;
   }
   
   .clinic-radio-option {

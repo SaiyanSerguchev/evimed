@@ -1071,88 +1071,103 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
           <p className="step2-subtitle">Выберите снимок</p>
         </div>
         {isLoading ? (
-          <div className="services-grid-step2">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="service-card-step2 skeleton" />
-            ))}
-          </div>
+          <>
+            <div className="services-grid-step2 desktop-only">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="service-card-step2 skeleton" />
+              ))}
+            </div>
+            <div className="step2-mobile-list mobile-only">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="step2-mobile-item skeleton" />
+              ))}
+            </div>
+          </>
         ) : (
-          <div className="services-grid-step2">
-            {filteredServices.map(service => (
-              <ServiceCardStep2
-                key={service.id}
-                service={service}
-                isSelected={selectedService?.id === service.id}
-                serviceImage={getServiceImage(service)}
-                onClick={() => handleServiceSelect(service)}
-              />
-            ))}
-          </div>
+          <>
+            <div className="services-grid-step2 desktop-only">
+              {filteredServices.map(service => (
+                <ServiceCardStep2
+                  key={service.id}
+                  service={service}
+                  isSelected={selectedService?.id === service.id}
+                  serviceImage={getServiceImage(service)}
+                  onClick={() => handleServiceSelect(service)}
+                />
+              ))}
+            </div>
+            <div className="step2-mobile-list mobile-only">
+              {filteredServices.map(service => {
+                const isSelected = selectedService?.id === service.id;
+                return (
+                  <div
+                    key={service.id}
+                    className={`step2-mobile-item clinic-radio-option ${isSelected ? 'selected' : ''}`}
+                  >
+                    <label className="step2-mobile-item-label" onClick={() => handleServiceSelect(service)}>
+                      <input
+                        type="radio"
+                        name="step2-service"
+                        className="clinic-radio-input"
+                        checked={isSelected}
+                        onChange={() => handleServiceSelect(service)}
+                        readOnly
+                      />
+                      <span className="clinic-radio-icon" />
+                      <span className="clinic-radio-text">{service.name}</span>
+                    </label>
+                    <div className="step2-mobile-item-detail">
+                      <div className="step2-mobile-item-detail-inner">
+                        {service.description || 'Нет описания.'}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
         )}
       </div>
     );
   };
 
-  // Рендер шага 3 - Выбор клиники и врача (список-аккордеон)
-  const renderStep3 = () => {
-    const getDoctorDescription = (doctor) => {
-      const profession = doctor.profession;
-      if (Array.isArray(profession) && profession.length) return profession.join(', ');
-      if (typeof profession === 'string' && profession.trim()) return profession;
-      if (doctor.address && doctor.address !== doctor.name) return doctor.address;
-      return null;
-    };
-    return (
-      <div className="appointment-step">
-        <h2 className="appointment-title">Выберите филиал для записи</h2>
-        <div className="step3-content">
-          {isLoading ? (
-            <div className="clinics-radio-list step3-clinic-list">
-              {[...Array(2)].map((_, i) => (
-                <div key={i} className="step3-clinic-item">
-                  <div className="clinic-radio-option skeleton" />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="clinics-radio-list step3-clinic-list">
-              {doctors.map(doctor => {
-                const isSelected = selectedDoctor?.id === doctor.id;
-                const description = getDoctorDescription(doctor);
-                return (
-                  <div
-                    key={doctor.id}
-                    className={`step3-clinic-item ${isSelected ? 'selected' : ''}`}
-                  >
-                    <label
-                      className="clinic-radio-option"
-                      onClick={() => handleDoctorSelect(doctor)}
-                    >
-                      <input
-                        type="radio"
-                        name="clinic"
-                        value={doctor.id}
-                        checked={isSelected}
-                        onChange={() => handleDoctorSelect(doctor)}
-                        className="clinic-radio-input"
-                      />
-                      <span className="clinic-radio-icon" />
-                      <span className="clinic-radio-text">{doctor.name}</span>
-                    </label>
-                    {description && (
-                      <div className="step3-clinic-description" aria-hidden={!isSelected}>
-                        {description}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
+  // Рендер шага 3 - Выбор клиники и врача
+  const renderStep3 = () => (
+    <div className="appointment-step">
+      <h2 className="appointment-title">Выберите филиал для записи</h2>
+      
+      <div className="step3-content">
+        {isLoading ? (
+          <div className="clinics-radio-list">
+            {[...Array(2)].map((_, i) => (
+              <div key={i} className="clinic-radio-option skeleton" />
+            ))}
+          </div>
+        ) : (
+          <div className="clinics-radio-list">
+            {doctors.map(doctor => (
+              <label
+                key={doctor.id}
+                className={`clinic-radio-option ${selectedDoctor?.id === doctor.id ? 'selected' : ''}`}
+                onClick={() => handleDoctorSelect(doctor)}
+              >
+                <input
+                  type="radio"
+                  name="clinic"
+                  value={doctor.id}
+                  checked={selectedDoctor?.id === doctor.id}
+                  onChange={() => handleDoctorSelect(doctor)}
+                  className="clinic-radio-input"
+                />
+                <span className="clinic-radio-icon"></span>
+                <span className="clinic-radio-text">{doctor.name}</span>
+              </label>
+            ))}
+          </div>
+        )}
       </div>
-    );
-  };
+    </div>
+  );
 
   // Рендер шага 4 - Выбор даты и времени
   const renderStep4 = () => {
