@@ -7,6 +7,8 @@ const SWIPE_THRESHOLD = 50;
 const HeroBanner = ({ onOpenAppointment }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [banners, setBanners] = useState([]);
+  const [mobileBgLoaded, setMobileBgLoaded] = useState(false);
+  const sectionRef = useRef(null);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
@@ -14,6 +16,23 @@ const HeroBanner = ({ onOpenAppointment }) => {
 
   useEffect(() => {
     loadBanners();
+  }, []);
+
+  useEffect(() => {
+    const isMobile = () => window.matchMedia('(max-width: 480px)').matches;
+    if (!isMobile()) return;
+
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setMobileBgLoaded(true);
+      },
+      { rootMargin: '50px' }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
 
   const loadBanners = async () => {
@@ -80,7 +99,8 @@ const HeroBanner = ({ onOpenAppointment }) => {
 
   return (
     <section
-      className="hero-banner"
+      ref={sectionRef}
+      className={`hero-banner${mobileBgLoaded ? ' mobile-bg-loaded' : ''}`}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -89,10 +109,12 @@ const HeroBanner = ({ onOpenAppointment }) => {
         <div key={banner.id} className={`hero-slide ${currentSlide === index ? 'active' : ''}`}>
           {/* Hero Image */}
           <div className="hero-image">
-            <img 
-              src={banner.imageUrl || heroEquipment} 
-              alt={banner.imageAlt || 'Медицинское оборудование'} 
+            <img
+              src={banner.imageUrl || heroEquipment}
+              alt={banner.imageAlt || 'Медицинское оборудование'}
               className="equipment-image"
+              loading={index === 0 ? 'eager' : 'lazy'}
+              decoding="async"
             />
           </div>
           

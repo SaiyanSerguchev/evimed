@@ -266,10 +266,14 @@
   opacity: 0.88;
   text-decoration: none;
   transition: opacity 0.2s ease;
-  display: flex;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
   gap: 10px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
 .footer-privacy-link:hover {

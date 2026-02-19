@@ -220,30 +220,12 @@
   transition: background-color 0.3s ease;
 }
 
-.ct-card:hover .ct-icon-btn.outline {
-  background: var(--color-primary-700);
-  border-color: var(--color-primary-700);
-}
-
-.ct-card:hover .ct-icon-btn.outline svg path {
-  fill: #C8DEFA;
-}
-
 .ct-card:hover .ct-icon-btn {
   background: var(--color-greylight-100);
   border: 1px solid rgba(20, 72, 140, 0.44);
 }
 .ct-card:hover .ct-icon-btn:hover {
   background: var(--color-greylight-400);
-}
-
-.ct-card:hover .ct-icon-btn.outline:hover {
-  background: var(--color-primary-500);
-  border: 1px solid var(--color-primary-500);
-}
-
-.ct-card:hover .ct-icon-btn.outline:hover svg path {
-  fill: var(--color-white);
 }
 
 /* Card head */
@@ -661,11 +643,6 @@
       0px 4px 8px rgba(13, 34, 61, 0.06);
   }
   .ct-card:hover .ct-title { color: rgba(26, 35, 46, 0.88); }
-  .ct-card:hover .ct-icon-btn.outline {
-    background: var(--color-greylight-100);
-    border-color: rgba(20, 72, 140, 0.44);
-  }
-  .ct-card:hover .ct-icon-btn.outline svg path { fill: rgba(20, 72, 140, 0.92); }
   .ct-card:hover .ct-icon-btn {
     background: #FFFFFF;
     border: 0;
