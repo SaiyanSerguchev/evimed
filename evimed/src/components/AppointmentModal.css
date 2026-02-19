@@ -2035,6 +2035,9 @@
   }
   
   .step2-mobile-item {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
     border-bottom: 1px solid #E5E7EB;
     overflow: hidden;
   }
@@ -2051,6 +2054,8 @@
     cursor: pointer;
     position: relative;
     gap: 0;
+    flex-shrink: 0;
+    order: 1;
   }
   
   .step2-mobile-item .clinic-radio-icon {
@@ -2065,9 +2070,11 @@
   }
   
   .step2-mobile-item-detail {
+    order: 2;
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.25s ease;
+    flex-shrink: 0;
   }
   
   .step2-mobile-item.selected .step2-mobile-item-detail {
@@ -2075,7 +2082,7 @@
   }
   
   .step2-mobile-item-detail-inner {
-    padding: 0 0 16px 36px;
+    padding: 12px 0 16px 36px;
     font-family: 'Montserrat', sans-serif;
     font-size: 13px;
     font-weight: 400;
