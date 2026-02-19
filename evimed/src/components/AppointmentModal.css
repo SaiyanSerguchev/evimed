@@ -1321,6 +1321,47 @@
   border-radius: 4px;
 }
 
+/* Step 3 — список филиалов как аккордеон (без изображений, описание под выбранным) */
+.step3-clinic-list {
+  gap: 0;
+}
+
+.step3-clinic-item {
+  border-bottom: 1px solid rgba(24, 37, 61, 0.12);
+  overflow: hidden;
+}
+
+.step3-clinic-item:first-child {
+  border-top: 1px solid rgba(24, 37, 61, 0.12);
+}
+
+.step3-clinic-item .clinic-radio-option {
+  max-width: none;
+  width: 100%;
+  padding: 16px 0;
+  margin: 0;
+}
+
+.step3-clinic-description {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -0.1px;
+  color: #64748B;
+  padding: 0 0 16px 36px;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease, opacity 0.2s ease, padding 0.2s ease;
+}
+
+.step3-clinic-item.selected .step3-clinic-description {
+  max-height: 120px;
+  opacity: 1;
+  padding: 0 0 16px 36px;
+}
+
 /* Legacy styles for backward compatibility */
 .clinics-section {
   display: flex;
@@ -2063,6 +2104,20 @@
   .clinics-radio-list {
     gap: 16px !important;
     margin-top: 24px !important;
+  }
+  
+  .clinics-radio-list.step3-clinic-list {
+    gap: 0 !important;
+  }
+  
+  .step3-clinic-item .clinic-radio-option {
+    padding: 14px 0 !important;
+  }
+  
+  .step3-clinic-description {
+    padding-left: 36px !important;
+    padding-right: 0 !important;
+    font-size: 12px !important;
   }
   
   .clinic-radio-option {
