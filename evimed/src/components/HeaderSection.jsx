@@ -203,7 +203,8 @@ const HeaderSection = () => {
           <a href="tel:+74112250509" className="mobile-phone">+7 (4112) 25-05-09</a>
           <div className="mobile-working-hours">
             <span>Время работы:</span>
-            <span>Ежедневно <b>10:00-20:00</b></span>
+            <span>Будние <b>9:00-20:00</b></span>
+            <span>Выходные <b>10:00-15:00</b></span>
           </div>
           <button className="mobile-callback" onClick={() => { handleConsultationClick(); closeMobileMenu(); }}>
             Консультация
