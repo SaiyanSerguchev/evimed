@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './AdvantagesSection.css';
 import Logo_card1 from '../assets/images/advantages/Logo_card1.svg';
 import Logo_card2 from '../assets/images/advantages/Logo_card2.svg';
@@ -7,12 +7,24 @@ import Logo_card4 from '../assets/images/advantages/Logo_card4.svg';
 
 const AdvantagesSection = () => {
   const [advantages, setAdvantages] = useState([]);
+  const [activeCardIndex, setActiveCardIndex] = useState(0);
+  const gridRef = useRef(null);
 
   const API_BASE = process.env.REACT_APP_API_URL || '/api';
 
   useEffect(() => {
     loadAdvantages();
   }, []);
+
+  useEffect(() => {
+    if (activeCardIndex == null || !gridRef.current || window.innerWidth > 1024) return;
+    const grid = gridRef.current;
+    const cards = grid.querySelectorAll('.advantage-card');
+    const card = cards[activeCardIndex];
+    if (card) {
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  }, [activeCardIndex]);
 
   const loadAdvantages = async () => {
     try {
@@ -130,9 +142,22 @@ const AdvantagesSection = () => {
             </p>
         </div>
         
-        <div className="advantages-grid">
+        <div ref={gridRef} className="advantages-grid">
           {advantages.map((advantage, index) => (
-            <div key={advantage.id || index} className="advantage-card">
+            <div
+              key={advantage.id || index}
+              className={`advantage-card ${index === activeCardIndex ? 'active' : ''}`}
+              onClick={() => setActiveCardIndex(index)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setActiveCardIndex(index);
+                }
+              }}
+              aria-pressed={index === activeCardIndex}
+            >
               <div className="advantage-content">
                 <div className="advantage-text">
                   <h3 className="advantage-title">{advantage.title}</h3>

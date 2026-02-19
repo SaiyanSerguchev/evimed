@@ -549,6 +549,38 @@
   transform: translateX(4px);
 }
 
+/* 4:3 и узкие экраны — карта внизу, контент на всю ширину (список адресов как на десктопе) */
+@media (max-width: 1024px) {
+  .contact-section {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .contact-content {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-map {
+    position: static;
+    order: 2;
+    width: 100%;
+    height: 320px;
+    border-top-left-radius: 40px;
+    border-top-right-radius: 40px;
+    overflow: hidden;
+  }
+
+  .yandex-map-container {
+    border-top-left-radius: 40px;
+    border-top-right-radius: 40px;
+  }
+
+  .yandex-map-container > div {
+    border-top-left-radius: 40px;
+    border-top-right-radius: 40px;
+  }
+}
+
 /* Mobile — up to 480px */
 @media (max-width: 480px) {
   .contact-section {
@@ -560,6 +592,7 @@
 
   .contact-container {
     padding: 0 16px;
+    overflow: visible;
   }
 
   .contact-header {
@@ -595,6 +628,7 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: 20px;
+    overflow: visible;
   }
 
   .contact-map {
@@ -622,6 +656,8 @@
 
   .contact-info {
     gap: 16px;
+    min-width: 0;
+    overflow: visible;
   }
 
   .contact-details {
@@ -644,32 +680,48 @@
 
   .contact-branches {
     margin-top: 0;
+    margin-left: -16px;
+    margin-right: -16px;
+    min-width: 0;
+    overflow: visible;
   }
 
   .branches-title {
-    padding-left: 0;
+    padding-left: 16px;
   }
   .branches-list {
-    max-height: none;
-    padding: 0 16px 8px 0px; /* keep inside viewport */
+    position: relative;
+    z-index: 2;
+    min-width: 0;
+    min-height: 0;
+    padding: 0 16px 8px 16px;
     gap: 12px;
     display: flex;
     flex-direction: row;
-    overflow-x: auto;
+    align-items: stretch;
+    overflow-x: scroll;
+    overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
     scrollbar-width: none;
     scroll-snap-type: x mandatory;
+    scroll-padding-inline: 16px;
     width: 100%;
+    box-sizing: border-box;
   }
   .branches-list::-webkit-scrollbar { display: none; }
   .branch-item {
+    position: relative;
+    z-index: 1;
     padding: 20px 20px;
     border-radius: 24px;
     gap: 16px;
     width: 320px;
     flex: 0 0 auto;
+    align-self: stretch;
     scroll-snap-align: start;
-    min-height:112px;
+    min-height: 0 !important;
+    align-items: flex-start;
   }
   
   .branch-content {
@@ -679,6 +731,9 @@
     width: 100%;
     overflow: hidden;
     justify-content: flex-start;
+    flex: 0 1 auto;
+    min-width: 0;
+    min-height: 0;
   }
 
   .branch-actions {
@@ -705,7 +760,9 @@
     text-overflow: ellipsis;
     width: 100%;
   }
-  .branch-hours { font-size: 12px; }
+  .branch-hours {
+    font-size: 12px;
+  }
 
   .branch-action-primary {
     padding: 6px;

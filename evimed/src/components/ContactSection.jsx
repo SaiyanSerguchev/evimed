@@ -111,18 +111,23 @@ const ContactSection = () => {
   // Обработчики
   const handleMouseDown = (e) => {
     if (e.button !== 0) return; // только левая кнопка мыши
+    // Отключаем на мобильных устройствах
+    if (window.innerWidth <= 480) return;
     setIsDragging(true);
     listRef.current.style.cursor = 'grabbing';
   };
 
   const handleMouseMove = (e) => {
     if (!isDragging) return;
-    listRef.current.scrollTop -= e.movementY;
+    // Горизонтальный скролл вместо вертикального
+    listRef.current.scrollLeft -= e.movementX;
   };
 
   const handleMouseUp = () => {
     setIsDragging(false);
-    listRef.current.style.cursor = 'grab';
+    if (listRef.current) {
+      listRef.current.style.cursor = 'grab';
+    }
   };
 
   // Geocoding function with caching
@@ -307,6 +312,26 @@ const ContactSection = () => {
       marker.placemark.balloon.open();
     }
   }, [activeBranch, mapInstance, markers, branches]);
+
+  // Scroll active branch into view on mobile
+  useEffect(() => {
+    if (activeBranch === null || !listRef.current) return;
+    
+    // Check if mobile (width <= 480px)
+    if (window.innerWidth > 480) return;
+    
+    const listElement = listRef.current;
+    const branchItems = listElement.querySelectorAll('.branch-item');
+    const activeItem = branchItems[activeBranch];
+    
+    if (activeItem) {
+      activeItem.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center'
+      });
+    }
+  }, [activeBranch]);
 
   // Cleanup on unmount
   useEffect(() => {

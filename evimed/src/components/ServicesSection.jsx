@@ -25,10 +25,14 @@ const ServicesSection = () => {
   const [showAllServices, setShowAllServices] = useState(false);
   const [servicesPerRow, setServicesPerRow] = useState(3); // Динамически определяется
   const [isMobile, setIsMobile] = useState(false);
+  const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
+  const [openInfoIndex, setOpenInfoIndex] = useState(null); // индекс карточки с открытым тултипом (мобильная i)
   const DEFAULT_ROWS = 2;
   const MOBILE_BREAKPOINT = 480;
+  const GRID_BREAKPOINT = 1024;
   const gridRef = useRef(null);
-  
+  const firstNewCardRef = useRef(null);
+
   const API_BASE = process.env.REACT_APP_API_URL || '/api';
 
   useEffect(() => {
@@ -36,11 +40,76 @@ const ServicesSection = () => {
   }, []);
 
   useEffect(() => {
+    const setGridWidth = () => {
+      const el = gridRef.current;
+      if (!el) return;
+      const w = window.innerWidth;
+      if (w <= GRID_BREAKPOINT) {
+        const widthPx = window.innerWidth;
+        el.style.width = `${widthPx}px`;
+        // Выравниваем левый край грида по левому краю viewport
+        const container = el.closest('.services-container');
+        if (container) {
+          const containerRect = container.getBoundingClientRect();
+          const leftOffset = containerRect.left;
+          el.style.left = `-${leftOffset}px`;
+        }
+      } else {
+        el.style.width = '';
+        el.style.left = '';
+      }
+    };
+    setGridWidth();
+    window.addEventListener('resize', setGridWidth);
+    return () => window.removeEventListener('resize', setGridWidth);
+  }, []);
+
+  useEffect(() => {
     if (categories.length > 0) {
       loadServicesForCategory(categories[activeTab]?.id);
       setShowAllServices(false); // Сбрасываем при смене категории
+      setOpenInfoIndex(null);
     }
   }, [categories, activeTab]);
+
+  // При раскрытии "Показать все" — прокрутить к первой новой карточке
+  useEffect(() => {
+    if (!showAllServices) return;
+    const id = setTimeout(() => {
+      firstNewCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+    }, 50);
+    return () => clearTimeout(id);
+  }, [showAllServices]);
+
+  // При смене категории — грид в начало (первая карточка в видимой области)
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (grid) grid.scrollLeft = 0;
+  }, [activeTab, services]);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (categoryDropdownOpen && !e.target.closest('.services-category-dropdown')) {
+        setCategoryDropdownOpen(false);
+      }
+      if (openInfoIndex !== null && !e.target.closest('.ct-tooltip-wrapper') && !e.target.closest('.ct-info-modal')) {
+        setOpenInfoIndex(null);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [categoryDropdownOpen, openInfoIndex]);
+
+  useEffect(() => {
+    if (openInfoIndex !== null) {
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+    };
+  }, [openInfoIndex]);
 
   const loadCategories = async () => {
     try {
@@ -346,26 +415,76 @@ const ServicesSection = () => {
           </p>
         </div>
 
-        {/* Tabs */}
-        <div 
-          className="services-tabs" 
-          ref={tabsRef}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-        >
-          {categories.map((category, idx) => (
-            <button
-              key={category.id}
-              className={`services-tab ${activeTab === idx ? 'active' : ''}`}
-              type="button"
-              onClick={() => handleTabClick(idx)}
+        {/* Tabs (desktop) */}
+        {!isMobile && (
+          <div 
+            className="services-tabs" 
+            ref={tabsRef}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+          >
+            {categories.map((category, idx) => (
+              <button
+                key={category.id}
+                className={`services-tab ${activeTab === idx ? 'active' : ''}`}
+                type="button"
+                onClick={() => handleTabClick(idx)}
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Category dropdown (mobile) */}
+        {isMobile && (
+          <div
+            className={`services-category-dropdown ${categoryDropdownOpen ? 'open' : ''}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              className="services-category-dropdown-trigger"
+              onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
             >
-              {category.name}
-            </button>
-          ))}
-        </div>
+              <span className="services-category-dropdown-text">
+                {categories[activeTab]?.name ?? 'Категория'}
+              </span>
+              <svg
+                className={`services-category-dropdown-arrow ${categoryDropdownOpen ? 'open' : ''}`}
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M4 6L8 10L12 6" stroke="rgba(24, 37, 61, 0.32)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            {categoryDropdownOpen && (
+              <div className="services-category-dropdown-list">
+                {categories.map((category, idx) => (
+                  <div
+                    key={category.id}
+                    className={`services-category-dropdown-item ${activeTab === idx ? 'selected' : ''}`}
+                    onClick={() => {
+                      setActiveTab(idx);
+                      setCategoryDropdownOpen(false);
+                    }}
+                  >
+                    <span className="services-category-dropdown-item-text">{category.name}</span>
+                    {activeTab === idx && (
+                      <svg className="services-category-dropdown-item-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 8L7 11L12 5" stroke="rgba(24, 37, 61, 0.32)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Offer banner */}
         <div className="promo-banner">
@@ -392,7 +511,12 @@ const ServicesSection = () => {
         {/* CT Cards */}
         <div className="services-grid ct-grid" ref={gridRef}>
           {displayedServices.map((service, idx) => (
-            <div key={service.id || idx} className="ct-card">
+            <div
+              key={service.id || idx}
+              className="ct-card"
+              ref={!isMobile && showAllServices && idx === maxServicesDefault ? firstNewCardRef : undefined}
+              onClick={(e) => e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })}
+            >
               <div className="ct-head">
                 <div className="ct-title">
                   <div className="ct-title-line">{service.name}</div>
@@ -421,8 +545,17 @@ const ServicesSection = () => {
                   <span className="ct-price-currency">₽</span>
                 </div>
                 <div className="ct-actions">
-                  <div className="ct-tooltip-wrapper">
-                    <button className="ct-icon-btn" type="button" aria-label="Подробнее">
+                  <div className={`ct-tooltip-wrapper ${openInfoIndex === idx ? 'open' : ''}`}>
+                    <button
+                      className="ct-icon-btn"
+                      type="button"
+                      aria-label="Подробнее"
+                      aria-expanded={openInfoIndex === idx}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenInfoIndex((prev) => (prev === idx ? null : idx));
+                      }}
+                    >
                       <svg width="6" height="12" viewBox="0 0 6 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M1.5 4.96875C1.5 4.55454 1.83579 4.21875 2.25 4.21875H3C3.41421 4.21875 3.75 4.55454 3.75 4.96875V10.0313H4.3125C4.72671 10.0313 5.0625 10.3671 5.0625 10.7813C5.0625 11.1955 4.72671 11.5313 4.3125 11.5313H1.6875C1.27329 11.5313 0.9375 11.1955 0.9375 10.7813C0.9375 10.3671 1.27329 10.0313 1.6875 10.0313H2.25V5.71875C1.83579 5.71875 1.5 5.38296 1.5 4.96875Z" fill="#14488C"/>
                         <path d="M3.9375 1.59375C3.9375 2.21507 3.43382 2.71875 2.8125 2.71875C2.19118 2.71875 1.6875 2.21507 1.6875 1.59375C1.6875 0.97243 2.19118 0.46875 2.8125 0.46875C3.43382 0.46875 3.9375 0.97243 3.9375 1.59375Z" fill="#14488C"/>
@@ -448,6 +581,38 @@ const ServicesSection = () => {
             </div>
           ))}
         </div>
+
+        {/* Модальное окно с информацией об услуге (по клику на i) */}
+        {openInfoIndex !== null && displayedServices[openInfoIndex] && (
+          <div
+            className="ct-info-modal-overlay"
+            onClick={() => setOpenInfoIndex(null)}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="ct-info-modal-title"
+          >
+            <div className="ct-info-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="ct-info-modal-header">
+                <h3 id="ct-info-modal-title" className="ct-info-modal-title">
+                  {displayedServices[openInfoIndex].name}
+                </h3>
+                <button
+                  type="button"
+                  className="ct-info-modal-close"
+                  aria-label="Закрыть"
+                  onClick={() => setOpenInfoIndex(null)}
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+              <div className="ct-info-modal-body">
+                {displayedServices[openInfoIndex].description}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Кнопка "Показать все" */}
         {hasMoreServices && (

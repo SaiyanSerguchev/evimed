@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './HeroBanner.css';
 import heroEquipment from '../assets/images/hero/hero-equipment.png';
+
+const SWIPE_THRESHOLD = 50;
 
 const HeroBanner = ({ onOpenAppointment }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [banners, setBanners] = useState([]);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
 
   const API_BASE = process.env.REACT_APP_API_URL || '/api';
 
@@ -57,8 +61,30 @@ const HeroBanner = ({ onOpenAppointment }) => {
     }
   }, [currentSlide, totalSlides]);
 
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (totalSlides <= 1) return;
+    const diff = touchStartX.current - touchEndX.current;
+    if (Math.abs(diff) < SWIPE_THRESHOLD) return;
+    if (diff > 0) nextSlide();
+    else prevSlide();
+  };
+
   return (
-    <section className="hero-banner">
+    <section
+      className="hero-banner"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       {banners.map((banner, index) => (
         <div key={banner.id} className={`hero-slide ${currentSlide === index ? 'active' : ''}`}>
           {/* Hero Image */}

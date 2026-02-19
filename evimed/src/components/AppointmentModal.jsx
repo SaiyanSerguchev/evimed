@@ -961,23 +961,25 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
               ))}
             </div>
             
-            {/* Mobile version - radio options */}
+            {/* Mobile version - radio options (clinic-radio style) */}
             <div className="mobile-service-options mobile-only">
               {allCards.map(card => (
                 <label
                   key={card.id}
-                  className={`mobile-service-option ${(card.type === 'consultation' && isConsultationSelected) || (card.type === 'category' && selectedCategory?.id === card.id) ? 'selected' : ''}`}
+                  className={`mobile-service-option clinic-radio-option ${(card.type === 'consultation' && isConsultationSelected) || (card.type === 'category' && selectedCategory?.id === card.id) ? 'selected' : ''}`}
                 >
                   <input
                     type="radio"
                     name="mobile-service"
+                    className="clinic-radio-input"
                     checked={(card.type === 'consultation' && isConsultationSelected) || (card.type === 'category' && selectedCategory?.id === card.id)}
                     onChange={() => handleInitialCategorySelect(card)}
                   />
+                  <span className="clinic-radio-icon" />
                   <div className="mobile-service-content">
-                    <div className="mobile-service-title">{card.title}</div>
+                    <span className="clinic-radio-text">{card.title}</span>
                     {card.description && (
-                      <div className="mobile-service-description">{card.description}</div>
+                      <span className="clinic-radio-description">{card.description}</span>
                     )}
                   </div>
                 </label>
@@ -995,27 +997,29 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
       <div className="appointment-step">
         <h2 className="appointment-title">У вас имеется направление от врача?</h2>
         <div className="referral-options">
-          <label className="radio-option">
+          <label className="radio-option clinic-radio-option">
             <input
               type="radio"
               name="hasReferral"
               value="yes"
+              className="clinic-radio-input"
               checked={hasReferral === true}
               onChange={() => setHasReferral(true)}
             />
-            <span className="radio-icon"></span>
-            <span className="radio-text">Да</span>
+            <span className="clinic-radio-icon" />
+            <span className="clinic-radio-text">Да</span>
           </label>
-          <label className="radio-option">
+          <label className="radio-option clinic-radio-option">
             <input
               type="radio"
               name="hasReferral"
               value="no"
+              className="clinic-radio-input"
               checked={hasReferral === false}
               onChange={() => setHasReferral(false)}
             />
-            <span className="radio-icon"></span>
-            <span className="radio-text">Нет</span>
+            <span className="clinic-radio-icon" />
+            <span className="clinic-radio-text">Нет</span>
           </label>
         </div>
       </div>
