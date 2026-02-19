@@ -425,7 +425,7 @@
     overflow-x: auto;
     overflow-y: visible;
     -webkit-overflow-scrolling: touch;
-    touch-action: pan-x;
+    touch-action: pan-x pan-y;
     scrollbar-width: none;
     scroll-snap-type: x mandatory;
     scroll-padding-inline: 0;
@@ -627,7 +627,7 @@
     overflow-x: auto;
     overflow-y: visible;
     -webkit-overflow-scrolling: touch;
-    touch-action: pan-x;
+    touch-action: pan-x pan-y;
     scrollbar-width: none;
     scroll-snap-type: x mandatory;
     scroll-padding-inline: 0;
