@@ -81,7 +81,8 @@ const HeaderSection = () => {
 
   const handleMobileNavClick = (section) => {
     closeMobileMenu();
-    handleNavClick(section);
+    // Скролл после восстановления body (разблокировка скролла в useEffect)
+    setTimeout(() => handleNavClick(section), 100);
   };
 
   return (
