@@ -205,7 +205,7 @@ const HeaderSection = () => {
             <span>Ежедневно <b>10:00-20:00</b></span>
           </div>
           <button className="mobile-callback" onClick={() => { handleConsultationClick(); closeMobileMenu(); }}>
-            Обратный звонок
+            Консультация
           </button>
         </div>
       </div>
