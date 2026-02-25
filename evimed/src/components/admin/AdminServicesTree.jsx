@@ -224,7 +224,7 @@ const AdminServicesTree = ({ token, API_BASE }) => {
       });
 
       if (response.ok) {
-        setEditingCategory(null);
+        setEditCategoryData(prev => ({ ...prev, imageUrl }));
         setEditCategoryImage(null);
         loadData();
         alert('Категория обновлена успешно');
@@ -272,7 +272,7 @@ const AdminServicesTree = ({ token, API_BASE }) => {
       });
 
       if (response.ok) {
-        setEditingService(null);
+        setEditServiceData(prev => ({ ...prev, imageUrl }));
         setEditServiceImage(null);
         loadData();
         alert('Услуга обновлена успешно');
