@@ -36,6 +36,9 @@ app.use('/uploads', (req, res, next) => {
   next();
 }, express.static('public/uploads'));
 
+// Uploads under /api for single proxy in Docker (API_BASE + /uploads/... = /api/uploads/...)
+app.use('/api/uploads', express.static('public/uploads'));
+
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
