@@ -2,6 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import './AdminServicesTree.css';
 
 const AdminServicesTree = ({ token, API_BASE }) => {
+  // Базовый URL для статики /uploads (не /api/uploads)
+  const getImageBaseUrl = () => {
+    if (API_BASE.startsWith('http')) {
+      return API_BASE.replace(/\/api\/?$/, '');
+    }
+    return '';
+  };
+
   const [categories, setCategories] = useState([]);
   const [services, setServices] = useState([]);
   const [expandedCategories, setExpandedCategories] = useState(new Set());
@@ -602,7 +610,7 @@ const AdminServicesTree = ({ token, API_BASE }) => {
                       <label>Текущее изображение:</label>
                       <div className="image-preview">
                         <img 
-                          src={`${API_BASE}${editCategoryData.imageUrl}`} 
+                          src={`${getImageBaseUrl()}${editCategoryData.imageUrl}`} 
                           alt="Current" 
                         />
                       </div>
@@ -772,7 +780,7 @@ const AdminServicesTree = ({ token, API_BASE }) => {
                                   <label>Текущее изображение:</label>
                                   <div className="image-preview">
                                     <img 
-                                      src={`${API_BASE}${editServiceData.imageUrl}`} 
+                                      src={`${getImageBaseUrl()}${editServiceData.imageUrl}`} 
                                       alt="Current" 
                                     />
                                   </div>
