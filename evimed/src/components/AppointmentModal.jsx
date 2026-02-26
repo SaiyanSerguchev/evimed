@@ -836,12 +836,8 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
     if (category.imageUrl) {
       const getServerBaseUrl = () => {
         const apiUrl = process.env.REACT_APP_API_URL || '/api';
-        // Если это относительный путь, возвращаем пустую строку (для nginx proxy)
-        if (apiUrl.startsWith('/')) {
-          return '';
-        }
-        // Если это полный URL, убираем /api
-        return apiUrl.replace('/api', '');
+        // Изображения в БД хранятся как /uploads/..., в проде отдаем через /api/uploads/...
+        return apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
       };
       return `${getServerBaseUrl()}${category.imageUrl}`;
     }
@@ -1051,12 +1047,8 @@ const AppointmentModal = ({ isOpen, onClose, preselectedService = null }) => {
         // Определяем базовый URL сервера
         const getServerBaseUrl = () => {
           const apiUrl = process.env.REACT_APP_API_URL || '/api';
-          // Если это относительный путь, возвращаем пустую строку (для nginx proxy)
-          if (apiUrl.startsWith('/')) {
-            return '';
-          }
-          // Если это полный URL, убираем /api
-          return apiUrl.replace('/api', '');
+          // Изображения в БД хранятся как /uploads/..., в проде отдаем через /api/uploads/...
+          return apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
         };
         return `${getServerBaseUrl()}${service.imageUrl}`;
       }
