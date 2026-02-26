@@ -343,6 +343,12 @@
   gap: 20px;
 }
 
+.edit-form .form-section,
+.service-edit-form .form-section {
+  grid-template-columns: minmax(0, 1fr);
+  padding: 16px;
+}
+
 .form-section {
   background: #ffffff;
   padding: 15px;
@@ -350,7 +356,7 @@
   border: 1px solid #e0e0e0;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 15px;
+  gap: 12px;
   align-items: start;
   min-width: 0;
   overflow: hidden;
@@ -370,12 +376,17 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin-bottom: 12px;
+  margin-bottom: 0;
   min-width: 0;
 }
 
 .form-group.full-width {
   grid-column: 1 / -1;
+}
+
+.edit-form .form-group.full-width,
+.service-edit-form .form-group.full-width {
+  grid-column: 1;
 }
 
 .form-group label {
@@ -389,6 +400,7 @@
 .form-group input,
 .form-group textarea,
 .form-group select {
+  display: block;
   padding: 8px 12px;
   border: 2px solid #e0e0e0;
   border-radius: 6px;
