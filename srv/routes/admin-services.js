@@ -44,6 +44,7 @@ router.post('/', adminAuth, async (req, res) => {
 router.put('/:id', adminAuth, async (req, res) => {
   try {
     const { name, description, price, duration, preparation, categoryId, order, isActive, imageUrl } = req.body;
+    console.log('PUT service req.body.imageUrl', req.body.imageUrl);
     const updateData = {};
     
     if (name !== undefined) updateData.name = name;
@@ -56,7 +57,9 @@ router.put('/:id', adminAuth, async (req, res) => {
     if (isActive !== undefined) updateData.isActive = isActive;
     if (imageUrl !== undefined) updateData.imageUrl = imageUrl;
 
+    console.log('PUT service updateData.imageUrl', updateData.imageUrl);
     const service = await Service.update(req.params.id, updateData);
+    console.log('PUT service result imageUrl', service?.imageUrl);
     res.json(service);
   } catch (error) {
     console.error('Update service error:', error);
