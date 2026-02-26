@@ -449,6 +449,11 @@
   object-fit: cover;
 }
 
+.image-preview .no-image-placeholder {
+  color: #888;
+  font-size: 13px;
+}
+
 .form-group input[type="file"] {
   padding: 6px;
   border: 2px dashed #e0e0e0;

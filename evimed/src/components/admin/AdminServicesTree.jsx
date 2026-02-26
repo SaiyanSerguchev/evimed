@@ -597,17 +597,19 @@ const AdminServicesTree = ({ token, API_BASE }) => {
               <div className="form-section">
                 <h4 className="form-section-title">Изображение категории</h4>
                 <div className="form-group full-width">
-                  {editCategoryData.imageUrl && !editCategoryImage && (
-                    <div className="image-preview-container">
-                      <label>Текущее изображение:</label>
-                      <div className="image-preview">
-                        <img 
-                          src={`${API_BASE}${editCategoryData.imageUrl}`} 
-                          alt="Current" 
+                  <div className="image-preview-container">
+                    <label>Текущее изображение:</label>
+                    <div className="image-preview">
+                      {editCategoryData.imageUrl && !editCategoryImage ? (
+                        <img
+                          src={`${API_BASE}${editCategoryData.imageUrl}`}
+                          alt="Current"
                         />
-                      </div>
+                      ) : (
+                        <span className="no-image-placeholder">Нет изображения</span>
+                      )}
                     </div>
-                  )}
+                  </div>
                   <label>Загрузить новое изображение:</label>
                   <input
                     type="file"
@@ -767,17 +769,19 @@ const AdminServicesTree = ({ token, API_BASE }) => {
                           <div className="form-section">
                             <h4 className="form-section-title">Изображение услуги</h4>
                             <div className="form-group full-width">
-                              {editServiceData.imageUrl && !editServiceImage && (
-                                <div className="image-preview-container">
-                                  <label>Текущее изображение:</label>
-                                  <div className="image-preview">
-                                    <img 
-                                      src={`${API_BASE}${editServiceData.imageUrl}`} 
-                                      alt="Current" 
+                              <div className="image-preview-container">
+                                <label>Текущее изображение:</label>
+                                <div className="image-preview">
+                                  {editServiceData.imageUrl && !editServiceImage ? (
+                                    <img
+                                      src={`${API_BASE}${editServiceData.imageUrl}`}
+                                      alt="Current"
                                     />
-                                  </div>
+                                  ) : (
+                                    <span className="no-image-placeholder">Нет изображения</span>
+                                  )}
                                 </div>
-                              )}
+                              </div>
                               <label>Загрузить новое изображение:</label>
                               <input
                                 type="file"
