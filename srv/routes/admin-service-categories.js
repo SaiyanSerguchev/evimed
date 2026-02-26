@@ -35,7 +35,6 @@ router.post('/', adminAuth, async (req, res) => {
 router.put('/:id', adminAuth, async (req, res) => {
   try {
     const { name, description, order, isActive, parentId, imageUrl } = req.body;
-    console.error('PUT category req.body.imageUrl', req.body.imageUrl);
     const updateData = {};
     
     if (name !== undefined) updateData.name = name;
@@ -45,9 +44,7 @@ router.put('/:id', adminAuth, async (req, res) => {
     if (parentId !== undefined) updateData.parentId = parentId === '' ? null : parseInt(parentId);
     if (imageUrl !== undefined) updateData.imageUrl = imageUrl;
 
-    console.error('PUT category updateData.imageUrl', updateData.imageUrl);
     const category = await ServiceCategory.update(req.params.id, updateData);
-    console.error('PUT category result imageUrl', category?.imageUrl);
     res.json(category);
   } catch (error) {
     console.error('Update service category error:', error);

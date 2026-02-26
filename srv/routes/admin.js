@@ -1,6 +1,5 @@
 const express = require('express');
 const User = require('../models/User');
-const Service = require('../models/Service');
 const Appointment = require('../models/Appointment');
 const Banner = require('../models/Banner');
 const adminAuth = require('../middleware/admin');
@@ -75,64 +74,6 @@ router.get('/users', adminAuth, async (req, res) => {
   } catch (error) {
     console.error('Get users error:', error);
     res.status(500).json({ error: 'Failed to get users' });
-  }
-});
-
-// Services management
-router.get('/services', adminAuth, async (req, res) => {
-  try {
-    const services = await Service.getAll();
-    res.json(services);
-  } catch (error) {
-    console.error('Get services error:', error);
-    res.status(500).json({ error: 'Failed to get services' });
-  }
-});
-
-router.post('/services', adminAuth, async (req, res) => {
-  try {
-    const { name, description, price, duration, category } = req.body;
-    
-    if (!name || !price || !duration) {
-      return res.status(400).json({ error: 'Name, price and duration are required' });
-    }
-
-    const serviceData = { name, description, price, duration, category };
-    const service = await Service.create(serviceData);
-    res.status(201).json(service);
-  } catch (error) {
-    console.error('Create service error:', error);
-    res.status(500).json({ error: 'Failed to create service' });
-  }
-});
-
-router.put('/services/:id', adminAuth, async (req, res) => {
-  try {
-    const { name, description, price, duration, category, is_active } = req.body;
-    const updateData = {};
-    
-    if (name !== undefined) updateData.name = name;
-    if (description !== undefined) updateData.description = description;
-    if (price !== undefined) updateData.price = price;
-    if (duration !== undefined) updateData.duration = duration;
-    if (category !== undefined) updateData.category = category;
-    if (is_active !== undefined) updateData.is_active = is_active;
-
-    const service = await Service.update(req.params.id, updateData);
-    res.json(service);
-  } catch (error) {
-    console.error('Update service error:', error);
-    res.status(500).json({ error: 'Failed to update service' });
-  }
-});
-
-router.delete('/services/:id', adminAuth, async (req, res) => {
-  try {
-    await Service.delete(req.params.id);
-    res.json({ message: 'Service deleted successfully' });
-  } catch (error) {
-    console.error('Delete service error:', error);
-    res.status(500).json({ error: 'Failed to delete service' });
   }
 });
 
