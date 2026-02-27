@@ -123,18 +123,27 @@ const HeaderSection = () => {
           <div className="header-right">
 
             <div className="phone-section" ref={dropdownRef} onMouseEnter={toggleDropdown} onMouseLeave={toggleDropdown}>
-              <a 
-                href="tel:+74112250509" 
-                className="phone-number" 
-                aria-label="Позвонить по номеру +7 (4112) 25-05-09"
-              >
-                +7 (4112) 25-05-09
-              </a>
+              <div className="phone-numbers-row">
+                <a 
+                  href="tel:+74112250509" 
+                  className="phone-number" 
+                  aria-label="Позвонить по номеру +7 (4112) 25-05-09"
+                >
+                  +7 (4112) 25-05-09
+                </a>
+                <a 
+                  href="tel:+79248650509" 
+                  className="phone-number" 
+                  aria-label="Позвонить по номеру +7 (924) 865-05-09"
+                >
+                  +7 (924) 865-05-09
+                </a>
+              </div>
               <div className={`phone-dropdown ${isDropdownOpen ? 'active' : ''}`}>
                 <div className="phone-dropdown-content">
                   <div className="phone-row">
-                    <span className="phone-number-dropdown"> +7 (4112) 25-05-09</span>
-
+                    <a href="tel:+74112250509" className="phone-number-dropdown">+7 (4112) 25-05-09</a>
+                    <a href="tel:+79248650509" className="phone-number-dropdown">+7 (924) 865-05-09</a>
                   </div>
                   
                   <div className="working-hours">
@@ -144,7 +153,7 @@ const HeaderSection = () => {
                   </div>
                   
                   <button className="callback-button" onClick={handleConsultationClick}>
-                    <span>Обратный звонок</span>
+                    <span>Консультация</span>
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M4.5 3L7.5 6L4.5 9" stroke="#14488C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
@@ -201,6 +210,7 @@ const HeaderSection = () => {
         </nav>
         <div className="mobile-contacts">
           <a href="tel:+74112250509" className="mobile-phone">+7 (4112) 25-05-09</a>
+          <a href="tel:+79248650509" className="mobile-phone">+7 (924) 865-05-09</a>
           <div className="mobile-working-hours">
             <span>Время работы:</span>
             <span>Будние <b>9:00-20:00</b></span>

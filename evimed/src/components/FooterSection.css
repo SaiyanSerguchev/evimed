@@ -229,6 +229,10 @@
   background: var(--color-primary-100);
 }
 
+.footer-social-link--hidden {
+  display: none;
+}
+
 .footer-social-link svg {
   width: 20px;
   height: 20px;

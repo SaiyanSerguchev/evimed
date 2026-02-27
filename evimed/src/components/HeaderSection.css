@@ -108,6 +108,13 @@
   flex-shrink: 0;
 }
 
+.phone-numbers-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
 .phone-number {
   display: flex;
   align-items: center;
@@ -132,7 +139,8 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
-  width: 210px;
+  width: 280px;
+  min-width: 260px;
   background: #FFFFFF;
   border-radius: 16px;
   box-shadow: 
@@ -171,9 +179,11 @@
 
 .phone-row {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .phone-number-dropdown {
@@ -187,8 +197,13 @@
   border-bottom: 2px dashed var(--color-grey-200);
   margin-bottom: 0;
   padding-bottom: 4px;
-  cursor:pointer;
+  cursor: pointer;
   transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.phone-number-dropdown:hover {
+  color: rgba(20, 72, 140, 0.8);
 }
 
 .divider {
@@ -497,6 +512,11 @@
   }
   .phone-number {
     font-size: 14px;
+  }
+  .phone-numbers-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
   }
   .phone-dropdown,
   .phone-dropdown-content {
